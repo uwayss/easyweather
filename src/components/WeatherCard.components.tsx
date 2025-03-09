@@ -1,4 +1,4 @@
-import { LinearGradient } from "expo-linear-gradient";
+import { LinearGradient } from "react-native-linear-gradient";
 import { useEffect } from "react";
 import { ImageBackground, StyleSheet, View } from "react-native";
 import { Surface, Text } from "react-native-paper";
@@ -67,9 +67,9 @@ export function GradientTint() {
     <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, gradientStyle]}>
       <LinearGradient
         colors={["rgba(255,255,255,0.1)", "rgba(255,255,255,0)"]}
-        start={[0, 0]}
-        end={[1, 1]}
-        style={StyleSheet.absoluteFill}
+        // start={[0, 0]}
+        // end={[1, 1]}
+        // style={StyleSheet.absoluteFill}
       />
     </Animated.View>
   );

@@ -1,5 +1,5 @@
 import React from "react";
-import { LinearGradient } from "expo-linear-gradient";
+import { LinearGradient } from "react-native-linear-gradient";
 import { Text, Card, Divider, ProgressBar } from "react-native-paper";
 import { ScrollView, View } from "react-native";
 import { styles } from "./styles";
@@ -21,10 +21,10 @@ export function HumidityCard({ selectedDateHourly }: { selectedDateHourly: any[]
                   hourTime === 0
                     ? "12 AM"
                     : hourTime === 12
-                      ? "12 PM"
-                      : hourTime > 12
-                        ? `${hourTime - 12} PM`
-                        : `${hourTime} AM`;
+                    ? "12 PM"
+                    : hourTime > 12
+                    ? `${hourTime - 12} PM`
+                    : `${hourTime} AM`;
 
                 // Calculate humidity color based on value
                 const humidity = hourData.humidity;
