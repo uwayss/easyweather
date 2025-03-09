@@ -1,5 +1,5 @@
 {
-  "name": "WeatherApp",
+  "name": "weather-app",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -7,7 +7,9 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "format": "prettier . --write",
+    "diff": "python3 utils/diff.py",
+    "dump": "python3 utils/codebase_dumper.py"
   },
   "dependencies": {
     "react": "18.3.1",
@@ -17,6 +19,7 @@
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
+    "@eslint/js": "^9.22.0",
     "@react-native-community/cli": "15.0.1",
     "@react-native-community/cli-platform-android": "15.0.1",
     "@react-native-community/cli-platform-ios": "15.0.1",
@@ -27,11 +30,14 @@
     "@types/react": "^18.2.6",
     "@types/react-test-renderer": "^18.0.0",
     "babel-jest": "^29.6.3",
-    "eslint": "^8.19.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-react": "^7.37.4",
+    "globals": "^16.0.0",
     "jest": "^29.6.3",
     "prettier": "2.8.8",
     "react-test-renderer": "18.3.1",
-    "typescript": "5.0.4"
+    "typescript": "5.0.4",
+    "typescript-eslint": "^8.26.0"
   },
   "engines": {
     "node": ">=18"
