@@ -1,10 +1,11 @@
-import { View } from "react-native";
 import { LocationResult } from "../api/location";
 import Wrapper from "../components/index.components";
 import { useLocation } from "../hooks/useLocation";
 import { useWeather } from "../hooks/useWeather";
-import { Text } from "react-native-paper";
 import { LocationSearch } from "../components/LocationSearch";
+import WeatherCard from "../components/WeatherCard";
+import ForecastList from "../components/ForecastList";
+import { convertToForecastDays } from "../utils/weatherUtils";
 
 export default function Home() {
   const { location, updateLocation, loading: locationLoading } = useLocation();
@@ -30,8 +31,8 @@ export default function Home() {
   return (
     <Wrapper>
       <LocationSearch onLocationSelect={handleLocationSelect} />
-      {/* <WeatherCard current={weather.current} name={location?.displayName || "Unknown location"} />
-      <ForecastList forecast={convertToForecastDays(weather.daily)} /> */}
+      <WeatherCard current={weather.current} name={location?.displayName || "Unknown location"} />
+      <ForecastList forecast={convertToForecastDays(weather.daily)} />
     </Wrapper>
   );
 }

@@ -2,7 +2,7 @@ import React from "react";
 import { Text, Card, Divider, ProgressBar } from "react-native-paper";
 import { ScrollView, View } from "react-native";
 import { styles } from "./styles";
-import { LinearGradient } from "expo-linear-gradient";
+import { LinearGradient } from "react-native-linear-gradient";
 export function PrecipitationCard({ selectedDateHourly }: { selectedDateHourly: any[] }) {
   return (
     <Card style={styles.card}>
@@ -20,10 +20,10 @@ export function PrecipitationCard({ selectedDateHourly }: { selectedDateHourly: 
                   hourTime === 0
                     ? "12 AM"
                     : hourTime === 12
-                      ? "12 PM"
-                      : hourTime > 12
-                        ? `${hourTime - 12} PM`
-                        : `${hourTime} AM`;
+                    ? "12 PM"
+                    : hourTime > 12
+                    ? `${hourTime - 12} PM`
+                    : `${hourTime} AM`;
 
                 return (
                   <View key={index} style={styles.hourlyItem}>

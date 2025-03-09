@@ -5,19 +5,18 @@ import Animated, { SlideInLeft } from "react-native-reanimated";
 import weatherDescriptions from "../utils/descriptions";
 import { Image } from "react-native";
 import { ForecastDay } from "../types/weather";
-import { useRouter } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../App";
 
-interface ForecastListProps {
-  forecast: ForecastDay[];
-}
-
-export default function ForecastList({ forecast }: ForecastListProps) {
-  const router = useRouter();
+export default function ForecastList({ forecast }: { forecast: ForecastDay[] }) {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   if (!forecast) return null;
 
   const handleForecastPress = (date: string) => {
-    router.push(`/${date}`);
+    // TODO: implement the details screen
+    navigation.push("Home");
   };
 
   const renderItem = ({ item, index }: { item: ForecastDay; index: number }) => {
@@ -67,7 +66,7 @@ export default function ForecastList({ forecast }: ForecastListProps) {
       <FlatList
         data={forecast}
         renderItem={renderItem}
-        keyExtractor={(item) => item.date}
+        keyExtractor={item => item.date}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.container}

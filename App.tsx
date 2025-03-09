@@ -4,6 +4,10 @@ import HomeScreen from "./src/screens/Home";
 
 const Stack = createNativeStackNavigator();
 
+export type RootStackParamList = {
+  Home: undefined;
+};
+
 export default function RootStack() {
   return (
     <Stack.Navigator>
