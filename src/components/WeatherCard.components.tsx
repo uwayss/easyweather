@@ -13,6 +13,7 @@ import Animated, {
 import { CurrentWeather } from "../types/weather";
 import weatherDescriptions from "../utils/descriptions";
 import backgroundMappings from "../utils/backgroundMappings";
+import React from "react";
 
 interface LocationDisplayProps {
   displayName: string;
@@ -67,9 +68,7 @@ export function GradientTint() {
     <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, gradientStyle]}>
       <LinearGradient
         colors={["rgba(255,255,255,0.1)", "rgba(255,255,255,0)"]}
-        // start={[0, 0]}
-        // end={[1, 1]}
-        // style={StyleSheet.absoluteFill}
+        style={StyleSheet.absoluteFill}
       />
     </Animated.View>
   );

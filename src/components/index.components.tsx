@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { StyleSheet } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import React from "react";
 type WrapperProps = {
   msg?: string;
   children?: ReactNode;

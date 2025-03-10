@@ -2,8 +2,8 @@ import React from "react";
 import { ForecastDay } from "../../types/weather";
 import { Text, Button, Card } from "react-native-paper";
 import { View } from "react-native";
-import { useRouter } from "expo-router";
 import { styles } from "./styles";
+import { useNavigation } from "@react-navigation/native";
 
 export function StatsCard({
   selectedForecast,
@@ -45,9 +45,14 @@ export function DayTitle({ title }: { title: string }) {
   );
 }
 export function BackButton() {
-  const router = useRouter();
+  const navigation = useNavigation();
   return (
-    <Button icon="arrow-left" mode="outlined" onPress={() => router.back()} style={styles.button}>
+    <Button
+      icon="arrow-left"
+      mode="outlined"
+      onPress={() => navigation.goBack()}
+      style={styles.button}
+    >
       Back to Forecast
     </Button>
   );
