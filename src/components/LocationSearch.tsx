@@ -8,16 +8,14 @@ interface LocationSearchProps {
   onLocationSelect: (location: LocationResult) => void;
 }
 
-// Debounce utility function
-function debounce<T extends (...args: any[]) => any>(
-  func: T,
-  wait: number,
-): (...args: Parameters<T>) => void {
+type DebouncedSearchFunction = (query: string) => Promise<void> | void;
+
+function debounce(func: DebouncedSearchFunction, wait: number): DebouncedSearchFunction {
   let timeout: NodeJS.Timeout | null = null;
 
-  return function (...args: Parameters<T>) {
+  return function (query: string) {
     if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(() => func(...args), wait);
+    timeout = setTimeout(() => func(query), wait);
   };
 }
 

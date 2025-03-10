@@ -16,7 +16,7 @@ export default function ForecastList({ forecast }: { forecast: ForecastDay[] }) 
 
   const handleForecastPress = (date: string) => {
     // TODO: implement the details screen
-    navigation.push("Home");
+    navigation.push("DayDetails", { date });
   };
 
   const renderItem = ({ item, index }: { item: ForecastDay; index: number }) => {

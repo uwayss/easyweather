@@ -6,6 +6,7 @@ import { LocationSearch } from "../components/LocationSearch";
 import WeatherCard from "../components/WeatherCard";
 import ForecastList from "../components/ForecastList";
 import { convertToForecastDays } from "../utils/weatherUtils";
+import React from "react";
 
 export default function Home() {
   const { location, updateLocation, loading: locationLoading } = useLocation();
