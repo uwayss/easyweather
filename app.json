@@ -1,4 +1,10 @@
 {
   "name": "WeatherApp",
-  "displayName": "WeatherApp"
+  "displayName": "Weather",
+  "splash": {
+    "image": "./assets/splash-icon.png"
+  },
+  "android": {
+    "package": "weather.uwayss.com"
+  }
 }

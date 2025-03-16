@@ -3,10 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { Searchbar } from "react-native-paper";
 import { searchLocation, LocationResult } from "../api/location";
 import LocationSearchResults from "./LocationSearchResults";
-
-interface LocationSearchProps {
-  onLocationSelect: (location: LocationResult) => void;
-}
+import { useLocation } from "../hooks/useLocation";
 
 type DebouncedSearchFunction = (query: string) => Promise<void> | void;
 
@@ -19,13 +16,20 @@ function debounce(func: DebouncedSearchFunction, wait: number): DebouncedSearchF
   };
 }
 
-export const LocationSearch = ({ onLocationSelect }: LocationSearchProps) => {
+export const LocationSearch = () => {
+  const { updateLocation } = useLocation();
+  const onLocationSelect = (selectedLocation: LocationResult) => {
+    updateLocation({
+      latitude: parseFloat(selectedLocation.lat),
+      longitude: parseFloat(selectedLocation.lon),
+      displayName: selectedLocation.display_name,
+    });
+  };
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState<LocationResult[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Create debounced search function
   const debouncedSearch = useCallback(
     debounce(async (query: string) => {
       if (query.trim()) {
@@ -66,7 +70,6 @@ export const LocationSearch = ({ onLocationSelect }: LocationSearchProps) => {
         onChangeText={handleSearchChange}
         value={searchQuery}
         style={styles.searchbar}
-        iconColor="#666"
         loading={isLoading}
         keyboardType="default"
       />

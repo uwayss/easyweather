@@ -1,21 +1,25 @@
 import React from "react";
 import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { Text, Card } from "react-native-paper";
-import Animated, { SlideInLeft } from "react-native-reanimated";
 import weatherDescriptions from "../utils/descriptions";
 import { Image } from "react-native";
 import { ForecastDay } from "../types/weather";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
+import { convertToForecastDays } from "../utils/weatherUtils";
+import { useLocation } from "../hooks/useLocation";
+import { useWeather } from "../hooks/useWeather";
 
-export default function ForecastList({ forecast }: { forecast: ForecastDay[] }) {
+export default function ForecastList() {
+  const { location } = useLocation();
+  const { weather } = useWeather(location?.latitude ?? 0, location?.longitude ?? 0);
+  const forecast = convertToForecastDays(weather?.daily);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   if (!forecast) return null;
 
   const handleForecastPress = (date: string) => {
-    // TODO: implement the details screen
     navigation.push("DayDetails", { date });
   };
 
@@ -33,31 +37,23 @@ export default function ForecastList({ forecast }: { forecast: ForecastDay[] }) 
     }
 
     return (
-      <Animated.View
-        entering={SlideInLeft.springify()
-          .damping(15)
-          .mass(0.9)
-          .delay(index * 80)
-          .duration(300)}
-      >
-        <TouchableOpacity onPress={() => handleForecastPress(item.date)}>
-          <Card style={styles.card}>
-            <Card.Content style={styles.cardContent}>
-              <Text variant="titleMedium" numberOfLines={1} style={styles.dayName}>
-                {dayName}
-              </Text>
-              <Image source={weather.image} style={styles.weatherIcon} resizeMode="contain" />
-              <Text variant="bodyMedium" style={styles.description} numberOfLines={1}>
-                {weather.description}
-              </Text>
-              <View style={styles.temperatures}>
-                <Text style={styles.maxTemp}>{Math.round(item.maxTemp)}°</Text>
-                <Text style={styles.minTemp}>{Math.round(item.minTemp)}°</Text>
-              </View>
-            </Card.Content>
-          </Card>
-        </TouchableOpacity>
-      </Animated.View>
+      <TouchableOpacity onPress={() => handleForecastPress(item.date)}>
+        <Card style={styles.card} mode="contained">
+          <Card.Content style={styles.cardContent}>
+            <Text variant="titleMedium" numberOfLines={1} style={styles.dayName}>
+              {dayName}
+            </Text>
+            <Image source={weather.image} style={styles.weatherIcon} resizeMode="contain" />
+            <Text variant="bodyMedium" style={styles.description} numberOfLines={1}>
+              {weather.description}
+            </Text>
+            <View style={styles.temperatures}>
+              <Text style={styles.maxTemp}>{Math.round(item.maxTemp)}°</Text>
+              <Text style={styles.minTemp}>{Math.round(item.minTemp)}°</Text>
+            </View>
+          </Card.Content>
+        </Card>
+      </TouchableOpacity>
     );
   };
 
