@@ -7,7 +7,6 @@ import Animated, {
   withRepeat,
   withSequence,
   withTiming,
-  useAnimatedStyle,
   useSharedValue,
 } from "react-native-reanimated";
 import { CurrentWeather } from "../types/weather";
@@ -20,10 +19,10 @@ interface LocationDisplayProps {
 }
 interface MainInfoProps {
   name: string;
-  current: CurrentWeather;
+  current: CurrentWeather | undefined;
 }
 interface DetailsProps {
-  current: CurrentWeather;
+  current: CurrentWeather | undefined;
 }
 export function LocationDisplay({ displayName }: LocationDisplayProps) {
   return (
@@ -39,11 +38,17 @@ export function ConditionalBackground({
   current,
 }: {
   children: React.ReactNode;
-  current: CurrentWeather;
+  current: CurrentWeather | undefined;
 }) {
-  const timeOfDay = current.is_day ? "day" : "night";
-  const background =
-    backgroundMappings[current.weather_code]?.[timeOfDay] || backgroundMappings.default[timeOfDay];
+  const timeOfDay = current?.is_day ? "day" : "night";
+  let background;
+  background = backgroundMappings.default[timeOfDay];
+  if (current) {
+    background =
+      backgroundMappings[current.weather_code]?.[timeOfDay] ||
+      backgroundMappings.default[timeOfDay];
+  }
+
   return (
     <ImageBackground source={background} style={styles.background} resizeMode="cover">
       {children}
@@ -61,39 +66,35 @@ export function GradientTint() {
     );
   }, [gradientOpacity]);
 
-  const gradientStyle = useAnimatedStyle(() => ({
-    opacity: gradientOpacity.value,
-  }));
   return (
-    <Animated.View style={[{ position: "absolute", width: "100%", height: "100%" }, gradientStyle]}>
-      <LinearGradient
-        colors={["rgba(255,255,255,0.1)", "rgba(255,255,255,0)"]}
-        style={StyleSheet.absoluteFill}
-      />
-    </Animated.View>
+    <LinearGradient
+      colors={["rgba(255,255,255,0.1)", "rgba(255,255,255,0)"]}
+      style={StyleSheet.absoluteFill}
+    />
   );
 }
 
 export function MainInfo({ name, current }: MainInfoProps) {
-  const timeOfDay = current.is_day ? "day" : "night";
-  const weatherDescription =
-    weatherDescriptions[current.weather_code]?.[timeOfDay].description ||
-    weatherDescriptions[0][timeOfDay].description;
+  const timeOfDay = current?.is_day ? "day" : "night";
+  let description = weatherDescriptions[0][timeOfDay].description;
+  if (current) {
+    description = weatherDescriptions[current.weather_code]?.[timeOfDay].description;
+  }
+  // const weatherDescription =
+  //   weatherDescriptions[current.weather_code]?.[timeOfDay].description ||
+  //   weatherDescriptions[0][timeOfDay].description;
   return (
-    <Animated.View entering={FadeInDown.duration(800)} style={styles.mainInfoContainer}>
+    <Animated.View entering={FadeInDown.duration(600)} style={styles.mainInfoContainer}>
       <Surface style={styles.mainInfo} elevation={5}>
         <LocationDisplay displayName={name} />
-        <Animated.Text
-          entering={FadeInDown.duration(600)}
-          style={[styles.temperature, { fontSize: 48 }]}
-        >
-          {Math.round(current.temperature_2m)}°C
-        </Animated.Text>
+        <Text style={styles.temperature}>
+          {current ? Math.round(current.temperature_2m) : ""}°C
+        </Text>
         <Text variant="headlineSmall" style={styles.description}>
-          {weatherDescription}
+          {description}
         </Text>
         <Text variant="titleMedium" style={styles.feelsLike}>
-          Feels like {Math.round(current.apparent_temperature)}°
+          Feels like {current ? Math.round(current.apparent_temperature) : ""}°
         </Text>
       </Surface>
     </Animated.View>
@@ -106,12 +107,12 @@ export function Details({ current }: DetailsProps) {
       <Surface style={styles.detailsContainer} elevation={5}>
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>Humidity</Text>
-          <Text style={styles.detailValue}>{current.relative_humidity_2m}%</Text>
+          <Text style={styles.detailValue}>{current?.relative_humidity_2m}%</Text>
         </View>
         <View style={styles.separator} />
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>Wind Speed</Text>
-          <Text style={styles.detailValue}>{current.wind_speed_10m} km/h</Text>
+          <Text style={styles.detailValue}>{current?.wind_speed_10m} km/h</Text>
         </View>
       </Surface>
     </Animated.View>
@@ -135,18 +136,16 @@ const styles = StyleSheet.create({
     opacity: 0.85,
   },
   temperature: {
-    color: "white",
     fontWeight: "bold",
+    fontSize: 48,
   },
   description: {
-    color: "white",
     marginTop: 4,
     textTransform: "uppercase",
     letterSpacing: 3,
     flexWrap: "wrap",
   },
   feelsLike: {
-    color: "white",
     opacity: 0.9,
     marginTop: 8,
   },
@@ -171,13 +170,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
   },
   detailLabel: {
-    color: "white",
     opacity: 0.8,
     fontSize: 14,
     marginBottom: 4,
   },
   detailValue: {
-    color: "white",
     fontSize: 16,
     fontWeight: "600",
   },

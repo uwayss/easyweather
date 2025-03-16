@@ -11,11 +11,10 @@ interface DailyWeatherData {
 /**
  * Converts the API's daily weather data format to an array of ForecastDay objects
  */
-export function convertToForecastDays(dailyData: DailyWeatherData): ForecastDay[] {
-  if (!dailyData || !dailyData.time) {
-    return [];
-  }
-
+export function convertToForecastDays(
+  dailyData: DailyWeatherData | undefined,
+): ForecastDay[] | null {
+  if (!dailyData || !dailyData.time) return null;
   return dailyData.time.map((date, index) => ({
     date,
     weatherCode: dailyData.weather_code[index],

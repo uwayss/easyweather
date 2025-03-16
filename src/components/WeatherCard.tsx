@@ -1,22 +1,20 @@
-import { CurrentWeather } from "../types/weather";
 import { StyleSheet } from "react-native";
 import { Card } from "react-native-paper";
 import React from "react";
 import { ConditionalBackground, Details, GradientTint, MainInfo } from "./WeatherCard.components";
+import { useWeather } from "../hooks/useWeather";
+import { useLocation } from "../hooks/useLocation";
 
-type WeatherCardProps = {
-  current?: CurrentWeather;
-  name: string;
-};
-export default function WeatherCard({ current, name }: WeatherCardProps) {
-  if (!current) return null;
+export default function WeatherCard() {
+  const { location } = useLocation();
+  const { weather } = useWeather(location?.latitude ?? 0, location?.longitude ?? 0);
   return (
     <Card style={styles.card}>
-      <ConditionalBackground current={current}>
+      <ConditionalBackground current={weather?.current}>
         <GradientTint />
         <Card.Content style={styles.content}>
-          <MainInfo current={current} name={name} />
-          <Details current={current} />
+          <MainInfo current={weather?.current} name={location?.displayName || "Unknown location"} />
+          <Details current={weather?.current} />
         </Card.Content>
       </ConditionalBackground>
     </Card>
