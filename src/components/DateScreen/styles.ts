@@ -13,6 +13,8 @@ export const styles = StyleSheet.create({
   windText: {
     fontSize: 12,
     marginTop: 4,
+    textAlign: "center",
+    flexWrap: "nowrap",
   },
   humidityTitle: {
     marginBottom: 8,

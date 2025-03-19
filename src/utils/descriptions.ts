@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import { ImageSourcePropType } from "react-native";
 
 interface weatherDescriptionsType {
