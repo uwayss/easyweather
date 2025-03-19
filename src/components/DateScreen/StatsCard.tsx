@@ -1,6 +1,6 @@
 import React from "react";
 import { ForecastDay } from "../../types/weather";
-import { Text, Button, Card } from "react-native-paper";
+import { Text, Button, Card, ActivityIndicator } from "react-native-paper";
 import { View } from "react-native";
 import { styles } from "./styles";
 import { useNavigation } from "@react-navigation/native";
@@ -42,9 +42,15 @@ export function StatsCard({ selectedForecast }: { selectedForecast: ForecastDay 
 
 export function DayTitle({ title }: { title: string | undefined }) {
   return (
-    <Text variant="headlineMedium" style={styles.title}>
-      {title}
-    </Text>
+    <View>
+      {title ? (
+        <Text variant="headlineMedium" style={styles.title}>
+          {title}
+        </Text>
+      ) : (
+        <ActivityIndicator style={styles.title} size="large" />
+      )}
+    </View>
   );
 }
 export function BackButton() {

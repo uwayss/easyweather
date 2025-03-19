@@ -23,6 +23,9 @@ export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
   if (route) date = route.params.date;
   const { location } = useLocation();
   const { weather, error } = useWeather(location?.latitude ?? 0, location?.longitude ?? 0);
+  // TESTING LOADING STATES:
+  // const weather = null;
+  // const error = null;
 
   if (error) return <Wrapper msg={"Error: " + error} />;
   const forecastDays = convertToForecastDays(weather?.daily);
