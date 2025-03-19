@@ -3,7 +3,12 @@ import { LinearGradient } from "react-native-linear-gradient";
 import { Text, Card, Divider, ProgressBar } from "react-native-paper";
 import { ScrollView, View } from "react-native";
 import { styles } from "./styles";
-export function WindSpeedCard({ selectedDateHourly }: { selectedDateHourly: any[] }) {
+import { ForecastHour } from "../../types/weather";
+export function WindSpeedCard({
+  selectedDateHourly,
+}: {
+  selectedDateHourly: ForecastHour[] | undefined | null;
+}) {
   return (
     <Card style={styles.card}>
       <Card.Content>
@@ -14,7 +19,7 @@ export function WindSpeedCard({ selectedDateHourly }: { selectedDateHourly: any[
         <View style={styles.scrollContainer}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.hourlyScroll}>
             <View style={styles.hourlyContainer}>
-              {selectedDateHourly.map((hourData, index) => {
+              {selectedDateHourly?.map((hourData, index) => {
                 const hourTime = new Date(hourData.time).getHours();
                 const formattedHour =
                   hourTime === 0
@@ -51,7 +56,9 @@ export function WindSpeedCard({ selectedDateHourly }: { selectedDateHourly: any[
                         style={styles.progressBar}
                       />
                     </View>
-                    <Text style={styles.windText}>{windSpeed} km/h</Text>
+                    <Text style={styles.windText} lineBreakMode="head">
+                      {windSpeed} km/h
+                    </Text>
                   </View>
                 );
               })}

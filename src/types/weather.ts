@@ -30,6 +30,15 @@ export interface HourlyWeather {
   is_day: number[];
   wind_speed_10m?: number[];
 }
+export interface ForecastHour {
+  time: string;
+  temperature: number;
+  humidity: number;
+  rainProb: number;
+  weatherCode: number;
+  isDay: boolean;
+  windSpeed?: number;
+}
 export interface ForecastDay {
   date: string;
   maxTemp: number;

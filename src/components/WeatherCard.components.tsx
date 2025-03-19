@@ -1,14 +1,7 @@
 import { LinearGradient } from "react-native-linear-gradient";
-import { useEffect } from "react";
-import { ImageBackground, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import FastImage from "react-native-fast-image";
 import { Surface, Text } from "react-native-paper";
-import Animated, {
-  FadeInDown,
-  withRepeat,
-  withSequence,
-  withTiming,
-  useSharedValue,
-} from "react-native-reanimated";
 import { CurrentWeather } from "../types/weather";
 import weatherDescriptions from "../utils/descriptions";
 import backgroundMappings from "../utils/backgroundMappings";
@@ -33,6 +26,7 @@ export function LocationDisplay({ displayName }: LocationDisplayProps) {
     </Surface>
   );
 }
+
 export function ConditionalBackground({
   children,
   current,
@@ -42,30 +36,22 @@ export function ConditionalBackground({
 }) {
   const timeOfDay = current?.is_day ? "day" : "night";
   let background;
-  background = backgroundMappings.default[timeOfDay];
   if (current) {
-    background =
-      backgroundMappings[current.weather_code]?.[timeOfDay] ||
-      backgroundMappings.default[timeOfDay];
+    background = backgroundMappings[current.weather_code]?.[timeOfDay];
   }
 
   return (
-    <ImageBackground source={background} style={styles.background} resizeMode="cover">
+    <FastImage
+      source={background ? background : undefined}
+      style={styles.background}
+      resizeMode="cover"
+    >
       {children}
-    </ImageBackground>
+    </FastImage>
   );
 }
+
 export function GradientTint() {
-  const gradientOpacity = useSharedValue(0.3);
-
-  useEffect(() => {
-    gradientOpacity.value = withRepeat(
-      withSequence(withTiming(0.4, { duration: 2000 }), withTiming(0.3, { duration: 2000 })),
-      -1,
-      true,
-    );
-  }, [gradientOpacity]);
-
   return (
     <LinearGradient
       colors={["rgba(255,255,255,0.1)", "rgba(255,255,255,0)"]}
@@ -76,34 +62,32 @@ export function GradientTint() {
 
 export function MainInfo({ name, current }: MainInfoProps) {
   const timeOfDay = current?.is_day ? "day" : "night";
-  let description = weatherDescriptions[0][timeOfDay].description;
-  if (current) {
-    description = weatherDescriptions[current.weather_code]?.[timeOfDay].description;
-  }
-  // const weatherDescription =
-  //   weatherDescriptions[current.weather_code]?.[timeOfDay].description ||
-  //   weatherDescriptions[0][timeOfDay].description;
+  // let description = weatherDescriptions[0][timeOfDay].description;
+  const description = current
+    ? weatherDescriptions[current.weather_code]?.[timeOfDay].description
+    : null;
+
   return (
-    <Animated.View entering={FadeInDown.duration(600)} style={styles.mainInfoContainer}>
+    <View style={styles.mainInfoContainer}>
       <Surface style={styles.mainInfo} elevation={5}>
         <LocationDisplay displayName={name} />
         <Text style={styles.temperature}>
           {current ? Math.round(current.temperature_2m) : ""}°C
         </Text>
         <Text variant="headlineSmall" style={styles.description}>
-          {description}
+          {description ? description : ""}
         </Text>
         <Text variant="titleMedium" style={styles.feelsLike}>
           Feels like {current ? Math.round(current.apparent_temperature) : ""}°
         </Text>
       </Surface>
-    </Animated.View>
+    </View>
   );
 }
 
 export function Details({ current }: DetailsProps) {
   return (
-    <Animated.View entering={FadeInDown.springify().damping(15).mass(0.9).duration(600).delay(150)}>
+    <View>
       <Surface style={styles.detailsContainer} elevation={5}>
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>Humidity</Text>
@@ -115,7 +99,7 @@ export function Details({ current }: DetailsProps) {
           <Text style={styles.detailValue}>{current?.wind_speed_10m} km/h</Text>
         </View>
       </Surface>
-    </Animated.View>
+    </View>
   );
 }
 

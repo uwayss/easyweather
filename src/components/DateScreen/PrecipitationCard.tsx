@@ -3,7 +3,12 @@ import { Text, Card, Divider, ProgressBar } from "react-native-paper";
 import { ScrollView, View } from "react-native";
 import { styles } from "./styles";
 import { LinearGradient } from "react-native-linear-gradient";
-export function PrecipitationCard({ selectedDateHourly }: { selectedDateHourly: any[] }) {
+import { ForecastHour } from "../../types/weather";
+export function PrecipitationCard({
+  selectedDateHourly,
+}: {
+  selectedDateHourly: ForecastHour[] | undefined | null;
+}) {
   return (
     <Card style={styles.card}>
       <Card.Content>
@@ -14,7 +19,7 @@ export function PrecipitationCard({ selectedDateHourly }: { selectedDateHourly: 
         <View style={styles.scrollContainer}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.hourlyScroll}>
             <View style={styles.hourlyContainer}>
-              {selectedDateHourly.map((hourData, index) => {
+              {selectedDateHourly?.map((hourData, index) => {
                 const hourTime = new Date(hourData.time).getHours();
                 const formattedHour =
                   hourTime === 0
@@ -30,14 +35,12 @@ export function PrecipitationCard({ selectedDateHourly }: { selectedDateHourly: 
                     <Text style={styles.hourText}>{formattedHour}</Text>
                     <View style={styles.precipitationBar}>
                       <ProgressBar
-                        progress={hourData.precipitationProbability / 100}
-                        color={hourData.precipitationProbability > 50 ? "#3498db" : "#a0d2eb"}
+                        progress={hourData.rainProb / 100}
+                        color={hourData.rainProb > 50 ? "#3498db" : "#a0d2eb"}
                         style={styles.progressBar}
                       />
                     </View>
-                    <Text style={styles.precipitationText}>
-                      {hourData.precipitationProbability}%
-                    </Text>
+                    <Text style={styles.precipitationText}>{hourData.rainProb}%</Text>
                   </View>
                 );
               })}

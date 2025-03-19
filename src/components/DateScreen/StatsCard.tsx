@@ -4,31 +4,34 @@ import { Text, Button, Card } from "react-native-paper";
 import { View } from "react-native";
 import { styles } from "./styles";
 import { useNavigation } from "@react-navigation/native";
+import weatherDescriptions from "../../utils/descriptions";
 
-export function StatsCard({
-  selectedForecast,
-  weatherCondition,
-}: {
-  selectedForecast: ForecastDay;
-  weatherCondition: string;
-}) {
+export function StatsCard({ selectedForecast }: { selectedForecast: ForecastDay | undefined }) {
   return (
     <Card style={styles.card}>
       <Card.Content style={styles.cardContent}>
         <>
           <View style={styles.weatherHeader}>
-            <Text variant="headlineSmall">{weatherCondition}</Text>
+            <Text variant="headlineSmall">
+              {selectedForecast
+                ? weatherDescriptions[selectedForecast.weatherCode].day.description
+                : ""}
+            </Text>
           </View>
 
           <View style={styles.temperatureContainer}>
             <View style={styles.temperatureItem}>
               <Text variant="labelLarge">High</Text>
-              <Text variant="headlineMedium">{Math.round(selectedForecast.maxTemp)}°</Text>
+              <Text variant="headlineMedium">
+                {selectedForecast ? Math.round(selectedForecast.maxTemp) : ""}°
+              </Text>
             </View>
 
             <View style={styles.temperatureItem}>
               <Text variant="labelLarge">Low</Text>
-              <Text variant="headlineMedium">{Math.round(selectedForecast.minTemp)}°</Text>
+              <Text variant="headlineMedium">
+                {selectedForecast ? Math.round(selectedForecast.minTemp) : ""}°
+              </Text>
             </View>
           </View>
         </>
@@ -37,7 +40,7 @@ export function StatsCard({
   );
 }
 
-export function DayTitle({ title }: { title: string }) {
+export function DayTitle({ title }: { title: string | undefined }) {
   return (
     <Text variant="headlineMedium" style={styles.title}>
       {title}

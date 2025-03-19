@@ -3,8 +3,13 @@ import { LinearGradient } from "react-native-linear-gradient";
 import { Text, Card, Divider, ProgressBar } from "react-native-paper";
 import { ScrollView, View } from "react-native";
 import { styles } from "./styles";
+import { ForecastHour } from "../../types/weather";
 
-export function HumidityCard({ selectedDateHourly }: { selectedDateHourly: any[] }) {
+export function HumidityCard({
+  selectedDateHourly,
+}: {
+  selectedDateHourly: ForecastHour[] | undefined | null;
+}) {
   return (
     <Card style={styles.card}>
       <Card.Content>
@@ -15,7 +20,7 @@ export function HumidityCard({ selectedDateHourly }: { selectedDateHourly: any[]
         <View style={styles.scrollContainer}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.hourlyScroll}>
             <View style={styles.hourlyContainer}>
-              {selectedDateHourly.map((hourData, index) => {
+              {selectedDateHourly?.map((hourData, index) => {
                 const hourTime = new Date(hourData.time).getHours();
                 const formattedHour =
                   hourTime === 0

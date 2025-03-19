@@ -1,11 +1,9 @@
 import React from "react";
 import { StyleSheet, ScrollView } from "react-native";
-import { Text } from "react-native-paper";
 import Wrapper from "../components/index.components";
 import { useWeather } from "../hooks/useWeather";
 import { useLocation } from "../hooks/useLocation";
 import { convertToForecastDays } from "../utils/weatherUtils";
-import weatherDescriptions from "../utils/descriptions";
 import { formatForecastDate, filterHourlyDataForDate } from "../utils/dateScreen.helpers";
 import { BackButton, DayTitle, StatsCard } from "../components/DateScreen/StatsCard";
 import { PrecipitationCard } from "../components/DateScreen/PrecipitationCard";
@@ -22,40 +20,22 @@ type DayDetailsRouteProp = RouteProp<{ DayDetails: DayDetailsParams }, "DayDetai
 
 export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
   let date = null;
-  try {
-    date = route?.params.date;
-  } catch {
-    date = null;
-  }
+  if (route) date = route.params.date;
   const { location } = useLocation();
-  const { weather, loading, error } = useWeather(location?.latitude ?? 0, location?.longitude ?? 0);
+  const { weather, error } = useWeather(location?.latitude ?? 0, location?.longitude ?? 0);
 
-  if (loading) return <Wrapper msg="Loading..." />;
   if (error) return <Wrapper msg={"Error: " + error} />;
-  if (!weather) return <Wrapper msg="No weather data available" />;
-  const forecastDays = convertToForecastDays(weather.daily);
-  const selectedForecast = forecastDays.find(day => day.date === date);
-  const selectedDateHourly = filterHourlyDataForDate(weather.hourly, String(date));
-
-  if (!selectedForecast) {
-    return (
-      <Wrapper>
-        <BackButton />
-        <Text variant="headlineMedium">Forecast not found</Text>
-      </Wrapper>
-    );
-  }
-
-  const weatherInfo = weatherDescriptions[selectedForecast.weatherCode]?.day;
-
+  const forecastDays = convertToForecastDays(weather?.daily);
+  const selectedForecast = forecastDays?.find(day => day.date === date);
+  const selectedDateHourly = filterHourlyDataForDate(weather?.hourly, String(date));
   return (
     <Wrapper>
       <ScrollView style={styles.container}>
         <BackButton />
-        <DayTitle title={formatForecastDate(selectedForecast.date)} />
-        <StatsCard selectedForecast={selectedForecast} weatherCondition={weatherInfo.description} />
-        <PrecipitationCard selectedDateHourly={selectedDateHourly} />
+        <DayTitle title={formatForecastDate(selectedForecast?.date)} />
+        <StatsCard selectedForecast={selectedForecast} />
         <TemperatureCard selectedDateHourly={selectedDateHourly} />
+        <PrecipitationCard selectedDateHourly={selectedDateHourly} />
         <HumidityCard selectedDateHourly={selectedDateHourly} />
         <WindSpeedCard selectedDateHourly={selectedDateHourly} />
       </ScrollView>
