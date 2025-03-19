@@ -35,6 +35,7 @@ export const styles = StyleSheet.create({
   },
   title: {
     marginBottom: 16,
+    textAlign: "center",
   },
   card: {
     marginBottom: 16,
@@ -44,7 +45,6 @@ export const styles = StyleSheet.create({
   },
   weatherHeader: {
     alignItems: "center",
-    marginBottom: 24,
   },
   temperatureContainer: {
     flexDirection: "row",
