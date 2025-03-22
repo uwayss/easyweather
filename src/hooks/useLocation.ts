@@ -73,6 +73,7 @@ export function useLocation() {
           updateLocation(newLocation);
         } else {
           console.warn("[useLocation] Geolocation data missing lat/lon");
+          longToast("[useLocation] Geolocation data missing lat/lon");
         }
       } catch (err) {
         console.error("[useLocation] Error getting location from IP: ", err);
