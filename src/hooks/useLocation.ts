@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { MMKV } from "react-native-mmkv";
 import { fetchCurrentLocation } from "../api/geolocation";
+import { longToast } from "../utils/debug";
 
 const storage = new MMKV({ id: "location-storage" });
 
@@ -24,7 +25,8 @@ export function useLocation() {
         console.log("[useLocation] Loaded stored location:", parsedLocation.displayName);
         return parsedLocation;
       } catch (e) {
-        console.error("[useLocation] Failed to parse stored location:", e);
+        console.error("[useLocation] Failed to parse stored location: ", e);
+        longToast("[useLocation] Failed to parse stored location: " + e);
       }
     }
 
@@ -73,7 +75,8 @@ export function useLocation() {
           console.warn("[useLocation] Geolocation data missing lat/lon");
         }
       } catch (err) {
-        console.error("[useLocation] Error getting location from IP:", err);
+        console.error("[useLocation] Error getting location from IP: ", err);
+        longToast("[useLocation] Error getting location from IP: " + err);
         setError(err instanceof Error ? err.message : "Failed to get location");
       } finally {
         setLoading(false);

@@ -1,8 +1,9 @@
+import { longToast } from "../utils/debug";
+
 /**
  * Geolocation API module
  * Handles fetching location data from IP address
  */
-
 export interface GeolocationResponse {
   status: string;
   country: string;
@@ -34,6 +35,7 @@ export async function fetchIPAddress(): Promise<string> {
 
   if (!response.ok) {
     console.error(`Failed to fetch IP address: ${response.status} ${response.statusText}`);
+    longToast(`Failed to fetch IP address: ${response.status} ${response.statusText}`);
     throw new Error("Failed to fetch IP address");
   }
 
@@ -53,6 +55,7 @@ export async function fetchGeolocationFromIP(ipAddress: string): Promise<Geoloca
 
   if (!response.ok) {
     console.error(`Failed to fetch geolocation data: ${response.status} ${response.statusText}`);
+    longToast(`Failed fetch geolocation from ip: ${response.status} ${response.statusText}`);
     throw new Error("Failed to fetch geolocation data");
   }
 
@@ -68,15 +71,13 @@ export async function fetchGeolocationFromIP(ipAddress: string): Promise<Geoloca
 export async function fetchCurrentLocation(): Promise<GeolocationResponse> {
   console.log("Starting location fetch process");
   try {
-    // First get the public IP address
     const ipAddress = await fetchIPAddress();
-
-    // Then get geolocation data from the IP
     const geoData = await fetchGeolocationFromIP(ipAddress);
     console.log("Location fetch completed successfully");
     return geoData;
   } catch (error) {
     console.error("Error fetching location:", error);
+    longToast("Error fetching location: " + error);
     throw error instanceof Error ? error : new Error("Failed to get location from IP");
   }
 }

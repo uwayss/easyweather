@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, ScrollView, ActivityIndicator } from "react-native";
+import React, { useEffect } from "react";
+import { StyleSheet, ScrollView, ActivityIndicator, BackHandler } from "react-native";
 import Wrapper from "../components/index.components";
 import { useWeather } from "../context/WeatherContext";
 import { convertToForecastDays } from "../utils/weatherUtils";
@@ -9,23 +9,33 @@ import { PrecipitationCard } from "../components/DateScreen/PrecipitationCard";
 import { TemperatureCard } from "../components/DateScreen/TemperatureCard";
 import { HumidityCard } from "../components/DateScreen/HumidityCard";
 import { WindSpeedCard } from "../components/DateScreen/WindSpeedCard";
-import { RouteProp } from "@react-navigation/native";
 
-type DayDetailsParams = {
-  date: string;
-};
+interface DayDetailsProps {
+  date: string | null;
+  onClose: () => void;
+}
 
-type DayDetailsRouteProp = RouteProp<{ DayDetails: DayDetailsParams }, "DayDetails">;
-
-export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
-  if (!route) return null;
-  const date = route.params.date;
+export default function DayDetails({ date, onClose }: DayDetailsProps) {
+  if (!date) return null;
   const { weather, error } = useWeather();
+
+  useEffect(() => {
+    const handleBackButtonPress = () => {
+      onClose();
+      return true;
+    };
+
+    BackHandler.addEventListener("hardwareBackPress", handleBackButtonPress);
+
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", handleBackButtonPress);
+    };
+  }, [onClose]);
 
   if (!weather) {
     return (
       <Wrapper>
-        <BackButton />
+        <BackButton onClose={onClose} />
         <DayTitle title={formatForecastDate(date)} />
         <ActivityIndicator size="large" color="#006d77" />
       </Wrapper>
@@ -40,7 +50,7 @@ export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
   return (
     <Wrapper>
       <ScrollView style={styles.container}>
-        <BackButton />
+        <BackButton onClose={onClose} />
         <DayTitle title={formatForecastDate(selectedForecast?.date)} />
         <StatsCard selectedForecast={selectedForecast} />
         <TemperatureCard selectedDateHourly={selectedDateHourly} />

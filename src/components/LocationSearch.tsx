@@ -4,6 +4,7 @@ import { Searchbar } from "react-native-paper";
 import { searchLocation, LocationResult } from "../api/location";
 import LocationSearchResults from "./LocationSearchResults";
 import { useLocation } from "../hooks/useLocation";
+import { longToast } from "../utils/debug";
 
 type DebouncedSearchFunction = (query: string) => Promise<void> | void;
 
@@ -40,6 +41,7 @@ export const LocationSearch = () => {
           setShowResults(true);
         } catch (error) {
           console.error("Error searching for location:", error);
+          longToast("Error searching for location: " + error);
         } finally {
           setIsLoading(false);
         }
