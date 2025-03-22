@@ -14,15 +14,8 @@ const STORAGE_KEYS = {
   LOCATION: "user-location",
 };
 
-/**
- * Custom hook for managing location with storage persistence
- * Priority:
- * 1. Stored location from MMKV
- * 2. IP-based geolocation
- */
 export function useLocation() {
   const [location, setLocation] = useState<Location | null>(() => {
-    // Try to get location from storage first
     const storedLocation = storage.getString(STORAGE_KEYS.LOCATION);
     // const storedLocation = null; // Keep this for when you wanna test geolocation
     if (storedLocation) {

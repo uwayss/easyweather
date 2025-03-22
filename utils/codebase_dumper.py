@@ -14,7 +14,7 @@ def generate_file_dump(project_root, output_file, exclude_dirs=None, exclude_fil
         target_folder: Optional folder to dump. If None, dumps the entire project.
     """
 
-    exclude_dirs = exclude_dirs or {'node_modules', '.expo', '.git', '__pycache__', 'android', "codebase", "assets", ".github"}
+    exclude_dirs = exclude_dirs or {'node_modules', '.expo', '.git', '__pycache__', 'android', "codebase", "assets", ".github", "ios"}
     exclude_files = exclude_files or {'package-lock.json', "pnpm-lock.yaml", "bun.lockb"}
 
     with open(output_file, 'w', encoding='utf-8') as f_out:
