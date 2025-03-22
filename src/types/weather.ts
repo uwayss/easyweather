@@ -37,7 +37,7 @@ export interface ForecastHour {
   rainProb: number;
   weatherCode: number;
   isDay: boolean;
-  windSpeed?: number;
+  windSpeed: number;
 }
 export interface ForecastDay {
   date: string;

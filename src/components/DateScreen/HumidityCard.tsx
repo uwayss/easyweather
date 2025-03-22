@@ -1,5 +1,4 @@
 import React from "react";
-import { LinearGradient } from "react-native-linear-gradient";
 import { Text, Card, Divider, ProgressBar } from "react-native-paper";
 import { ScrollView, View } from "react-native";
 import { styles } from "./styles";
@@ -55,12 +54,6 @@ export function HumidityCard({
               })}
             </View>
           </ScrollView>
-          <LinearGradient
-            colors={["transparent", "rgba(255,255,255,0.8)", "#fff"]}
-            start={{ x: 0.75, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.scrollFadeGradient}
-          />
         </View>
         <Text style={styles.scrollHint}>Swipe to see more hours →</Text>
       </Card.Content>

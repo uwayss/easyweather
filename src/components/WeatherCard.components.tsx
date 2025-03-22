@@ -1,4 +1,3 @@
-import { LinearGradient } from "react-native-linear-gradient";
 import { StyleSheet, View } from "react-native";
 import FastImage from "react-native-fast-image";
 import { Surface, Text } from "react-native-paper";
@@ -48,15 +47,6 @@ export function ConditionalBackground({
     >
       {children}
     </FastImage>
-  );
-}
-
-export function GradientTint() {
-  return (
-    <LinearGradient
-      colors={["rgba(255,255,255,0.1)", "rgba(255,255,255,0)"]}
-      style={StyleSheet.absoluteFill}
-    />
   );
 }
 

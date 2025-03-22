@@ -2,7 +2,6 @@ import React from "react";
 import { Text, Card, Divider, ProgressBar } from "react-native-paper";
 import { ScrollView, View } from "react-native";
 import { styles } from "./styles";
-import { LinearGradient } from "react-native-linear-gradient";
 import { ForecastHour } from "../../types/weather";
 export function PrecipitationCard({
   selectedDateHourly,
@@ -46,12 +45,6 @@ export function PrecipitationCard({
               })}
             </View>
           </ScrollView>
-          <LinearGradient
-            colors={["transparent", "rgba(255,255,255,0.8)", "#fff"]}
-            start={{ x: 0.75, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.scrollFadeGradient}
-          />
         </View>
         <Text style={styles.scrollHint}>Swipe to see more hours →</Text>
       </Card.Content>

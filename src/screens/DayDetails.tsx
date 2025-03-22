@@ -1,6 +1,7 @@
 import React from "react";
-import { StyleSheet, ScrollView } from "react-native";
+import { StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import Wrapper from "../components/index.components";
+import { useWeather } from "../context/WeatherContext";
 import { convertToForecastDays } from "../utils/weatherUtils";
 import { formatForecastDate, filterHourlyDataForDate } from "../utils/dateScreen.helpers";
 import { BackButton, DayTitle, StatsCard } from "../components/DateScreen/StatsCard";
@@ -9,7 +10,6 @@ import { TemperatureCard } from "../components/DateScreen/TemperatureCard";
 import { HumidityCard } from "../components/DateScreen/HumidityCard";
 import { WindSpeedCard } from "../components/DateScreen/WindSpeedCard";
 import { RouteProp } from "@react-navigation/native";
-import { useWeather } from "../context/WeatherContext";
 
 type DayDetailsParams = {
   date: string;
@@ -18,17 +18,25 @@ type DayDetailsParams = {
 type DayDetailsRouteProp = RouteProp<{ DayDetails: DayDetailsParams }, "DayDetails">;
 
 export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
-  let date = null;
-  if (route) date = route.params.date;
+  if (!route) return null;
+  const date = route.params.date;
   const { weather, error } = useWeather();
-  // TESTING LOADING STATES:
-  // const weather = null;
-  // const error = null;
 
+  if (!weather) {
+    return (
+      <Wrapper>
+        <BackButton />
+        <DayTitle title={formatForecastDate(date)} />
+        <ActivityIndicator size="large" color="#006d77" />
+      </Wrapper>
+    );
+  }
   if (error) return <Wrapper msg={"Error: " + error} />;
+
   const forecastDays = convertToForecastDays(weather?.daily);
   const selectedForecast = forecastDays?.find(day => day.date === date);
   const selectedDateHourly = filterHourlyDataForDate(weather?.hourly, String(date));
+
   return (
     <Wrapper>
       <ScrollView style={styles.container}>
@@ -46,7 +54,7 @@ export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
 
 const styles = StyleSheet.create({
   container: {
-    gap: 16,
     flex: 1,
+    gap: 16,
   },
 });
