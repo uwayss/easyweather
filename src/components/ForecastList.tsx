@@ -8,12 +8,10 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
 import { convertToForecastDays } from "../utils/weatherUtils";
-import { useLocation } from "../hooks/useLocation";
-import { useWeather } from "../hooks/useWeather";
+import { useWeather } from "../context/WeatherContext";
 
 export default function ForecastList() {
-  const { location } = useLocation();
-  const { weather } = useWeather(location?.latitude ?? 0, location?.longitude ?? 0);
+  const { weather } = useWeather();
   const forecast = convertToForecastDays(weather?.daily);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
