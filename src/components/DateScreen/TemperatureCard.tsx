@@ -1,10 +1,57 @@
 import React from "react";
-import { LinearGradient } from "react-native-linear-gradient";
 import { Text, Card, Divider, ProgressBar } from "react-native-paper";
-import { ScrollView, View } from "react-native";
+import { FlatList, ScrollView, View } from "react-native";
 import { styles } from "./styles";
 import { ForecastHour } from "../../types/weather";
 
+function Hour({
+  item,
+}: {
+  item: {
+    humidity: number;
+    isDay: boolean;
+    rainProb: number;
+    temperature: number;
+    time: string;
+    weatherCode: number;
+    windSpeed: number;
+  };
+}) {
+  const temp: number = item.temperature;
+  // Calculate progress for the bar (normalized between 0-1). Assuming temperature range from -10 to 40 degrees
+  const minTemp = -10;
+  const maxTemp = 40;
+  const tempProgress = Math.max(0, Math.min(1, (temp - minTemp) / (maxTemp - minTemp)));
+  const getTemperatureColor = (temp: number) => {
+    if (temp <= 0) return "#9dc0e8"; // Cold blue
+    if (temp <= 10) return "#69a3db"; // Cool blue
+    if (temp <= 20) return "#ffd166"; // Yellow
+    if (temp <= 25) return "#ff9f51"; // Orange
+    return "#ff6b6b"; // Hot red/Crimson
+  };
+  const hourTime = new Date(item.time).getHours();
+  const formattedHour =
+    hourTime === 0
+      ? "12 AM"
+      : hourTime === 12
+      ? "12 PM"
+      : hourTime > 12
+      ? `${hourTime - 12} PM`
+      : `${hourTime} AM`;
+  return (
+    <View style={styles.hourlyItem}>
+      <Text style={styles.hourText}>{formattedHour}</Text>
+      <View style={styles.temperatureBar}>
+        <ProgressBar
+          progress={tempProgress}
+          color={getTemperatureColor(temp)}
+          style={styles.temperatureProgressBar}
+        />
+      </View>
+      <Text style={styles.temperatureText}>{Math.round(temp)}°C</Text>
+    </View>
+  );
+}
 export function TemperatureCard({
   selectedDateHourly,
 }: {
@@ -20,59 +67,17 @@ export function TemperatureCard({
         <View style={styles.scrollContainer}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.hourlyScroll}>
             <View style={styles.hourlyContainer}>
-              {selectedDateHourly?.map((hourData, index) => {
-                const hourTime = new Date(hourData.time).getHours();
-                const formattedHour =
-                  hourTime === 0
-                    ? "12 AM"
-                    : hourTime === 12
-                    ? "12 PM"
-                    : hourTime > 12
-                    ? `${hourTime - 12} PM`
-                    : `${hourTime} AM`;
-
-                // Calculate temperature color based on value
-                const temp: number = hourData.temperature;
-                const getTemperatureColor = (temp: number) => {
-                  if (temp <= 0) return "#9dc0e8"; // Cold blue
-                  if (temp <= 10) return "#69a3db"; // Cool blue
-                  if (temp <= 20) return "#4cd2c0"; // Teal
-                  if (temp <= 25) return "#ffd166"; // Yellow
-                  if (temp <= 30) return "#ff9f51"; // Orange
-                  return "#ff6b6b"; // Hot red
-                };
-
-                // Calculate progress for the bar (normalized between 0-1)
-                // Assuming temperature range from -10 to 40 degrees
-                const minTemp = -10;
-                const maxTemp = 40;
-                const tempProgress = Math.max(
-                  0,
-                  Math.min(1, (temp - minTemp) / (maxTemp - minTemp)),
-                );
-
-                return (
-                  <View key={index} style={styles.hourlyItem}>
-                    <Text style={styles.hourText}>{formattedHour}</Text>
-                    <View style={styles.temperatureBar}>
-                      <ProgressBar
-                        progress={tempProgress}
-                        color={getTemperatureColor(temp)}
-                        style={styles.temperatureProgressBar}
-                      />
-                    </View>
-                    <Text style={styles.temperatureText}>{Math.round(temp)}°C</Text>
-                  </View>
-                );
-              })}
+              <FlatList
+                data={selectedDateHourly}
+                renderItem={Hour}
+                contentContainerStyle={{
+                  flexDirection: "row",
+                  paddingVertical: 8,
+                  paddingRight: 20,
+                }}
+              />
             </View>
           </ScrollView>
-          <LinearGradient
-            colors={["transparent", "rgba(255,255,255,0.8)", "#fff"]}
-            start={{ x: 0.75, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.scrollFadeGradient}
-          />
         </View>
         <Text style={styles.scrollHint}>Swipe to see more hours →</Text>
       </Card.Content>
