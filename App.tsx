@@ -1,28 +1,30 @@
-import React, { useState } from "react";
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "./src/screens/Home";
 import DayDetails from "./src/screens/DayDetails";
 
-export default function App() {
-  const [isDayDetailsVisible, setIsDayDetailsVisible] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+const Stack = createNativeStackNavigator();
 
-  const showDayDetails = (date: string) => {
-    setSelectedDate(date);
-    setIsDayDetailsVisible(true);
-  };
+export type RootStackParamList = {
+  Home: undefined;
+  DayDetails: { date: string };
+};
 
-  const hideDayDetails = () => {
-    setIsDayDetailsVisible(false);
-    setSelectedDate(null);
-  };
-
+export default function RootStack() {
   return (
-    <>
-      {!isDayDetailsVisible ? (
-        <HomeScreen onDayPress={showDayDetails} /> // Pass callback to HomeScreen
-      ) : (
-        <DayDetails date={selectedDate} onClose={hideDayDetails} /> // Pass date and close callback to DayDetails
-      )}
-    </>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen
+        name="DayDetails"
+        component={DayDetails}
+        options={{
+          animation: "slide_from_right",
+        }}
+      />
+    </Stack.Navigator>
   );
 }

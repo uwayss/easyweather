@@ -6,18 +6,19 @@ import { Image } from "react-native";
 import { ForecastDay } from "../types/weather";
 import { convertToForecastDays } from "../utils/weatherUtils";
 import { useWeather } from "../context/WeatherContext";
-interface ForecastListProps {
-  onDayPress: (date: string) => void;
-}
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../App";
 
-export default function ForecastList({ onDayPress }: ForecastListProps) {
+export default function ForecastList() {
   const { weather } = useWeather();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const forecast = convertToForecastDays(weather?.daily);
 
   if (!forecast) return null;
 
   const handleForecastPress = (date: string) => {
-    onDayPress(date);
+    navigation.push("DayDetails", { date });
   };
 
   const renderItem = ({ item, index }: { item: ForecastDay; index: number }) => {

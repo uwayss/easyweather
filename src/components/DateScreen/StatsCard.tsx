@@ -4,6 +4,7 @@ import { Text, Button, Card, ActivityIndicator } from "react-native-paper";
 import { View } from "react-native";
 import { styles } from "./styles";
 import weatherDescriptions from "../../utils/descriptions";
+import { useNavigation } from "@react-navigation/native";
 
 export function StatsCard({ selectedForecast }: { selectedForecast: ForecastDay | undefined }) {
   return (
@@ -52,17 +53,14 @@ export function DayTitle({ title }: { title: string | undefined }) {
     </View>
   );
 }
-interface BackButtonProps {
-  onClose: () => void;
-}
 
-export function BackButton({ onClose }: BackButtonProps) {
-  // Receive onClose prop
+export function BackButton() {
+  const navigation = useNavigation();
   return (
     <Button
       icon="arrow-left"
       mode="outlined"
-      onPress={onClose} // Call onClose prop
+      onPress={() => navigation.goBack()}
       style={styles.button}
     >
       Back to Forecast
