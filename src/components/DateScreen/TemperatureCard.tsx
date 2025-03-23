@@ -75,6 +75,7 @@ export function TemperatureCard({
                   paddingVertical: 8,
                   paddingRight: 20,
                 }}
+                removeClippedSubviews={false}
               />
             </View>
           </ScrollView>
