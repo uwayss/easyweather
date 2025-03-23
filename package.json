@@ -14,7 +14,6 @@
     "apk": "react-native run-android --mode=release"
   },
   "dependencies": {
-    "axios": "^1.8.4",
     "react": "18.3.1",
     "react-native": "0.76.7",
     "react-native-fast-image": "^8.6.3",
