@@ -36,7 +36,7 @@ export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
   const forecastDays = convertToForecastDays(weather?.daily);
   const selectedForecast = forecastDays?.find(day => day.date === date);
   const selectedDateHourly = filterHourlyDataForDate(weather?.hourly, String(date));
-
+  if (!selectedDateHourly) return null;
   return (
     <Wrapper>
       <ScrollView style={styles.container}>

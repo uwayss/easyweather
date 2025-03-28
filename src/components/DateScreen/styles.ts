@@ -10,12 +10,6 @@ export const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
   },
-  windText: {
-    fontSize: 12,
-    marginTop: 4,
-    textAlign: "center",
-    flexWrap: "nowrap",
-  },
   humidityTitle: {
     marginBottom: 8,
   },
@@ -25,16 +19,12 @@ export const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
   },
-  humidityText: {
-    fontSize: 12,
-    marginTop: 4,
-  },
   button: {
     alignSelf: "flex-start",
     marginBottom: 8,
   },
   title: {
-    marginBottom: 16,
+    marginVertical: 8,
     textAlign: "center",
   },
   card: {
@@ -98,13 +88,7 @@ export const styles = StyleSheet.create({
     width: 100,
     marginBottom: 42,
   },
-  temperatureProgressBar: {
-    height: 24,
-    borderRadius: 4,
-    transform: [{ rotate: "270deg" }],
-    width: 100,
-    marginBottom: 42,
-  },
+
   scrollFadeGradient: {
     position: "absolute",
     top: 0,
@@ -124,11 +108,8 @@ export const styles = StyleSheet.create({
   },
   hourText: {
     fontSize: 12,
-  },
-  precipitationText: {
-    fontSize: 12,
-  },
-  temperatureText: {
-    fontSize: 12,
+    marginTop: 4,
+    textAlign: "center",
+    flexWrap: "nowrap",
   },
 });

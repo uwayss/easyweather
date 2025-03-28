@@ -9,15 +9,18 @@ import { name as appName } from "./app.json";
 import { PaperProvider } from "react-native-paper";
 import { darkTheme, lightTheme } from "./src/theme";
 import { WeatherProvider } from "./src/context/WeatherContext";
+import { LocationProvider } from "./src/context/LocationContext";
 
 function Main() {
   const colorScheme = useColorScheme();
   return (
     <PaperProvider theme={colorScheme === "dark" ? darkTheme : lightTheme}>
       <NavigationContainer>
-        <WeatherProvider>
-          <App />
-        </WeatherProvider>
+        <LocationProvider>
+          <WeatherProvider>
+            <App />
+          </WeatherProvider>
+        </LocationProvider>
       </NavigationContainer>
     </PaperProvider>
   );
