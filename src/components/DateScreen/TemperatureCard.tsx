@@ -1,8 +1,9 @@
 import React from "react";
-import { Text, Card, Divider, ProgressBar } from "react-native-paper";
-import { FlatList, ScrollView, View } from "react-native";
+import { Text, Card, Divider } from "react-native-paper";
+import { FlatList, View } from "react-native";
 import { styles } from "./styles";
 import { ForecastHour } from "../../types/weather";
+import HourProgress from "./HourProgress";
 
 function Hour({
   item,
@@ -29,34 +30,17 @@ function Hour({
     if (temp <= 25) return "#ff9f51"; // Orange
     return "#ff6b6b"; // Hot red/Crimson
   };
-  const hourTime = new Date(item.time).getHours();
-  const formattedHour =
-    hourTime === 0
-      ? "12 AM"
-      : hourTime === 12
-      ? "12 PM"
-      : hourTime > 12
-      ? `${hourTime - 12} PM`
-      : `${hourTime} AM`;
+
   return (
-    <View style={styles.hourlyItem}>
-      <Text style={styles.hourText}>{formattedHour}</Text>
-      <View style={styles.temperatureBar}>
-        <ProgressBar
-          progress={tempProgress}
-          color={getTemperatureColor(temp)}
-          style={styles.temperatureProgressBar}
-        />
-      </View>
-      <Text style={styles.temperatureText}>{Math.round(temp)}°C</Text>
-    </View>
+    <HourProgress
+      color={getTemperatureColor(temp)}
+      time={item.time}
+      progress={tempProgress}
+      value={Math.round(temp)}
+    />
   );
 }
-export function TemperatureCard({
-  selectedDateHourly,
-}: {
-  selectedDateHourly: ForecastHour[] | undefined | null;
-}) {
+export function TemperatureCard({ selectedDateHourly }: { selectedDateHourly: ForecastHour[] }) {
   return (
     <Card style={styles.card}>
       <Card.Content>
@@ -65,20 +49,14 @@ export function TemperatureCard({
         </Text>
         <Divider style={styles.divider} />
         <View style={styles.scrollContainer}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.hourlyScroll}>
-            <View style={styles.hourlyContainer}>
-              <FlatList
-                data={selectedDateHourly}
-                renderItem={Hour}
-                contentContainerStyle={{
-                  flexDirection: "row",
-                  paddingVertical: 8,
-                  paddingRight: 20,
-                }}
-                removeClippedSubviews={false}
-              />
-            </View>
-          </ScrollView>
+          <FlatList
+            horizontal
+            data={selectedDateHourly}
+            renderItem={Hour}
+            contentContainerStyle={styles.hourlyContainer}
+            showsHorizontalScrollIndicator={false}
+            removeClippedSubviews={false}
+          />
         </View>
         <Text style={styles.scrollHint}>Swipe to see more hours →</Text>
       </Card.Content>

@@ -3,8 +3,8 @@ import { StyleSheet, View } from "react-native";
 import { Searchbar } from "react-native-paper";
 import { searchLocation, LocationResult } from "../api/location";
 import LocationSearchResults from "./LocationSearchResults";
-import { useLocation } from "../hooks/useLocation";
 import { longToast } from "../utils/debug";
+import { useLocationContext } from "../context/LocationContext";
 
 type DebouncedSearchFunction = (query: string) => Promise<void> | void;
 
@@ -18,7 +18,8 @@ function debounce(func: DebouncedSearchFunction, wait: number): DebouncedSearchF
 }
 
 export const LocationSearch = () => {
-  const { updateLocation } = useLocation();
+  const { updateLocation } = useLocationContext(); // Use context's update function
+
   const onLocationSelect = (selectedLocation: LocationResult) => {
     updateLocation({
       latitude: parseFloat(selectedLocation.lat),
@@ -59,12 +60,12 @@ export const LocationSearch = () => {
     debouncedSearch(query);
   };
 
-  const handleSelectLocation = (location: LocationResult) => {
-    onLocationSelect(location);
+  const handleSelectLocation = (locationResult: LocationResult) => {
+    // Renamed parameter for clarity
+    onLocationSelect(locationResult); // Call the function that uses context's updateLocation
     setShowResults(false);
     setSearchQuery("");
   };
-
   return (
     <View style={styles.container}>
       <Searchbar
@@ -72,7 +73,7 @@ export const LocationSearch = () => {
         onChangeText={handleSearchChange}
         value={searchQuery}
         style={styles.searchbar}
-        loading={isLoading}
+        loading={isLoading} // This is search loading, separate from context loading
         keyboardType="default"
       />
       <LocationSearchResults

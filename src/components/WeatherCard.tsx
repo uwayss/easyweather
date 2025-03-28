@@ -3,16 +3,33 @@ import { Card } from "react-native-paper";
 import React from "react";
 import { ConditionalBackground, Details, MainInfo } from "./WeatherCard.components";
 import { useWeather } from "../context/WeatherContext";
-import { useLocation } from "../hooks/useLocation";
+import { useLocationContext } from "../context/LocationContext";
 
 export default function WeatherCard() {
-  const { location } = useLocation();
-  const { weather } = useWeather();
+  const { location, loading: locationLoading, error: locationError } = useLocationContext(); // Use the new context hook
+  const { weather, loading } = useWeather();
+  // You might want to show locationLoading or locationError here
+  if (locationLoading) {
+    // Optional: Render a loading state specifically for location
+  }
+  if (locationError) {
+    // Optional: Render an error state specifically for location
+  }
+
+  console.log(
+    `[WeatherCard] Re-rendering. Loading: ${loading}, Location: ${location?.displayName}, Weather Temp: ${weather?.current?.temperature_2m}`,
+  );
+  const displayName = location
+    ? location.displayName
+    : locationLoading
+    ? "Loading Location..."
+    : "Unknown Location";
+
   return (
     <Card style={styles.card}>
       <ConditionalBackground current={weather?.current}>
         <Card.Content style={styles.content}>
-          <MainInfo current={weather?.current} name={location?.displayName || "Unknown location"} />
+          <MainInfo current={weather?.current} name={displayName} />
           <Details current={weather?.current} />
         </Card.Content>
       </ConditionalBackground>

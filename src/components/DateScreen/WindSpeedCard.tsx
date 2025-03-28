@@ -1,13 +1,36 @@
 import React from "react";
-import { Text, Card, Divider, ProgressBar } from "react-native-paper";
-import { ScrollView, View } from "react-native";
+import { Text, Card, Divider } from "react-native-paper";
+import { FlatList, View } from "react-native";
 import { styles } from "./styles";
 import { ForecastHour } from "../../types/weather";
-export function WindSpeedCard({
-  selectedDateHourly,
-}: {
-  selectedDateHourly: ForecastHour[] | undefined | null;
-}) {
+import HourProgress from "./HourProgress";
+
+function Hour({ item }: { item: ForecastHour }) {
+  // Use wind speed if available, otherwise use a placeholder
+  const windSpeed = item.windSpeed || 0;
+
+  // Calculate wind speed color based on value (Beaufort scale inspired)
+  const getWindSpeedColor = (speed: number) => {
+    if (speed < 5) return "#90be6d"; // Light - green
+    if (speed < 20) return "#f9c74f"; // Moderate - yellow
+    if (speed < 40) return "#f8961e"; // Strong - orange
+    return "#f94144"; // Gale/Storm - red
+  };
+
+  // Calculate progress for the bar (normalized between 0-1)
+  // Assuming wind speed range from 0 to 60 km/h
+  const maxWindSpeed = 60;
+  const windProgress = Math.min(1, windSpeed / maxWindSpeed);
+  return (
+    <HourProgress
+      time={item.time}
+      color={getWindSpeedColor(windSpeed)}
+      progress={windProgress}
+      value={windSpeed + " km/h"}
+    />
+  );
+}
+export function WindSpeedCard({ selectedDateHourly }: { selectedDateHourly: ForecastHour[] }) {
   return (
     <Card style={styles.card}>
       <Card.Content>
@@ -16,53 +39,14 @@ export function WindSpeedCard({
         </Text>
         <Divider style={styles.divider} />
         <View style={styles.scrollContainer}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.hourlyScroll}>
-            <View style={styles.hourlyContainer}>
-              {selectedDateHourly?.map((hourData, index) => {
-                const hourTime = new Date(hourData.time).getHours();
-                const formattedHour =
-                  hourTime === 0
-                    ? "12 AM"
-                    : hourTime === 12
-                    ? "12 PM"
-                    : hourTime > 12
-                    ? `${hourTime - 12} PM`
-                    : `${hourTime} AM`;
-
-                // Use wind speed if available, otherwise use a placeholder
-                const windSpeed = hourData.windSpeed || 0;
-
-                // Calculate wind speed color based on value (Beaufort scale inspired)
-                const getWindSpeedColor = (speed: number) => {
-                  if (speed < 5) return "#90be6d"; // Light - green
-                  if (speed < 20) return "#f9c74f"; // Moderate - yellow
-                  if (speed < 40) return "#f8961e"; // Strong - orange
-                  return "#f94144"; // Gale/Storm - red
-                };
-
-                // Calculate progress for the bar (normalized between 0-1)
-                // Assuming wind speed range from 0 to 60 km/h
-                const maxWindSpeed = 60;
-                const windProgress = Math.min(1, windSpeed / maxWindSpeed);
-
-                return (
-                  <View key={index} style={styles.hourlyItem}>
-                    <Text style={styles.hourText}>{formattedHour}</Text>
-                    <View style={styles.windBar}>
-                      <ProgressBar
-                        progress={windProgress}
-                        color={getWindSpeedColor(windSpeed)}
-                        style={styles.progressBar}
-                      />
-                    </View>
-                    <Text style={styles.windText} lineBreakMode="head">
-                      {windSpeed} km/h
-                    </Text>
-                  </View>
-                );
-              })}
-            </View>
-          </ScrollView>
+          <FlatList
+            horizontal
+            data={selectedDateHourly}
+            renderItem={Hour}
+            contentContainerStyle={styles.hourlyContainer}
+            showsHorizontalScrollIndicator={false}
+            removeClippedSubviews={false}
+          />
         </View>
         <Text style={styles.scrollHint}>Swipe to see more hours →</Text>
       </Card.Content>
