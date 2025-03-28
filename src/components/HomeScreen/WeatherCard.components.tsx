@@ -1,29 +1,17 @@
 import { StyleSheet, View } from "react-native";
 import FastImage from "react-native-fast-image";
 import { Surface, Text } from "react-native-paper";
-import { CurrentWeather } from "../types/weather";
-import weatherDescriptions from "../utils/descriptions";
-import backgroundMappings from "../utils/backgroundMappings";
+import { CurrentWeather } from "../../types/weather";
+import weatherDescriptions from "../../utils/descriptions";
+import backgroundMappings from "../../utils/backgroundMappings";
 import React from "react";
 
-interface LocationDisplayProps {
-  displayName: string;
-}
 interface MainInfoProps {
   name: string;
   current: CurrentWeather | undefined;
 }
 interface DetailsProps {
   current: CurrentWeather | undefined;
-}
-export function LocationDisplay({ displayName }: LocationDisplayProps) {
-  return (
-    <Surface style={styles.locationContainer} mode="flat">
-      <Text style={styles.locationName} numberOfLines={1} ellipsizeMode="tail" variant="bodyLarge">
-        {displayName}
-      </Text>
-    </Surface>
-  );
 }
 
 export function ConditionalBackground({
@@ -57,10 +45,15 @@ export function MainInfo({ name, current }: MainInfoProps) {
     ? weatherDescriptions[current.weather_code]?.[timeOfDay].description
     : null;
 
+  console.warn(description);
   return (
     <View style={styles.mainInfoContainer}>
       <Surface style={styles.mainInfo} elevation={5}>
-        <LocationDisplay displayName={name} />
+        <View style={styles.locationContainer}>
+          <Text style={styles.locationName} numberOfLines={1} ellipsizeMode="tail">
+            {name}
+          </Text>
+        </View>
         <Text style={styles.temperature}>
           {current ? Math.round(current.temperature_2m) : ""}°C
         </Text>
@@ -114,10 +107,12 @@ const styles = StyleSheet.create({
     fontSize: 48,
   },
   description: {
-    marginTop: 4,
-    textTransform: "uppercase",
-    letterSpacing: 3,
+    width: "100%",
     flexWrap: "wrap",
+    textTransform: "uppercase",
+    marginTop: 4,
+    letterSpacing: 3,
+    textAlign: "center",
   },
   feelsLike: {
     opacity: 0.9,

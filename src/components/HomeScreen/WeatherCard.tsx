@@ -2,8 +2,8 @@ import { StyleSheet } from "react-native";
 import { Card } from "react-native-paper";
 import React from "react";
 import { ConditionalBackground, Details, MainInfo } from "./WeatherCard.components";
-import { useWeather } from "../context/WeatherContext";
-import { useLocationContext } from "../context/LocationContext";
+import { useWeather } from "../../context/WeatherContext";
+import { useLocationContext } from "../../context/LocationContext";
 
 export default function WeatherCard() {
   const { location, loading: locationLoading, error: locationError } = useLocationContext(); // Use the new context hook

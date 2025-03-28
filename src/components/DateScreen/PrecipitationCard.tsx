@@ -11,7 +11,7 @@ function Hour({ item }: { item: ForecastHour }) {
       time={item.time}
       color={item.rainProb > 50 ? "#3498db" : "#a0d2eb"}
       progress={item.rainProb / 100}
-      value={item.rainProb}
+      value={item.rainProb + "%"}
     />
   );
 }
@@ -28,6 +28,8 @@ export function PrecipitationCard({ selectedDateHourly }: { selectedDateHourly: 
             horizontal
             data={selectedDateHourly}
             renderItem={Hour}
+            initialNumToRender={7}
+            windowSize={7}
             contentContainerStyle={styles.hourlyContainer}
             showsHorizontalScrollIndicator={false}
             removeClippedSubviews={false}

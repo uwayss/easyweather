@@ -1,8 +1,8 @@
 import { View } from "react-native";
-
 import { styles } from "./styles";
-import { ProgressBar, Text } from "react-native-paper";
+import { Text } from "react-native-paper";
 import React from "react";
+import CustomVerticalProgressBar from "./CustomVerticalProgressBar"; // Import the new component
 
 export default function HourProgress({
   time,
@@ -12,7 +12,7 @@ export default function HourProgress({
 }: {
   time: string;
   progress: number;
-  value: number | string;
+  value: string | number;
   color: string;
 }) {
   const hourTime = new Date(time).getHours();
@@ -27,10 +27,12 @@ export default function HourProgress({
   return (
     <View style={styles.hourlyItem}>
       <Text style={styles.hourText}>{formattedHour}</Text>
-      <View style={styles.humidityBar}>
-        <ProgressBar progress={progress} color={color} style={styles.progressBar} />
-      </View>
-      <Text style={styles.hourText}>{value}%</Text>
+      <CustomVerticalProgressBar
+        progress={progress}
+        color={color}
+        style={styles.customProgressBar}
+      />
+      <Text style={styles.hourText}>{value}</Text>
     </View>
   );
 }

@@ -4,20 +4,8 @@ export const styles = StyleSheet.create({
   windTitle: {
     marginBottom: 8,
   },
-  windBar: {
-    height: 100,
-    justifyContent: "flex-end",
-    width: "100%",
-    alignItems: "center",
-  },
   humidityTitle: {
     marginBottom: 8,
-  },
-  humidityBar: {
-    height: 100,
-    justifyContent: "flex-end",
-    width: "100%",
-    alignItems: "center",
   },
   button: {
     alignSelf: "flex-start",
@@ -60,33 +48,20 @@ export const styles = StyleSheet.create({
   },
   hourlyContainer: {
     flexDirection: "row",
+    gap: 8,
     paddingVertical: 8,
-    paddingRight: 20,
+    // paddingRight: 20,
   },
   hourlyItem: {
     alignItems: "center",
-    marginRight: 16,
-    width: 45,
+    // marginRight: 16,
     gap: 8,
+    width: 50,
   },
-  precipitationBar: {
-    height: 100,
-    justifyContent: "flex-end",
-    width: "100%",
-    alignItems: "center",
-  },
-  temperatureBar: {
-    height: 100,
-    justifyContent: "flex-end",
-    width: "100%",
-    alignItems: "center",
-  },
-  progressBar: {
-    height: 24,
-    borderRadius: 4,
-    transform: [{ rotate: "270deg" }],
-    width: 100,
-    marginBottom: 42,
+  customProgressBar: {
+    width: 24, // Or adjust as needed
+    height: 100, // Set desired bar height
+    // No transform needed
   },
 
   scrollFadeGradient: {
@@ -110,6 +85,6 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 4,
     textAlign: "center",
-    flexWrap: "nowrap",
+    width: "100%",
   },
 });

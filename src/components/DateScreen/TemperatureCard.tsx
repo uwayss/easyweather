@@ -36,7 +36,7 @@ function Hour({
       color={getTemperatureColor(temp)}
       time={item.time}
       progress={tempProgress}
-      value={Math.round(temp)}
+      value={Math.round(temp) + "°C"}
     />
   );
 }
@@ -53,6 +53,8 @@ export function TemperatureCard({ selectedDateHourly }: { selectedDateHourly: Fo
             horizontal
             data={selectedDateHourly}
             renderItem={Hour}
+            initialNumToRender={7}
+            windowSize={7}
             contentContainerStyle={styles.hourlyContainer}
             showsHorizontalScrollIndicator={false}
             removeClippedSubviews={false}
