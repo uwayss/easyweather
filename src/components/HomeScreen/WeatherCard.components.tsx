@@ -45,7 +45,6 @@ export function MainInfo({ name, current }: MainInfoProps) {
     ? weatherDescriptions[current.weather_code]?.[timeOfDay].description
     : null;
 
-  console.warn(description);
   return (
     <View style={styles.mainInfoContainer}>
       <Surface style={styles.mainInfo} elevation={5}>

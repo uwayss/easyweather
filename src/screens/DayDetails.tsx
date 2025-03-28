@@ -25,15 +25,13 @@ export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
   const [renderLists, setRenderLists] = useState(false);
 
   useEffect(() => {
-    // Schedule the list rendering after interactions/animations are done
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
       console.log("[DayDetails] Interactions complete, rendering lists...");
       setRenderLists(true);
     });
 
-    // Optional: Cleanup function for InteractionManager
     return () => interactionPromise.cancel();
-  }, []); // Run only once on mount
+  }, []);
 
   if (!weather) {
     return (
