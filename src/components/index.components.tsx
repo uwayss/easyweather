@@ -1,14 +1,15 @@
 import { ReactNode } from "react";
-import { StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
 type WrapperProps = {
   msg?: string;
   children?: ReactNode;
+  scrolling?: boolean;
 };
 
-export default function Wrapper({ msg, children }: WrapperProps) {
+export default function Wrapper({ msg, children, scrolling }: WrapperProps) {
   const theme = useTheme();
   const styles = StyleSheet.create({
     container: {
@@ -25,6 +26,11 @@ export default function Wrapper({ msg, children }: WrapperProps) {
         {msg}
       </Text>
     );
-  else content = children;
+  else
+    content = scrolling ? (
+      <ScrollView showsVerticalScrollIndicator={false}>{children}</ScrollView>
+    ) : (
+      children
+    );
   return <SafeAreaView style={[styles.container]}>{content}</SafeAreaView>;
 }
