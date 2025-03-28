@@ -43,6 +43,8 @@ export function WindSpeedCard({ selectedDateHourly }: { selectedDateHourly: Fore
             horizontal
             data={selectedDateHourly}
             renderItem={Hour}
+            initialNumToRender={7}
+            windowSize={7}
             contentContainerStyle={styles.hourlyContainer}
             showsHorizontalScrollIndicator={false}
             removeClippedSubviews={false}

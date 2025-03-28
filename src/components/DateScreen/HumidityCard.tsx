@@ -17,7 +17,7 @@ function Hour({ item }: { item: ForecastHour }) {
       time={item.time}
       color={getHumidityColor(item.humidity)}
       progress={item.humidity / 100}
-      value={item.humidity}
+      value={item.humidity + "%"}
     />
   );
 }
@@ -34,6 +34,8 @@ export function HumidityCard({ selectedDateHourly }: { selectedDateHourly: Forec
             horizontal
             data={selectedDateHourly}
             renderItem={Hour}
+            initialNumToRender={7}
+            windowSize={7}
             contentContainerStyle={styles.hourlyContainer}
             showsHorizontalScrollIndicator={false}
             removeClippedSubviews={false}

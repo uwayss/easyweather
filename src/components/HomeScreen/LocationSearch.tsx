@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from "react";
 import { StyleSheet, View } from "react-native";
 import { Searchbar } from "react-native-paper";
-import { searchLocation, LocationResult } from "../api/location";
+import { searchLocation, LocationResult } from "../../api/location";
 import LocationSearchResults from "./LocationSearchResults";
-import { longToast } from "../utils/debug";
-import { useLocationContext } from "../context/LocationContext";
+import { longToast } from "../../utils/debug";
+import { useLocationContext } from "../../context/LocationContext";
 
 type DebouncedSearchFunction = (query: string) => Promise<void> | void;
 

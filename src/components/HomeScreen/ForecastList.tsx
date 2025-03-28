@@ -1,14 +1,14 @@
 import React from "react";
 import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { Text, Card } from "react-native-paper";
-import weatherDescriptions from "../utils/descriptions";
+import weatherDescriptions from "../../utils/descriptions";
 import { Image } from "react-native";
-import { ForecastDay } from "../types/weather";
-import { convertToForecastDays } from "../utils/weatherUtils";
-import { useWeather } from "../context/WeatherContext";
+import { ForecastDay } from "../../types/weather";
+import { convertToForecastDays } from "../../utils/weatherUtils";
+import { useWeather } from "../../context/WeatherContext";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../App";
+import { RootStackParamList } from "../../../App";
 
 export default function ForecastList() {
   const { weather } = useWeather();
@@ -36,7 +36,7 @@ export default function ForecastList() {
 
     return (
       <TouchableOpacity onPress={() => handleForecastPress(item.date)}>
-        <Card style={styles.card} mode="contained">
+        <Card style={styles.card}>
           <Card.Content style={styles.cardContent}>
             <Text variant="titleMedium" numberOfLines={1} style={styles.dayName}>
               {dayName}
@@ -62,6 +62,8 @@ export default function ForecastList() {
         renderItem={renderItem}
         keyExtractor={item => item.date}
         horizontal
+        initialNumToRender={7}
+        windowSize={7}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.container}
       />
