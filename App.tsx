@@ -43,7 +43,9 @@ export default function RootStack() {
           title: "Settings",
           headerTransparent: false,
           headerShadowVisible: true,
-          headerStyle: { backgroundColor: theme.colors.elevation.level2 },
+          headerStyle: { backgroundColor: theme.colors.background },
+          headerTitleStyle: { color: theme.colors.onSurface },
+          headerBackVisible: false,
           headerShown: true,
           animation: "slide_from_left",
         }}

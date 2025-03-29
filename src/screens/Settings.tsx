@@ -1,70 +1,68 @@
 import React from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native"; // Added View
 import { SafeAreaView } from "react-native-safe-area-context";
-import { List, Divider, useTheme, Switch } from "react-native-paper";
-// import { useSettings } from '../context/SettingsContext'; // <-- Future: Import settings context
+import { List, Divider, useTheme, Switch, SegmentedButtons, Text } from "react-native-paper"; // Added SegmentedButtons, Text
+import { useSettings, ThemePreference } from "../context/SettingsContext"; // Import ThemePreference type
 
 const SettingsScreen = () => {
   const theme = useTheme();
   const styles = stylesheet(theme.colors.background);
-  // const { settings, updateSetting } = useSettings(); // <-- Future: Use settings context
+  const { settings, updateSetting } = useSettings();
 
-  // Example state for toggles (replace with context later)
-  const [isDarkThemeManual, setIsDarkThemeManual] = React.useState(false);
-  const [isImperial, setIsImperial] = React.useState(false);
-
-  const handleThemeChange = () => {
-    // TODO: Implement theme change logic using context
-    setIsDarkThemeManual(!isDarkThemeManual);
-    console.log("Theme toggle pressed (not functional yet)");
+  const handleThemeChange = (value: string) => {
+    // Type assertion might be needed if 'value' isn't inferred correctly
+    updateSetting("theme", value as ThemePreference);
   };
 
   const handleUnitsChange = () => {
-    // TODO: Implement unit change logic using context
-    setIsImperial(!isImperial);
-    console.log("Units toggle pressed (not functional yet)");
+    updateSetting("useImperialUnits", !settings.useImperialUnits);
   };
 
   return (
     <SafeAreaView style={styles.safeContainer}>
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+        {/* --- Theme Selection --- */}
         <List.Section title="Appearance">
-          <List.Item
-            title="Dark Theme"
-            description="Use dark interface (Not functional yet)"
-            left={props => <List.Icon {...props} icon="theme-light-dark" />}
-            right={() => (
-              <Switch
-                value={isDarkThemeManual}
-                onValueChange={handleThemeChange} // Call handler
-              />
-            )}
-            // onPress={handleThemeChange} // Optional: Allow tapping the whole item
+          <Text style={styles.label}>Theme</Text>
+          <SegmentedButtons
+            value={settings.theme}
+            onValueChange={handleThemeChange}
+            style={styles.segmentedButtonContainer}
+            buttons={[
+              {
+                value: "system",
+                label: "System",
+                icon: "theme-light-dark", // Or 'brightness-auto'
+              },
+              {
+                value: "light",
+                label: "Light",
+                icon: "white-balance-sunny",
+              },
+              {
+                value: "dark",
+                label: "Dark",
+                icon: "weather-night",
+              },
+            ]}
           />
         </List.Section>
-        <Divider />
+
+        <Divider style={styles.divider} />
+
+        {/* --- Units Selection --- */}
         <List.Section title="Units">
+          {/* Keeping Switch for units for now, could also be SegmentedButtons */}
           <List.Item
             title="Use Imperial Units (°F, mph)"
-            description="Display temperature in Fahrenheit and wind speed in mph (Not functional yet)"
+            description="Display units (Not functional yet)"
             left={props => <List.Icon {...props} icon="ruler" />}
             right={() => (
-              <Switch
-                value={isImperial}
-                onValueChange={handleUnitsChange} // Call handler
-              />
+              <Switch value={settings.useImperialUnits} onValueChange={handleUnitsChange} />
             )}
-            // onPress={handleUnitsChange} // Optional: Allow tapping the whole item
           />
         </List.Section>
-        <Divider />
-        {/* Add more sections/items here later */}
-        {/* Example: About Section */}
-        {/* <List.Section title="About">
-             <List.Item title="App Version" description="0.0.1" />
-             <List.Item title="Data Source" description="Open-Meteo" />
-         </List.Section>
-         <Divider /> */}
+        <Divider style={styles.divider} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -80,7 +78,22 @@ const stylesheet = (themeBg: string) =>
       flex: 1,
     },
     contentContainer: {
-      paddingVertical: 8, // Less vertical padding usually needed for lists
+      paddingVertical: 8,
+      paddingHorizontal: 0, // Use padding on sections/items instead
+    },
+    // Added styles for theme selector
+    label: {
+      paddingHorizontal: 16, // Match List.Section title padding
+      paddingBottom: 8,
+      fontSize: 14, // Slightly smaller label
+      // color: theme.colors.onSurfaceVariant, // Use a secondary text color
+    },
+    segmentedButtonContainer: {
+      paddingHorizontal: 16, // Add padding to the button group
+      paddingBottom: 8,
+    },
+    divider: {
+      marginVertical: 8, // Add space around dividers
     },
   });
 
