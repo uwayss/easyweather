@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { ScrollView, StyleSheet, InteractionManager, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useTheme } from "react-native-paper";
+import { useTheme, IconButton } from "react-native-paper";
 import { LocationSearch } from "../components/HomeScreen/LocationSearch";
 import WeatherCard from "../components/HomeScreen/WeatherCard";
 import ForecastList from "../components/HomeScreen/ForecastList";
@@ -13,14 +13,21 @@ import { WindSpeedCard } from "../components/DateScreen/WindSpeedCard";
 import { useWeather } from "../context/WeatherContext";
 import { filterHourlyDataForDate } from "../utils/dateScreen.helpers";
 import { ForecastHour } from "../types/weather";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../App";
 
-export default function Home() {
+type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
+type HomeProps = {
+  navigation: HomeNavigationProp;
+};
+
+export default function Home({ navigation }: HomeProps) {
   const theme = useTheme();
   const { weather } = useWeather();
   const [renderHourlyLists, setRenderHourlyLists] = useState(false);
+
   useEffect(() => {
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
-      console.log("[Home] Interactions complete, rendering hourly lists...");
       setRenderHourlyLists(true);
     });
     return () => interactionPromise.cancel();
@@ -33,7 +40,7 @@ export default function Home() {
     return filtered?.slice(0, 24);
   }, [weather?.hourly]);
 
-  const styles = stylesheet(theme.colors.background);
+  const styles = stylesheet(theme.colors.background, theme.colors.onSurface);
 
   return (
     <SafeAreaView style={styles.safeContainer}>
@@ -41,8 +48,24 @@ export default function Home() {
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
+        contentInsetAdjustmentBehavior="automatic"
       >
-        <LocationSearch />
+        {/* --- Row for Search and Settings --- */}
+        <View style={styles.topRow}>
+          <View style={styles.searchWrapper}>
+            <LocationSearch />
+          </View>
+          <IconButton
+            icon="cog-outline"
+            iconColor={styles.settingsIcon.color}
+            size={28}
+            onPress={() => navigation.navigate("Settings")}
+            style={styles.settingsIcon}
+            accessibilityLabel="Open settings"
+          />
+        </View>
+
+        {/* --- Rest of the content --- */}
         <WeatherCard />
         <ForecastList />
         <View>
@@ -66,7 +89,8 @@ export default function Home() {
     </SafeAreaView>
   );
 }
-const stylesheet = (themeBg: string) =>
+
+const stylesheet = (themeBg: string, textColor: string) =>
   StyleSheet.create({
     safeContainer: {
       flex: 1,
@@ -76,7 +100,21 @@ const stylesheet = (themeBg: string) =>
       flex: 1,
     },
     contentContainer: {
-      padding: 16,
+      paddingHorizontal: 16,
+      paddingBottom: 16,
+      paddingTop: 10,
       gap: 20,
+    },
+    topRow: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    searchWrapper: {
+      flex: 1,
+    },
+    settingsIcon: {
+      marginLeft: 8,
+      marginRight: -8,
+      color: textColor,
     },
   });

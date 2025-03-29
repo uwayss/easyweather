@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { styles } from "./styles";
 import { Text } from "react-native-paper";
 import React from "react";
-import CustomVerticalProgressBar from "./CustomVerticalProgressBar"; // Import the new component
+import CustomVerticalProgressBar from "./CustomVerticalProgressBar";
 
 export default function HourProgress({
   time,

@@ -6,7 +6,7 @@ import { useWeather } from "../../context/WeatherContext";
 import { useLocationContext } from "../../context/LocationContext";
 
 export default function WeatherCard() {
-  const { location, loading: locationLoading, error: locationError } = useLocationContext(); // Use the new context hook
+  const { location, loading: locationLoading, error: locationError } = useLocationContext();
   const { weather, loading } = useWeather();
   // You might want to show locationLoading or locationError here
   if (locationLoading) {

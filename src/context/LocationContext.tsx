@@ -3,7 +3,7 @@ import { MMKV } from "react-native-mmkv";
 import { fetchCurrentLocation } from "../api/geolocation";
 import { longToast } from "../utils/debug";
 
-const storage = new MMKV({ id: "location-storage" }); // Reuse the existing storage ID
+const storage = new MMKV({ id: "location-storage" });
 
 export interface Location {
   latitude: number;
@@ -20,7 +20,7 @@ interface LocationContextProps {
   loading: boolean;
   error: string | null;
   updateLocation: (newLocation: Location) => void;
-  fetchInitialLocation: () => Promise<void>; // Optional: Function to trigger IP fetch
+  fetchInitialLocation: () => Promise<void>;
 }
 
 const LocationContext = createContext<LocationContextProps | undefined>(undefined);
@@ -36,7 +36,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
       } catch (e) {
         console.error("[LocationContext] Failed to parse stored location: ", e);
         longToast("[LocationContext] Failed to parse stored location: " + e);
-        storage.delete(STORAGE_KEYS.LOCATION); // Clear invalid stored data
+        storage.delete(STORAGE_KEYS.LOCATION);
       }
     }
     console.log("[LocationContext] No valid stored location found.");
@@ -46,19 +46,16 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Function to update location state and storage
   const updateLocation = (newLocation: Location) => {
     console.log(
       `[LocationContext] Updating location to: ${newLocation.displayName} (${newLocation.latitude}, ${newLocation.longitude})`,
     );
     setLocation(newLocation);
     storage.set(STORAGE_KEYS.LOCATION, JSON.stringify(newLocation));
-    setError(null); // Clear previous errors on successful update
+    setError(null);
   };
 
-  // Function to fetch location from IP if no location exists
   const fetchInitialLocation = async () => {
-    // Only fetch if location is currently null
     if (location !== null) {
       console.log("[LocationContext] Skipping IP fetch, location already exists.");
       return;
@@ -75,7 +72,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
           longitude: geoData.lon,
           displayName: geoData.city ? `${geoData.city}, ${geoData.country}` : `${geoData.country}`,
         };
-        updateLocation(newLocation); // Use the centralized update function
+        updateLocation(newLocation);
       } else {
         console.warn("[LocationContext] Geolocation data missing lat/lon");
         longToast("[LocationContext] Geolocation data missing lat/lon");
@@ -94,23 +91,21 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
   };
 
-  // Fetch initial location on mount if needed
   useEffect(() => {
     fetchInitialLocation();
-  }, []); // Run only once on mount
+  }, []);
 
   const value: LocationContextProps = {
     location,
     loading,
     error,
     updateLocation,
-    fetchInitialLocation, // Expose if needed elsewhere, e.g., a refresh button
+    fetchInitialLocation,
   };
 
   return <LocationContext.Provider value={value}>{children}</LocationContext.Provider>;
 };
 
-// Custom hook to consume the context easily
 export const useLocationContext = () => {
   const context = useContext(LocationContext);
   if (!context) {

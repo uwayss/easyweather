@@ -40,7 +40,7 @@ export function ConditionalBackground({
 
 export function MainInfo({ name, current }: MainInfoProps) {
   const timeOfDay = current?.is_day ? "day" : "night";
-  // let description = weatherDescriptions[0][timeOfDay].description;
+
   const description = current
     ? weatherDescriptions[current.weather_code]?.[timeOfDay].description
     : null;

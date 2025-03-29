@@ -6,11 +6,10 @@ import { ForecastHour } from "../../types/weather";
 import HourProgress from "./HourProgress";
 
 function Hour({ item }: { item: ForecastHour }) {
-  // Calculate humidity color based on value
   const getHumidityColor = (humidity: number) => {
-    if (humidity <= 30) return "#ffd166"; // Dry - yellow
-    if (humidity <= 60) return "#06d6a0"; // Moderate - green
-    return "#118ab2"; // Humid - blue
+    if (humidity <= 30) return "#ffd166";
+    if (humidity <= 60) return "#06d6a0";
+    return "#118ab2";
   };
   return (
     <HourProgress

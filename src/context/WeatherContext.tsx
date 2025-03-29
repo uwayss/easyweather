@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { fetchWeather } from "../api/weather";
-import { useLocationContext } from "./LocationContext"; // Import the new context hook
+import { useLocationContext } from "./LocationContext";
 import { WeatherResponse } from "../types/weather";
 
 interface WeatherContextProps {
@@ -16,7 +16,7 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [weather, setWeather] = useState<WeatherResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const { location, error: locationError } = useLocationContext(); // Use the new context hook
+  const { location, error: locationError } = useLocationContext();
   console.log(
     `[WeatherProvider] Rendering. Location from Context: ${
       location ? `${location.displayName} (${location.latitude}, ${location.longitude})` : "null"
@@ -40,7 +40,6 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   useEffect(() => {
-    // React to changes in the location object from the context
     if (location) {
       console.log(
         `[WeatherContext] useEffect triggered by location change: ${location.displayName} (${location.latitude}, ${location.longitude})`,
@@ -50,21 +49,15 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({ child
       console.log(
         "[WeatherContext] useEffect triggered but location is null. Waiting for location...",
       );
-      // Optional: Clear weather data if location becomes null?
-      // setWeather(null);
-      // setLoading(true); // Or show a waiting state
     }
-    // No explicit dependency needed for locationLoading/locationError unless you want to display them here
-  }, [location]); // Dependency on the location object from context
+  }, [location]);
 
-  // Decide combined loading state? Or keep separate? Let's keep weather loading separate for now.
-  // You might want to show an error if locationError exists.
-  const combinedError = locationError || error; // Show location error preferentially?
+  const combinedError = locationError || error;
 
   const value: WeatherContextProps = {
     weather,
-    loading, // This is weather loading
-    error: combinedError, // Show combined error
+    loading,
+    error: combinedError,
     fetchWeatherData,
   };
 
