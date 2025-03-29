@@ -50,18 +50,16 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
     paddingVertical: 8,
-    // paddingRight: 20,
   },
   hourlyItem: {
     alignItems: "center",
-    // marginRight: 16,
+
     gap: 8,
     width: 50,
   },
   customProgressBar: {
-    width: 24, // Or adjust as needed
-    height: 100, // Set desired bar height
-    // No transform needed
+    width: 24,
+    height: 100,
   },
 
   scrollFadeGradient: {
