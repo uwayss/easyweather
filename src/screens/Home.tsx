@@ -33,19 +33,7 @@ export default function Home() {
     return filtered?.slice(0, 24);
   }, [weather?.hourly]);
 
-  const styles = StyleSheet.create({
-    safeContainer: {
-      flex: 1,
-      backgroundColor: theme.colors.background,
-    },
-    container: {
-      flex: 1,
-    },
-    contentContainer: {
-      padding: 16,
-      gap: 20,
-    },
-  });
+  const styles = stylesheet(theme.colors.background);
 
   return (
     <SafeAreaView style={styles.safeContainer}>
@@ -78,3 +66,17 @@ export default function Home() {
     </SafeAreaView>
   );
 }
+const stylesheet = (themeBg: string) =>
+  StyleSheet.create({
+    safeContainer: {
+      flex: 1,
+      backgroundColor: themeBg,
+    },
+    container: {
+      flex: 1,
+    },
+    contentContainer: {
+      padding: 16,
+      gap: 20,
+    },
+  });
