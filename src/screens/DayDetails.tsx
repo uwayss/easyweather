@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, ScrollView, ActivityIndicator, InteractionManager } from "react-native";
-import Wrapper from "../components/index.components";
 import { useWeather } from "../context/WeatherContext";
 import { convertToForecastDays } from "../utils/weatherUtils";
 import { formatForecastDate, filterHourlyDataForDate } from "../utils/dateScreen.helpers";
@@ -11,6 +10,8 @@ import { HumidityCard } from "../components/DateScreen/HumidityCard";
 import { WindSpeedCard } from "../components/DateScreen/WindSpeedCard";
 import { RouteProp } from "@react-navigation/native";
 import PlaceholderCard from "../components/PlaceholderCard";
+import { Text, useTheme } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type DayDetailsParams = {
   date: string;
@@ -23,7 +24,8 @@ export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
   const date = route.params.date;
   const { weather, error } = useWeather();
   const [renderLists, setRenderLists] = useState(false);
-
+  const theme = useTheme();
+  const styles = stylesheet(theme.colors.background);
   useEffect(() => {
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
       console.log("[DayDetails] Interactions complete, rendering lists...");
@@ -35,21 +37,28 @@ export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
 
   if (!weather) {
     return (
-      <Wrapper>
+      <SafeAreaView style={styles.container}>
         <BackButton />
         <DayTitle title={formatForecastDate(date)} />
         <ActivityIndicator size="large" color="#006d77" />
-      </Wrapper>
+      </SafeAreaView>
     );
   }
-  if (error) return <Wrapper msg={"Error: " + error} />;
+  if (error)
+    return (
+      <SafeAreaView style={styles.safeContainer}>
+        <Text variant="headlineMedium" style={{ textAlign: "center" }}>
+          {"Error: " + error}
+        </Text>
+      </SafeAreaView>
+    );
 
   const forecastDays = convertToForecastDays(weather?.daily);
   const selectedForecast = forecastDays?.find(day => day.date === date);
   const selectedDateHourly = filterHourlyDataForDate(weather?.hourly, String(date));
   if (!selectedDateHourly) return null;
   return (
-    <Wrapper>
+    <SafeAreaView style={styles.safeContainer}>
       <ScrollView style={styles.container}>
         <BackButton />
         <DayTitle title={formatForecastDate(selectedForecast?.date)} />
@@ -70,31 +79,19 @@ export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
           </>
         )}
       </ScrollView>
-    </Wrapper>
+    </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    gap: 16,
-  },
-  card: {
-    marginBottom: 16,
-  },
-  placeholderContainer: {
-    // Style for the placeholder
-    minHeight: 150, // Give it some height
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  placeholderTitle: {
-    marginBottom: 8,
-    textAlign: "center",
-    opacity: 0.7,
-  },
-  divider: {
-    // Ensure this style exists or define it
-    marginBottom: 16,
-  },
-});
+const stylesheet = (themeBg: string) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 16,
+      gap: 20,
+      backgroundColor: themeBg,
+    },
+    safeContainer: {
+      flex: 1,
+    },
+  });

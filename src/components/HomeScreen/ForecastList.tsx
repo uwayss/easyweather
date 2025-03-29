@@ -36,7 +36,7 @@ export default function ForecastList() {
 
     return (
       <TouchableOpacity onPress={() => handleForecastPress(item.date)}>
-        <Card style={styles.card}>
+        <Card style={styles.card} mode="contained">
           <Card.Content style={styles.cardContent}>
             <Text variant="titleMedium" numberOfLines={1} style={styles.dayName}>
               {dayName}
