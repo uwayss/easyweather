@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { Text, Card, Divider, SegmentedButtons } from "react-native-paper";
 import { FlatList, View } from "react-native";
-import { styles } from "./styles";
-import { ForecastHour } from "../../types/weather";
-import HourProgress from "./HourProgress";
-import { useSettings } from "../../context/SettingsContext";
+import { styles } from "./DateScreen/styles";
+import { ForecastHour } from "../types/weather";
+import HourProgress from "./DateScreen/HourProgress";
+import { useSettings } from "../context/SettingsContext";
 import {
   convertTemperature,
   formatTemperature,
   convertWindSpeed,
   formatWindSpeed,
-} from "../../utils/unitConversion";
-import { DEFAULT_TEMP_COLOR_STOPS, getTemperatureGradientColor } from "../../utils/colorUtils";
+} from "../utils/unitConversion";
+import { DEFAULT_TEMP_COLOR_STOPS, getTemperatureGradientColor } from "../utils/colorUtils";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 type MetricType = "temperature" | "precipitation" | "humidity" | "wind";

@@ -10,7 +10,7 @@ import { LocationProvider } from "./src/context/LocationContext";
 import { SettingsProvider, useSettings } from "./src/context/SettingsContext"; // Import SettingsProvider and useSettings
 
 // Component to bridge SettingsContext and PaperProvider
-const ThemedApp = () => {
+const AppThemeProvider = () => {
   const { activeTheme } = useSettings();
 
   // Choose the theme object based on the active theme
@@ -31,13 +31,13 @@ const ThemedApp = () => {
   );
 };
 
-function Main() {
+function AppRoot() {
   // Wrap everything in SettingsProvider
   return (
     <SettingsProvider>
-      <ThemedApp />
+      <AppThemeProvider />
     </SettingsProvider>
   );
 }
 
-AppRegistry.registerComponent(appName, () => Main);
+AppRegistry.registerComponent(appName, () => AppRoot);
