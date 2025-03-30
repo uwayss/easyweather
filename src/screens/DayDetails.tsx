@@ -4,10 +4,7 @@ import { useWeather } from "../context/WeatherContext";
 import { convertToForecastDays } from "../utils/weatherUtils";
 import { formatForecastDate, filterHourlyDataForDate } from "../utils/dateScreen.helpers";
 import { BackButton, DayTitle, StatsCard } from "../components/DateScreen/StatsCard";
-import { PrecipitationCard } from "../components/DateScreen/PrecipitationCard";
-import { TemperatureCard } from "../components/DateScreen/TemperatureCard";
-import { HumidityCard } from "../components/DateScreen/HumidityCard";
-import { WindSpeedCard } from "../components/DateScreen/WindSpeedCard";
+import { MergedConditionsCard } from "../components/DateScreen/MergedConditionsCard";
 import { RouteProp } from "@react-navigation/native";
 import PlaceholderCard from "../components/PlaceholderCard";
 import { Text, useTheme } from "react-native-paper";
@@ -65,13 +62,11 @@ export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
         <StatsCard selectedForecast={selectedForecast} />
         {renderLists ? (
           <>
-            <TemperatureCard selectedDateHourly={selectedDateHourly} />
-            <PrecipitationCard selectedDateHourly={selectedDateHourly} />
-            <HumidityCard selectedDateHourly={selectedDateHourly} />
-            <WindSpeedCard selectedDateHourly={selectedDateHourly} />
+            <MergedConditionsCard selectedDateHourly={selectedDateHourly} />
           </>
         ) : (
           <>
+            <PlaceholderCard />
             <PlaceholderCard />
             <PlaceholderCard />
             <PlaceholderCard />

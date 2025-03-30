@@ -39,6 +39,7 @@ export const styles = StyleSheet.create({
   },
   precipitationTitle: {
     marginBottom: 8,
+    textAlign: "center",
   },
   divider: {
     marginBottom: 16,

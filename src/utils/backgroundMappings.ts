@@ -11,7 +11,7 @@ const backgroundMappings: BackgroundMappings = {
   },
   1: {
     day: require("../../assets/backgrounds/mainly_clear.webp"),
-    night: require("../../assets/backgrounds/mainly_clear_nigt.webp"),
+    night: require("../../assets/backgrounds/mainly_clear_night.webp"),
   },
   2: {
     day: require("../../assets/backgrounds/partly_cloudy_day.webp"),
