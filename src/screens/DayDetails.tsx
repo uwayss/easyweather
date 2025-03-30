@@ -3,7 +3,7 @@ import { StyleSheet, ScrollView, ActivityIndicator, InteractionManager } from "r
 import { useWeather } from "../context/WeatherContext";
 import { convertToForecastDays } from "../utils/weatherUtils";
 import { formatForecastDate, filterHourlyDataForDate } from "../utils/dateScreen.helpers";
-import { BackButton, DayTitle, StatsCard } from "../components/DateScreen/StatsCard";
+import { BackButton, DayTitle, StatsCard } from "./DateScreen/StatsCard";
 import { MergedConditionsCard } from "../components/HourlyConditions";
 import { RouteProp } from "@react-navigation/native";
 import PlaceholderCard from "../components/PlaceholderCard";

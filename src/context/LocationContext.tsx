@@ -2,6 +2,8 @@ import React, { createContext, useState, useContext, useEffect, ReactNode } from
 import { MMKV } from "react-native-mmkv";
 import { fetchCurrentLocation } from "../api/geolocation";
 import { longToast } from "../utils/debug";
+import Geolocation from "react-native-geolocation-service";
+import { Platform, PermissionsAndroid } from "react-native";
 
 const storage = new MMKV({ id: "location-storage" });
 
@@ -21,6 +23,7 @@ interface LocationContextProps {
   error: string | null;
   updateLocation: (newLocation: Location) => void;
   fetchInitialLocation: () => Promise<void>;
+  getCurrentLocation: () => Promise<void>;
 }
 
 const LocationContext = createContext<LocationContextProps | undefined>(undefined);
@@ -95,12 +98,57 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     fetchInitialLocation();
   }, []);
 
+  const getCurrentLocation = async () => {
+    try {
+      if (Platform.OS === "android") {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: "Location Permission",
+            message: "This app needs access to your location",
+            buttonNeutral: "Ask Me Later",
+            buttonNegative: "Cancel",
+            buttonPositive: "OK",
+          },
+        );
+
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          throw new Error("Location permission denied");
+        }
+      } else {
+        const status = await Geolocation.requestAuthorization("whenInUse");
+        if (status !== "granted") {
+          throw new Error("Location permission denied");
+        }
+      }
+
+      const position = await new Promise<Geolocation.GeoPosition>((resolve, reject) => {
+        Geolocation.getCurrentPosition(resolve, error => reject(new Error(error.message)), {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 10000,
+        });
+      });
+
+      updateLocation({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        displayName: "Current Location",
+      });
+    } catch (error) {
+      console.error("Geolocation error:", error);
+      longToast(error instanceof Error ? error.message : "Failed to get location");
+      throw error;
+    }
+  };
+
   const value: LocationContextProps = {
     location,
     loading,
     error,
     updateLocation,
     fetchInitialLocation,
+    getCurrentLocation,
   };
 
   return <LocationContext.Provider value={value}>{children}</LocationContext.Provider>;

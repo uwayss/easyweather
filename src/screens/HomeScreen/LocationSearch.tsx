@@ -65,6 +65,18 @@ export const LocationSearch = () => {
     setShowResults(false);
     setSearchQuery("");
   };
+  const { getCurrentLocation } = useLocationContext();
+
+  const handleGeolocationPress = async () => {
+    try {
+      await getCurrentLocation();
+      setSearchQuery("");
+      setShowResults(false);
+    } catch (error) {
+      console.error("Geolocation error:", error);
+    }
+  };
+
   const styles = StyleSheet.create({
     container: {
       zIndex: 100,
@@ -89,7 +101,8 @@ export const LocationSearch = () => {
         value={searchQuery}
         style={styles.searchbar}
         loading={isLoading}
-        keyboardType="default"
+        onIconPress={handleGeolocationPress}
+        icon={"crosshairs-gps"}
       />
       <LocationSearchResults
         results={results}
