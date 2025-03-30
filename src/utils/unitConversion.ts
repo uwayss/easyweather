@@ -50,6 +50,7 @@ export function convertWindSpeed(speedKmh: number, useImperial: boolean): number
  * @returns Formatted wind speed string with unit
  */
 export function formatWindSpeed(speed: number, useImperial: boolean): string {
+  // Make sure to round the speed to the nearest integer
   const roundedSpeed = Math.round(speed);
   return `${roundedSpeed} ${useImperial ? "mph" : "km/h"}`;
 }

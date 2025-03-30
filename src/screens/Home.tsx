@@ -6,10 +6,7 @@ import { LocationSearch } from "../components/HomeScreen/LocationSearch";
 import WeatherCard from "../components/HomeScreen/WeatherCard";
 import ForecastList from "../components/HomeScreen/ForecastList";
 import PlaceholderCard from "../components/PlaceholderCard";
-import { TemperatureCard } from "../components/DateScreen/TemperatureCard";
-import { PrecipitationCard } from "../components/DateScreen/PrecipitationCard";
-import { HumidityCard } from "../components/DateScreen/HumidityCard";
-import { WindSpeedCard } from "../components/DateScreen/WindSpeedCard";
+import { MergedConditionsCard } from "../components/DateScreen/MergedConditionsCard";
 import { useWeather } from "../context/WeatherContext";
 import { filterHourlyDataForDate } from "../utils/dateScreen.helpers";
 import { ForecastHour } from "../types/weather";
@@ -91,13 +88,11 @@ export default function Home({ navigation }: HomeProps) {
         <View>
           {renderHourlyLists && todaysHourlyData && todaysHourlyData.length > 0 ? (
             <>
-              <TemperatureCard selectedDateHourly={todaysHourlyData} />
-              <PrecipitationCard selectedDateHourly={todaysHourlyData} />
-              <HumidityCard selectedDateHourly={todaysHourlyData} />
-              <WindSpeedCard selectedDateHourly={todaysHourlyData} />
+              <MergedConditionsCard selectedDateHourly={todaysHourlyData} />
             </>
           ) : (
             <>
+              <PlaceholderCard />
               <PlaceholderCard />
               <PlaceholderCard />
               <PlaceholderCard />

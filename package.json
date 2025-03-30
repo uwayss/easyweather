@@ -12,7 +12,7 @@
     "dump": "python3 utils/codebase_dumper.py",
     "bundle": "node utils/react-native-bundle-visualizer.js",
     "apk": "react-native run-android --mode=release",
-    "doctor":"react-native doctor"
+    "doctor": "react-native doctor"
   },
   "dependencies": {
     "@react-navigation/native": "^7.0.18",
@@ -41,6 +41,7 @@
     "@react-native/metro-config": "0.76.7",
     "@react-native/typescript-config": "0.76.7",
     "@types/react": "^18.2.6",
+    "@types/react-native-vector-icons": "^6.4.18",
     "@types/react-test-renderer": "^18.0.0",
     "babel-jest": "^29.6.3",
     "eslint": "^8.57.1",
