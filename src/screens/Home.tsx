@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { ScrollView, StyleSheet, InteractionManager, View } from "react-native";
+import { ScrollView, StyleSheet, InteractionManager, View, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme, IconButton } from "react-native-paper";
 import { LocationSearch } from "../components/HomeScreen/LocationSearch";
@@ -23,8 +23,20 @@ type HomeProps = {
 
 export default function Home({ navigation }: HomeProps) {
   const theme = useTheme();
-  const { weather } = useWeather();
+  const { weather, fetchWeatherData, loading } = useWeather();
   const [renderHourlyLists, setRenderHourlyLists] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    console.log("Pull to refresh triggered");
+    if (weather?.location) {
+      setRefreshing(true);
+      console.log("Fetching weather data...");
+      await fetchWeatherData(weather.location.latitude, weather.location.longitude);
+      console.log("Weather data fetched");
+      setRefreshing(false);
+    }
+  };
 
   useEffect(() => {
     const interactionPromise = InteractionManager.runAfterInteractions(() => {
@@ -49,6 +61,14 @@ export default function Home({ navigation }: HomeProps) {
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing || loading}
+            onRefresh={onRefresh}
+            colors={[theme.colors.primary]}
+            tintColor={theme.colors.primary}
+          />
+        }
       >
         {/* --- Row for Search and Settings --- */}
         <View style={styles.topRow}>

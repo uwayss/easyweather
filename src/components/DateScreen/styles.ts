@@ -1,6 +1,11 @@
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
+  currentHour: {
+    backgroundColor: "rgba(0, 109, 119, 0.2)",
+    borderRadius: 8,
+    padding: 4,
+  },
   windTitle: {
     marginBottom: 8,
   },

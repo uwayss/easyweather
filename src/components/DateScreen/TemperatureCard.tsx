@@ -25,9 +25,14 @@ function Hour({
   const tempCelsius: number = item.temperature;
   const temp = convertTemperature(tempCelsius, settings.useImperialUnits);
 
+  // Current hour comparison
+  const currentHour = new Date().getHours();
+  const itemHour = new Date(item.time).getHours();
+  const isCurrentHour = currentHour === itemHour;
+
   // Adjust min/max temp range based on unit system
-  const minTemp = settings.useImperialUnits ? 14 : -10; // 14°F is about -10°C
-  const maxTemp = settings.useImperialUnits ? 104 : 40; // 104°F is about 40°C
+  const minTemp = settings.useImperialUnits ? 14 : -10;
+  const maxTemp = settings.useImperialUnits ? 104 : 40;
   const tempProgress = Math.max(0, Math.min(1, (temp - minTemp) / (maxTemp - minTemp)));
 
   const getTemperatureColor = (temp: number) => {
@@ -43,12 +48,14 @@ function Hour({
   };
 
   return (
-    <HourProgress
-      color={getTemperatureColor(temp)}
-      time={item.time}
-      progress={tempProgress}
-      value={formatTemperature(temp, settings.useImperialUnits)}
-    />
+    <View style={isCurrentHour ? styles.currentHour : null}>
+      <HourProgress
+        time={item.time}
+        color={getTemperatureColor(tempCelsius)}
+        progress={tempProgress}
+        value={formatTemperature(temp, settings.useImperialUnits)}
+      />
+    </View>
   );
 }
 

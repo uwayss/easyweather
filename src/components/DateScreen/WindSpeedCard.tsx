@@ -17,13 +17,19 @@ function Hour({ item }: { item: ForecastHour }) {
 
   const maxWindSpeed = 60;
   const windProgress = Math.min(1, windSpeed / maxWindSpeed);
+  const currentHour = new Date().getHours();
+  const itemHour = new Date(item.time).getHours();
+  const isCurrentHour = currentHour === itemHour;
+
   return (
-    <HourProgress
-      time={item.time}
-      color={getWindSpeedColor(windSpeed)}
-      progress={windProgress}
-      value={windSpeed + " km/h"}
-    />
+    <View style={isCurrentHour ? styles.currentHour : null}>
+      <HourProgress
+        time={item.time}
+        color={getWindSpeedColor(windSpeed)}
+        progress={windProgress}
+        value={windSpeed + " km/h"}
+      />
+    </View>
   );
 }
 export function WindSpeedCard({ selectedDateHourly }: { selectedDateHourly: ForecastHour[] }) {
