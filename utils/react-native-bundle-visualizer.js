@@ -25,7 +25,7 @@ function getAppName() {
 }
 
 function getEntryPoint() {
-  let entry = pkgJSON.main || "index.js";
+  let entry = pkgJSON.main || "index.tsx";
   if (entry[0] !== "." && entry[0] !== "/" && entry[0] !== "\\") {
     entry = "./" + entry;
   }

@@ -6,6 +6,7 @@ import { ForecastHour } from "../../types/weather";
 import HourProgress from "./HourProgress";
 import { useSettings } from "../../context/SettingsContext";
 import { convertTemperature, formatTemperature } from "../../utils/unitConversion";
+import { DEFAULT_TEMP_COLOR_STOPS, getTemperatureGradientColor } from "../../utils/colorUtils";
 
 function Hour({
   item,
@@ -30,21 +31,15 @@ function Hour({
   const tempProgress = Math.max(0, Math.min(1, (temp - minTemp) / (maxTemp - minTemp)));
 
   const getTemperatureColor = (temp: number) => {
-    if (settings.useImperialUnits) {
-      // Fahrenheit thresholds
-      if (temp <= 32) return "#9dc0e8"; // 32°F = 0°C
-      if (temp <= 50) return "#69a3db"; // 50°F ≈ 10°C
-      if (temp <= 68) return "#ffd166"; // 68°F ≈ 20°C
-      if (temp <= 77) return "#ff9f51"; // 77°F ≈ 25°C
-      return "#ff6b6b";
-    } else {
-      // Celsius thresholds
-      if (temp <= 0) return "#9dc0e8";
-      if (temp <= 10) return "#69a3db";
-      if (temp <= 20) return "#ffd166";
-      if (temp <= 25) return "#ff9f51";
-      return "#ff6b6b";
-    }
+    // Use default color stops from colorUtils
+    const colorStops = DEFAULT_TEMP_COLOR_STOPS;
+
+    // Get min/max temperature range based on unit system
+    const minTemp = settings.useImperialUnits ? 14 : -10;
+    const maxTemp = settings.useImperialUnits ? 104 : 40;
+
+    // Use the gradient color utility to get a smooth color transition
+    return getTemperatureGradientColor(temp, minTemp, maxTemp, colorStops);
   };
 
   return (

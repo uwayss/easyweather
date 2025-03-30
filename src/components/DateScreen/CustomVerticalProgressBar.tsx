@@ -38,9 +38,9 @@ const styles = StyleSheet.create({
   track: {
     justifyContent: "flex-end",
     overflow: "hidden",
-    width: 24,
-    height: 100,
-    borderRadius: 4,
+    width: 18,
+    height: 80,
+    borderRadius: 3,
   },
   fill: {
     width: "100%",

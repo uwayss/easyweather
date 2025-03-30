@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
   },
   cardContent: {
-    padding: 16,
+    padding: 12,
   },
   weatherHeader: {
     alignItems: "center",
@@ -48,18 +48,17 @@ export const styles = StyleSheet.create({
   },
   hourlyContainer: {
     flexDirection: "row",
-    gap: 8,
-    paddingVertical: 8,
+    // gap: 8,
+    paddingVertical: 2,
   },
   hourlyItem: {
     alignItems: "center",
-
-    gap: 8,
-    width: 50,
+    gap: 4,
+    width: 45,
   },
   customProgressBar: {
-    width: 24,
-    height: 100,
+    width: 18,
+    height: 80,
   },
 
   scrollFadeGradient: {
@@ -81,7 +80,7 @@ export const styles = StyleSheet.create({
   },
   hourText: {
     fontSize: 12,
-    marginTop: 4,
+    marginTop: 2,
     textAlign: "center",
     width: "100%",
   },
