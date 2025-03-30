@@ -11,7 +11,8 @@
     "diff": "python3 utils/diff.py",
     "dump": "python3 utils/codebase_dumper.py",
     "bundle": "node utils/react-native-bundle-visualizer.js",
-    "apk": "react-native run-android --mode=release"
+    "apk": "react-native run-android --mode=release",
+    "doctor":"react-native doctor"
   },
   "dependencies": {
     "@react-navigation/native": "^7.0.18",
