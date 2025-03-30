@@ -10,7 +10,7 @@ const open = require("open");
 const { explore } = require("source-map-explorer");
 const pkgJSON = JSON.parse(fs.readFileSync("./package.json"));
 
-function sanitizeString(str) {
+function sanitizeString(str: string) {
   return str ? str.replace(/[^\w]/gi, "") : str;
 }
 
@@ -25,7 +25,7 @@ function getAppName() {
 }
 
 function getEntryPoint() {
-  let entry = pkgJSON.main || "index.tsx";
+  let entry = pkgJSON.main || "index.js";
   if (entry[0] !== "." && entry[0] !== "/" && entry[0] !== "\\") {
     entry = "./" + entry;
   }
@@ -70,7 +70,7 @@ fs.ensureDirSync(baseDir);
 fs.ensureDirSync(tmpDir);
 
 // Try to obtain the previous file size
-let prevBundleSize;
+let prevBundleSize: number;
 if (fs.existsSync(bundleOutput)) {
   const stats = fs.statSync(bundleOutput);
   prevBundleSize = stats.size;
@@ -151,27 +151,32 @@ bundlePromise
 
     // Log info and open output file
   )
-  .then(result => {
-    if (verbose) {
-      result.bundles.forEach(bundle => {
-        Object.keys(bundle.files).forEach(file => {
-          console.log(chalk.green(file + ", size: " + bundle.files[file].size + " bytes"));
+  .then(
+    (result: {
+      bundles: Array<{ files: Record<string, { size: number }> }>;
+      errors?: Array<{ isWarning: boolean; message: string }>;
+    }) => {
+      if (verbose) {
+        result.bundles.forEach(bundle => {
+          Object.keys(bundle.files).forEach(file => {
+            console.log(chalk.green(file + ", size: " + bundle.files[file].size + " bytes"));
+          });
         });
-      });
-    }
+      }
 
-    // Log any errors
-    if (result.errors) {
-      result.errors.forEach(error => {
-        if (error.isWarning) {
-          console.log(chalk.yellow.bold(error.message));
-        } else {
-          console.log(chalk.red.bold(error.message));
-        }
-      });
-    }
+      // Log any errors
+      if (result.errors) {
+        result.errors.forEach(error => {
+          if (error.isWarning) {
+            console.log(chalk.yellow.bold(error.message));
+          } else {
+            console.log(chalk.red.bold(error.message));
+          }
+        });
+      }
 
-    // Open output file
-    return open(bundleOutputExplorerFile);
-  })
-  .catch(error => console.log(chalk.red("=== error ==="), error));
+      // Open output file
+      return open(bundleOutputExplorerFile);
+    },
+  )
+  .catch((error: unknown) => console.log(chalk.red("=== error ==="), error));

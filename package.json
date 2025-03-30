@@ -10,7 +10,7 @@
     "format": "prettier . --write",
     "diff": "python scripts/diff.py",
     "dump": "python scripts/codebase_dumper.py",
-    "bundle": "node scripts/react-native-bundle-visualizer.js",
+    "bundle": "node scripts/react-native-bundle-visualizer.ts",
     "apk": "react-native run-android --mode=release",
     "doctor": "react-native doctor"
   },
