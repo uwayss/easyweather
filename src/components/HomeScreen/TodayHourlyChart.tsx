@@ -5,6 +5,8 @@ import { BarChart } from "react-native-chart-kit";
 import { useWeather } from "../../context/WeatherContext";
 import { filterHourlyDataForDate } from "../../utils/dateScreen.helpers";
 import { ForecastHour } from "../../types/weather";
+import { useSettings } from "../../context/SettingsContext";
+import { convertTemperature } from "../../utils/unitConversion";
 
 const screenWidth = Dimensions.get("window").width;
 const PADDING_OUTSIDE_CARD = 16 * 2;
@@ -22,6 +24,7 @@ const formatSimpleHourLabel = (time: string): string => {
 
 const TodayHourlyChart: React.FC = () => {
   const { weather, loading: weatherLoading } = useWeather();
+  const { settings } = useSettings();
   const theme = useTheme();
   const labelColor = theme.dark ? "rgba(255, 255, 255, 0.6)" : "rgba(0, 0, 0, 0.6)";
 
@@ -39,11 +42,13 @@ const TodayHourlyChart: React.FC = () => {
       labels: todaysHourlyData.map(() => ""),
       datasets: [
         {
-          data: todaysHourlyData.map((hourData: ForecastHour) => Math.round(hourData.temperature)),
+          data: todaysHourlyData.map((hourData: ForecastHour) =>
+            Math.round(convertTemperature(hourData.temperature, settings.useImperialUnits)),
+          ),
         },
       ],
     };
-  }, [todaysHourlyData]);
+  }, [todaysHourlyData, settings.useImperialUnits]);
 
   const chartConfig = {
     backgroundColor: theme.colors.surface,
@@ -103,7 +108,7 @@ const TodayHourlyChart: React.FC = () => {
             width={calculatedChartWidth}
             height={180}
             yAxisLabel=""
-            yAxisSuffix="°C"
+            yAxisSuffix={settings.useImperialUnits ? "°F" : "°C"}
             chartConfig={chartConfig}
             style={styles.chart}
             withInnerLines={false}
@@ -149,37 +154,36 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
   },
+  title: {
+    paddingHorizontal: 16,
+    marginBottom: 8,
+  },
   scrollView: {
-    width: screenWidth - PADDING_OUTSIDE_CARD,
+    marginBottom: 8,
   },
   scrollViewContent: {
-    paddingHorizontal: 0,
-  },
-  chart: {
-    marginLeft: 0,
-    paddingLeft: 0,
-  },
-  title: {
-    textAlign: "center",
-    marginBottom: 12,
     paddingHorizontal: 16,
   },
-  noDataText: {
-    textAlign: "center",
-    opacity: 0.7,
+  chart: {
+    marginVertical: 8,
+    borderRadius: 16,
   },
-
   customLabelsContainer: {
     flexDirection: "row",
-    paddingLeft: 0,
+    justifyContent: "space-between",
+    paddingHorizontal: 8,
   },
   labelItem: {
     width: BAR_SECTION_WIDTH,
     alignItems: "center",
   },
   labelText: {
-    fontSize: 11,
+    fontSize: 10,
+  },
+  noDataText: {
+    textAlign: "center",
+    opacity: 0.7,
   },
 });
 
-export default React.memo(TodayHourlyChart);
+export default TodayHourlyChart;

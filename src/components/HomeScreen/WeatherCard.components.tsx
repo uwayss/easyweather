@@ -5,6 +5,13 @@ import { CurrentWeather } from "../../types/weather";
 import weatherDescriptions from "../../utils/descriptions";
 import backgroundMappings from "../../utils/backgroundMappings";
 import React from "react";
+import { useSettings } from "../../context/SettingsContext";
+import {
+  convertTemperature,
+  formatTemperature,
+  convertWindSpeed,
+  formatWindSpeed,
+} from "../../utils/unitConversion";
 
 interface MainInfoProps {
   name: string;
@@ -39,6 +46,7 @@ export function ConditionalBackground({
 }
 
 export function MainInfo({ name, current }: MainInfoProps) {
+  const { settings } = useSettings();
   const timeOfDay = current?.is_day ? "day" : "night";
 
   const description = current
@@ -54,13 +62,24 @@ export function MainInfo({ name, current }: MainInfoProps) {
           </Text>
         </View>
         <Text style={styles.temperature}>
-          {current ? Math.round(current.temperature_2m) : ""}°C
+          {current
+            ? formatTemperature(
+                convertTemperature(current.temperature_2m, settings.useImperialUnits),
+                settings.useImperialUnits,
+              )
+            : ""}
         </Text>
         <Text variant="headlineSmall" style={styles.description}>
           {description ? description : ""}
         </Text>
         <Text variant="titleMedium" style={styles.feelsLike}>
-          Feels like {current ? Math.round(current.apparent_temperature) : ""}°
+          Feels like{" "}
+          {current
+            ? formatTemperature(
+                convertTemperature(current.apparent_temperature, settings.useImperialUnits),
+                settings.useImperialUnits,
+              ).replace(/°[CF]$/, "°")
+            : ""}
         </Text>
       </Surface>
     </View>
@@ -68,6 +87,7 @@ export function MainInfo({ name, current }: MainInfoProps) {
 }
 
 export function Details({ current }: DetailsProps) {
+  const { settings } = useSettings();
   return (
     <View>
       <Surface style={styles.detailsContainer} elevation={5}>
@@ -78,7 +98,14 @@ export function Details({ current }: DetailsProps) {
         <View style={styles.separator} />
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>Wind Speed</Text>
-          <Text style={styles.detailValue}>{current?.wind_speed_10m} km/h</Text>
+          <Text style={styles.detailValue}>
+            {current
+              ? formatWindSpeed(
+                  convertWindSpeed(current.wind_speed_10m, settings.useImperialUnits),
+                  settings.useImperialUnits,
+                )
+              : ""}
+          </Text>
         </View>
       </Surface>
     </View>

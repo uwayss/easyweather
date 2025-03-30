@@ -9,9 +9,12 @@ import { useWeather } from "../../context/WeatherContext";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../../App";
+import { useSettings } from "../../context/SettingsContext";
+import { convertTemperature, formatTemperature } from "../../utils/unitConversion";
 
 export default function ForecastList() {
   const { weather } = useWeather();
+  const { settings } = useSettings();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const forecast = convertToForecastDays(weather?.daily);
 
@@ -46,8 +49,18 @@ export default function ForecastList() {
               {weather.description}
             </Text>
             <View style={styles.temperatures}>
-              <Text style={styles.maxTemp}>{Math.round(item.maxTemp)}°</Text>
-              <Text style={styles.minTemp}>{Math.round(item.minTemp)}°</Text>
+              <Text style={styles.maxTemp}>
+                {formatTemperature(
+                  convertTemperature(item.maxTemp, settings.useImperialUnits),
+                  settings.useImperialUnits,
+                ).replace(/°[CF]$/, "°")}
+              </Text>
+              <Text style={styles.minTemp}>
+                {formatTemperature(
+                  convertTemperature(item.minTemp, settings.useImperialUnits),
+                  settings.useImperialUnits,
+                ).replace(/°[CF]$/, "°")}
+              </Text>
             </View>
           </Card.Content>
         </Card>

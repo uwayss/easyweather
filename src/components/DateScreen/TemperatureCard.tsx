@@ -4,6 +4,8 @@ import { FlatList, View } from "react-native";
 import { styles } from "./styles";
 import { ForecastHour } from "../../types/weather";
 import HourProgress from "./HourProgress";
+import { useSettings } from "../../context/SettingsContext";
+import { convertTemperature, formatTemperature } from "../../utils/unitConversion";
 
 function Hour({
   item,
@@ -18,17 +20,31 @@ function Hour({
     windSpeed: number;
   };
 }) {
-  const temp: number = item.temperature;
+  const { settings } = useSettings();
+  const tempCelsius: number = item.temperature;
+  const temp = convertTemperature(tempCelsius, settings.useImperialUnits);
 
-  const minTemp = -10;
-  const maxTemp = 40;
+  // Adjust min/max temp range based on unit system
+  const minTemp = settings.useImperialUnits ? 14 : -10; // 14°F is about -10°C
+  const maxTemp = settings.useImperialUnits ? 104 : 40; // 104°F is about 40°C
   const tempProgress = Math.max(0, Math.min(1, (temp - minTemp) / (maxTemp - minTemp)));
+
   const getTemperatureColor = (temp: number) => {
-    if (temp <= 0) return "#9dc0e8";
-    if (temp <= 10) return "#69a3db";
-    if (temp <= 20) return "#ffd166";
-    if (temp <= 25) return "#ff9f51";
-    return "#ff6b6b";
+    if (settings.useImperialUnits) {
+      // Fahrenheit thresholds
+      if (temp <= 32) return "#9dc0e8"; // 32°F = 0°C
+      if (temp <= 50) return "#69a3db"; // 50°F ≈ 10°C
+      if (temp <= 68) return "#ffd166"; // 68°F ≈ 20°C
+      if (temp <= 77) return "#ff9f51"; // 77°F ≈ 25°C
+      return "#ff6b6b";
+    } else {
+      // Celsius thresholds
+      if (temp <= 0) return "#9dc0e8";
+      if (temp <= 10) return "#69a3db";
+      if (temp <= 20) return "#ffd166";
+      if (temp <= 25) return "#ff9f51";
+      return "#ff6b6b";
+    }
   };
 
   return (
@@ -36,10 +52,11 @@ function Hour({
       color={getTemperatureColor(temp)}
       time={item.time}
       progress={tempProgress}
-      value={Math.round(temp) + "°C"}
+      value={formatTemperature(temp, settings.useImperialUnits)}
     />
   );
 }
+
 export function TemperatureCard({ selectedDateHourly }: { selectedDateHourly: ForecastHour[] }) {
   return (
     <Card style={styles.card}>
@@ -52,7 +69,7 @@ export function TemperatureCard({ selectedDateHourly }: { selectedDateHourly: Fo
           <FlatList
             horizontal
             data={selectedDateHourly}
-            renderItem={Hour}
+            renderItem={({ item }) => <Hour item={item} />}
             initialNumToRender={7}
             windowSize={7}
             contentContainerStyle={styles.hourlyContainer}

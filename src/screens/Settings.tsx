@@ -1,7 +1,7 @@
 import React from "react";
 import { ScrollView, StyleSheet } from "react-native"; // Added View
 import { SafeAreaView } from "react-native-safe-area-context";
-import { List, Divider, useTheme, Switch, SegmentedButtons, Text } from "react-native-paper"; // Added SegmentedButtons, Text
+import { List, Divider, useTheme, SegmentedButtons, Text } from "react-native-paper"; // Added SegmentedButtons, Text
 import { useSettings, ThemePreference } from "../context/SettingsContext"; // Import ThemePreference type
 
 const SettingsScreen = () => {
@@ -12,10 +12,6 @@ const SettingsScreen = () => {
   const handleThemeChange = (value: string) => {
     // Type assertion might be needed if 'value' isn't inferred correctly
     updateSetting("theme", value as ThemePreference);
-  };
-
-  const handleUnitsChange = () => {
-    updateSetting("useImperialUnits", !settings.useImperialUnits);
   };
 
   return (
@@ -52,14 +48,23 @@ const SettingsScreen = () => {
 
         {/* --- Units Selection --- */}
         <List.Section title="Units">
-          {/* Keeping Switch for units for now, could also be SegmentedButtons */}
-          <List.Item
-            title="Use Imperial Units (°F, mph)"
-            description="Display units (Not functional yet)"
-            left={props => <List.Icon {...props} icon="ruler" />}
-            right={() => (
-              <Switch value={settings.useImperialUnits} onValueChange={handleUnitsChange} />
-            )}
+          <Text style={styles.label}>Temperature & Wind Speed</Text>
+          <SegmentedButtons
+            value={settings.useImperialUnits ? "imperial" : "metric"}
+            onValueChange={value => updateSetting("useImperialUnits", value === "imperial")}
+            style={styles.segmentedButtonContainer}
+            buttons={[
+              {
+                value: "metric",
+                label: "Metric",
+                icon: "temperature-celsius",
+              },
+              {
+                value: "imperial",
+                label: "Imperial",
+                icon: "temperature-fahrenheit",
+              },
+            ]}
           />
         </List.Section>
         <Divider style={styles.divider} />
