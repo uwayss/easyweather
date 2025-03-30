@@ -6,14 +6,26 @@ import { ForecastHour } from "../../types/weather";
 import HourProgress from "./HourProgress";
 
 function Hour({ item }: { item: ForecastHour }) {
+  const currentHour = new Date().getHours();
+  const itemHour = new Date(item.time).getHours();
+  const isCurrentHour = currentHour === itemHour;
+
   return (
-    <HourProgress
-      time={item.time}
-      color={item.rainProb > 50 ? "#3498db" : "#a0d2eb"}
-      progress={item.rainProb / 100}
-      value={item.rainProb + "%"}
-    />
+    <View style={isCurrentHour ? styles.currentHour : null}>
+      <HourProgress
+        time={item.time}
+        color={getPrecipitationColor(item.rainProb)}
+        progress={item.rainProb / 100}
+        value={item.rainProb + "%"}
+      />
+    </View>
   );
+}
+
+function getPrecipitationColor(rainProb: number) {
+  if (rainProb <= 30) return "#90be6d";
+  if (rainProb <= 60) return "#f9c74f";
+  return "#f94144";
 }
 export function PrecipitationCard({ selectedDateHourly }: { selectedDateHourly: ForecastHour[] }) {
   return (

@@ -6,19 +6,26 @@ import { ForecastHour } from "../../types/weather";
 import HourProgress from "./HourProgress";
 
 function Hour({ item }: { item: ForecastHour }) {
-  const getHumidityColor = (humidity: number) => {
-    if (humidity <= 30) return "#ffd166";
-    if (humidity <= 60) return "#06d6a0";
-    return "#118ab2";
-  };
+  const currentHour = new Date().getHours();
+  const itemHour = new Date(item.time).getHours();
+  const isCurrentHour = currentHour === itemHour;
+
   return (
-    <HourProgress
-      time={item.time}
-      color={getHumidityColor(item.humidity)}
-      progress={item.humidity / 100}
-      value={item.humidity + "%"}
-    />
+    <View style={isCurrentHour ? styles.currentHour : null}>
+      <HourProgress
+        time={item.time}
+        color={getHumidityColor(item.humidity)}
+        progress={item.humidity / 100}
+        value={item.humidity + "%"}
+      />
+    </View>
   );
+}
+
+function getHumidityColor(humidity: number) {
+  if (humidity <= 30) return "#ffd166";
+  if (humidity <= 60) return "#06d6a0";
+  return "#118ab2";
 }
 export function HumidityCard({ selectedDateHourly }: { selectedDateHourly: ForecastHour[] }) {
   return (

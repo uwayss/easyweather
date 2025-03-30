@@ -37,9 +37,12 @@ export default function ForecastList() {
       dayName = date.toLocaleDateString("en-UK", { weekday: "long" });
     }
 
+    const currentDate = new Date().toISOString().split("T")[0];
+    const isToday = item.date === currentDate;
+
     return (
       <TouchableOpacity onPress={() => handleForecastPress(item.date)}>
-        <Card style={styles.card} mode="contained">
+        <Card style={[styles.card, isToday ? styles.todayCard : null]} mode="contained">
           <Card.Content style={styles.cardContent}>
             <Text variant="titleMedium" numberOfLines={1} style={styles.dayName}>
               {dayName}
@@ -129,5 +132,10 @@ const styles = StyleSheet.create({
   minTemp: {
     fontSize: 16,
     color: "#666",
+  },
+  todayCard: {
+    borderWidth: 2,
+    borderColor: "#006d77",
+    backgroundColor: "rgba(0, 109, 119, 0.1)",
   },
 });
