@@ -2,9 +2,12 @@ import React from "react";
 import { ScrollView, StyleSheet } from "react-native"; // Added View
 import { SafeAreaView } from "react-native-safe-area-context";
 import { List, Divider, useTheme, SegmentedButtons, Text } from "react-native-paper"; // Added SegmentedButtons, Text
+import { useNavigation } from "@react-navigation/native";
+import { Appbar } from "react-native-paper";
 import { useSettings, ThemePreference } from "../context/SettingsContext"; // Import ThemePreference type
 
 const SettingsScreen = () => {
+  const navigation = useNavigation();
   const theme = useTheme();
   const styles = stylesheet(theme.colors.background);
   const { settings, updateSetting } = useSettings();
@@ -16,6 +19,10 @@ const SettingsScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeContainer}>
+      <Appbar.Header>
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
+        <Appbar.Content title="Settings" />
+      </Appbar.Header>
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         {/* --- Theme Selection --- */}
         <List.Section title="Appearance">

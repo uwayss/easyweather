@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "./src/screens/Home";
 import DayDetails from "./src/screens/DayDetails";
 import SettingsScreen from "./src/screens/Settings";
-import { useTheme } from "react-native-paper";
 
 const Stack = createNativeStackNavigator();
 
@@ -14,8 +13,6 @@ export type RootStackParamList = {
 };
 
 export default function RootStack() {
-  const theme = useTheme();
-
   return (
     <Stack.Navigator
       screenOptions={{
@@ -41,12 +38,6 @@ export default function RootStack() {
         component={SettingsScreen}
         options={{
           title: "Settings",
-          headerTransparent: false,
-          headerShadowVisible: true,
-          headerStyle: { backgroundColor: theme.colors.background },
-          headerTitleStyle: { color: theme.colors.onSurface },
-          headerBackVisible: false,
-          headerShown: true,
           animation: "slide_from_left",
         }}
       />
