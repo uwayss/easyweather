@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Text, Card, Divider, SegmentedButtons } from "react-native-paper";
 import { FlatList, View } from "react-native";
-import { styles } from "./DateScreen/styles";
+import { styles } from "../screens/DateScreen/styles";
 import { ForecastHour } from "../types/weather";
-import HourProgress from "./DateScreen/HourProgress";
+import HourProgress from "../screens/DateScreen/HourProgress";
 import { useSettings } from "../context/SettingsContext";
 import {
   convertTemperature,

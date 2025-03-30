@@ -1,5 +1,5 @@
 import React from "react";
-import { LocationResult } from "../api/location";
+import { LocationResult } from "../../api/location";
 import { ScrollView, View, StyleSheet, Pressable } from "react-native";
 import { Surface, Text, Icon } from "react-native-paper";
 
