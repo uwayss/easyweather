@@ -1,10 +1,9 @@
 import React from "react";
 import { View } from "react-native";
-import { Text, Button, Card, ActivityIndicator } from "react-native-paper";
+import { Text, Card } from "react-native-paper";
 import { ForecastDay } from "../../types/weather";
 import { styles } from "./styles";
 import weatherDescriptions from "../../utils/descriptions";
-import { useNavigation } from "@react-navigation/native";
 import { useSettings } from "../../context/SettingsContext";
 import { convertTemperature, formatTemperature } from "../../utils/unitConversion";
 
@@ -53,33 +52,4 @@ export function StatsCard({ selectedForecast }: { selectedForecast: ForecastDay 
   );
 }
 
-export function DayTitle({ title }: { title: string | undefined }) {
-  return (
-    <View>
-      {title ? (
-        <Text variant="headlineMedium" style={styles.title}>
-          {title}
-        </Text>
-      ) : (
-        <ActivityIndicator style={styles.title} size="large" />
-      )}
-    </View>
-  );
-}
-
-export function BackButton() {
-  const navigation = useNavigation();
-  return (
-    <Button
-      icon="arrow-left"
-      mode="outlined"
-      onPress={() => navigation.goBack()}
-      style={styles.button}
-    >
-      Back to Forecast
-    </Button>
-  );
-}
-
-// Export the StatsCard component as default
 export default StatsCard;

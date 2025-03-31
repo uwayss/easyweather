@@ -1,7 +1,9 @@
 import { StyleSheet } from "react-native";
 import { Card } from "react-native-paper";
 import React from "react";
-import { ConditionalBackground, Details, MainInfo } from "./WeatherCard.components";
+import { ConditionalBackground } from "./WeatherCard/ConditionalBackground";
+import { Details } from "./WeatherCard/Details";
+import { MainInfo } from "./WeatherCard/MainInfo";
 import { useWeather } from "../../context/WeatherContext";
 import { useLocationContext } from "../../context/LocationContext";
 
