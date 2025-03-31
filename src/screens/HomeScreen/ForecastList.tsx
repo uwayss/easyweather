@@ -12,9 +12,64 @@ import { RootStackParamList } from "../../../App";
 import { useSettings } from "../../context/SettingsContext";
 import { convertTemperature, formatTemperature } from "../../utils/unitConversion";
 
+const ForecastItem = React.memo(function ForecastItem({
+  item,
+  index,
+  onPress,
+}: {
+  item: ForecastDay;
+  index: number;
+  onPress: (date: string) => void;
+}) {
+  const { settings } = useSettings();
+  const weather = weatherDescriptions[item.weatherCode]?.day;
+  const date = new Date(item.date);
+
+  let dayName;
+  if (index === 0) {
+    dayName = "Today";
+  } else if (index === 1) {
+    dayName = "Tomorrow";
+  } else {
+    dayName = date.toLocaleDateString("en-UK", { weekday: "long" });
+  }
+
+  const currentDate = new Date().toISOString().split("T")[0];
+  const isToday = item.date === currentDate;
+
+  return (
+    <TouchableOpacity onPress={() => onPress(item.date)} activeOpacity={0.6}>
+      <Card style={[styles.card, isToday ? styles.todayCard : null]} mode="contained">
+        <Card.Content style={styles.cardContent}>
+          <Text variant="titleMedium" numberOfLines={1} style={styles.dayName}>
+            {dayName}
+          </Text>
+          <Image source={weather.image} style={styles.weatherIcon} resizeMode="contain" />
+          <Text variant="bodyMedium" style={styles.description} numberOfLines={1}>
+            {weather.description}
+          </Text>
+          <View style={styles.temperatures}>
+            <Text style={styles.maxTemp}>
+              {formatTemperature(
+                convertTemperature(item.maxTemp, settings.useImperialUnits),
+                settings.useImperialUnits,
+              ).replace(/°[CF]$/, "°")}
+            </Text>
+            <Text style={styles.minTemp}>
+              {formatTemperature(
+                convertTemperature(item.minTemp, settings.useImperialUnits),
+                settings.useImperialUnits,
+              ).replace(/°[CF]$/, "°")}
+            </Text>
+          </View>
+        </Card.Content>
+      </Card>
+    </TouchableOpacity>
+  );
+});
+
 export default function ForecastList() {
   const { weather } = useWeather();
-  const { settings } = useSettings();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const forecast = convertToForecastDays(weather?.daily);
 
@@ -24,52 +79,9 @@ export default function ForecastList() {
     navigation.push("DayDetails", { date });
   };
 
-  const renderItem = ({ item, index }: { item: ForecastDay; index: number }) => {
-    const weather = weatherDescriptions[item.weatherCode]?.day;
-    const date = new Date(item.date);
-
-    let dayName;
-    if (index === 0) {
-      dayName = "Today";
-    } else if (index === 1) {
-      dayName = "Tomorrow";
-    } else {
-      dayName = date.toLocaleDateString("en-UK", { weekday: "long" });
-    }
-
-    const currentDate = new Date().toISOString().split("T")[0];
-    const isToday = item.date === currentDate;
-
-    return (
-      <TouchableOpacity onPress={() => handleForecastPress(item.date)}>
-        <Card style={[styles.card, isToday ? styles.todayCard : null]} mode="contained">
-          <Card.Content style={styles.cardContent}>
-            <Text variant="titleMedium" numberOfLines={1} style={styles.dayName}>
-              {dayName}
-            </Text>
-            <Image source={weather.image} style={styles.weatherIcon} resizeMode="contain" />
-            <Text variant="bodyMedium" style={styles.description} numberOfLines={1}>
-              {weather.description}
-            </Text>
-            <View style={styles.temperatures}>
-              <Text style={styles.maxTemp}>
-                {formatTemperature(
-                  convertTemperature(item.maxTemp, settings.useImperialUnits),
-                  settings.useImperialUnits,
-                ).replace(/°[CF]$/, "°")}
-              </Text>
-              <Text style={styles.minTemp}>
-                {formatTemperature(
-                  convertTemperature(item.minTemp, settings.useImperialUnits),
-                  settings.useImperialUnits,
-                ).replace(/°[CF]$/, "°")}
-              </Text>
-            </View>
-          </Card.Content>
-        </Card>
-      </TouchableOpacity>
-    );
-  };
+  const renderItem = ({ item, index }: { item: ForecastDay; index: number }) => (
+    <ForecastItem item={item} index={index} onPress={handleForecastPress} />
+  );
 
   return (
     <View>
@@ -79,9 +91,9 @@ export default function ForecastList() {
         keyExtractor={item => item.date}
         horizontal
         initialNumToRender={7}
-        windowSize={7}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.container}
+        removeClippedSubviews={false}
       />
     </View>
   );

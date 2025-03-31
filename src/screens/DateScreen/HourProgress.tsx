@@ -9,11 +9,13 @@ export default function HourProgress({
   progress,
   value,
   color,
+  isCurrentHour,
 }: {
   time: string;
   progress: number;
   value: string | number;
   color: string;
+  isCurrentHour: boolean;
 }) {
   const hourTime = new Date(time).getHours();
   const formattedHour =
@@ -25,7 +27,7 @@ export default function HourProgress({
       ? `${hourTime - 12} PM`
       : `${hourTime} AM`;
   return (
-    <View style={styles.hourlyItem}>
+    <View style={[styles.hourlyItem, isCurrentHour ? styles.currentHour : undefined]}>
       <Text style={styles.hourText}>{formattedHour}</Text>
       <CustomVerticalProgressBar
         progress={progress}

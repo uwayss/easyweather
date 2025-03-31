@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { ScrollView, StyleSheet, InteractionManager, View, RefreshControl } from "react-native";
+import React, { useState, useMemo } from "react";
+import { ScrollView, StyleSheet, View, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme, IconButton } from "react-native-paper";
 import { LocationSearch } from "./HomeScreen/LocationSearch";
@@ -20,8 +20,7 @@ type HomeProps = {
 
 export default function Home({ navigation }: HomeProps) {
   const theme = useTheme();
-  const { weather, fetchWeatherData, loading } = useWeather();
-  const [renderHourlyLists, setRenderHourlyLists] = useState(false);
+  const { weather, fetchWeatherData } = useWeather();
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
@@ -34,13 +33,6 @@ export default function Home({ navigation }: HomeProps) {
       setRefreshing(false);
     }
   };
-
-  useEffect(() => {
-    const interactionPromise = InteractionManager.runAfterInteractions(() => {
-      setRenderHourlyLists(true);
-    });
-    return () => interactionPromise.cancel();
-  }, []);
 
   const todaysHourlyData: ForecastHour[] | null | undefined = useMemo(() => {
     if (!weather?.hourly) return null;
@@ -60,14 +52,13 @@ export default function Home({ navigation }: HomeProps) {
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={
           <RefreshControl
-            refreshing={refreshing || loading}
+            refreshing={refreshing}
             onRefresh={onRefresh}
             colors={[theme.colors.primary]}
             tintColor={theme.colors.primary}
           />
         }
       >
-        {/* --- Row for Search and Settings --- */}
         <View style={styles.topRow}>
           <View style={styles.searchWrapper}>
             <LocationSearch />
@@ -81,23 +72,13 @@ export default function Home({ navigation }: HomeProps) {
             accessibilityLabel="Open settings"
           />
         </View>
-
-        {/* --- Rest of the content --- */}
         <WeatherCard />
         <ForecastList />
         <View>
-          {renderHourlyLists && todaysHourlyData && todaysHourlyData.length > 0 ? (
-            <>
-              <MergedConditionsCard selectedDateHourly={todaysHourlyData} />
-            </>
+          {todaysHourlyData && todaysHourlyData.length > 0 ? (
+            <MergedConditionsCard selectedDateHourly={todaysHourlyData} />
           ) : (
-            <>
-              <PlaceholderCard />
-              <PlaceholderCard />
-              <PlaceholderCard />
-              <PlaceholderCard />
-              <PlaceholderCard />
-            </>
+            <PlaceholderCard />
           )}
         </View>
       </ScrollView>
