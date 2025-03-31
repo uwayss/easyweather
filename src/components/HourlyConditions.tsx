@@ -123,14 +123,14 @@ const Hour = React.memo(function Hour({ item, metricType }: HourItemProps) {
   };
 
   const metricData = React.useMemo(() => getMetricData(), [item, metricType]);
-
+  const isToday = new Date(item.time).toDateString() === new Date().toDateString();
   return (
     <HourProgress
       time={item.time}
       color={metricData.color}
       progress={metricData.progress}
       value={metricData.value}
-      isCurrentHour={isCurrentHour}
+      highlight={isCurrentHour && isToday}
     />
   );
 });
@@ -152,36 +152,6 @@ export function MergedConditionsCard({
     ],
     [],
   );
-
-  React.useEffect(() => {
-    if (flatListRef.current && selectedDateHourly.length > 0) {
-      const scrollToCurrentHour = () => {
-        const currentHour = new Date().getHours();
-        const currentIndex = selectedDateHourly.findIndex(
-          hour => new Date(hour.time).getHours() === currentHour,
-        );
-
-        if (currentIndex >= 0) {
-          flatListRef.current?.scrollToIndex({
-            index: currentIndex,
-            animated: true,
-            viewOffset: 0,
-            viewPosition: 0.5,
-          });
-        } else {
-          // Fallback to scroll to middle if current hour not found
-          flatListRef.current?.scrollToOffset({
-            offset: (selectedDateHourly.length * 130) / 2 - 65,
-            animated: true,
-          });
-        }
-      };
-
-      // Add small delay to ensure list is rendered
-      const timer = setTimeout(scrollToCurrentHour, 300);
-      return () => clearTimeout(timer);
-    }
-  }, [selectedDateHourly]);
 
   return (
     <Card style={styles.card}>
