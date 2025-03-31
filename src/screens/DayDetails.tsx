@@ -3,11 +3,13 @@ import { StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import { useWeather } from "../context/WeatherContext";
 import { convertToForecastDays } from "../utils/weatherUtils";
 import { formatForecastDate, filterHourlyDataForDate } from "../utils/dateScreen.helpers";
-import { BackButton, DayTitle, StatsCard } from "./DateScreen/StatsCard";
+import { StatsCard } from "./DateScreen/StatsCard";
 import { MergedConditionsCard } from "../components/HourlyConditions";
 import { RouteProp } from "@react-navigation/native";
 import { Text, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import BackButton from "./DateScreen/BackButton";
+import DayTitle from "./DateScreen/DayTitle";
 
 type DayDetailsParams = {
   date: string;
