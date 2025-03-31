@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Text, Card, Divider, SegmentedButtons } from "react-native-paper";
-import { FlatList, View } from "react-native";
+import { Text, Card, Divider } from "react-native-paper";
+import { FlatList, View, TouchableOpacity } from "react-native";
 import { styles } from "../screens/DateScreen/styles";
 import { ForecastHour } from "../types/weather";
 import HourProgress from "../screens/DateScreen/HourProgress";
@@ -12,7 +12,6 @@ import {
   formatWindSpeed,
 } from "../utils/unitConversion";
 import { DEFAULT_TEMP_COLOR_STOPS, getTemperatureGradientColor } from "../utils/colorUtils";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 type MetricType = "temperature" | "precipitation" | "humidity" | "wind";
 
@@ -21,7 +20,7 @@ interface HourItemProps {
   metricType: MetricType;
 }
 
-function Hour({ item, metricType }: HourItemProps) {
+const Hour = React.memo(function Hour({ item, metricType }: HourItemProps) {
   const { settings } = useSettings();
   const currentHour = new Date().getHours();
   const itemHour = new Date(item.time).getHours();
@@ -123,19 +122,18 @@ function Hour({ item, metricType }: HourItemProps) {
     }
   };
 
-  const metricData = getMetricData();
+  const metricData = React.useMemo(() => getMetricData(), [item, metricType]);
 
   return (
-    <View style={isCurrentHour ? styles.currentHour : null}>
-      <HourProgress
-        time={item.time}
-        color={metricData.color}
-        progress={metricData.progress}
-        value={metricData.value}
-      />
-    </View>
+    <HourProgress
+      time={item.time}
+      color={metricData.color}
+      progress={metricData.progress}
+      value={metricData.value}
+      isCurrentHour={isCurrentHour}
+    />
   );
-}
+});
 
 export function MergedConditionsCard({
   selectedDateHourly,
@@ -143,58 +141,97 @@ export function MergedConditionsCard({
   selectedDateHourly: ForecastHour[];
 }) {
   const [metricType, setMetricType] = useState<MetricType>("temperature");
+  const flatListRef = React.useRef<FlatList>(null);
+
+  const metricButtons = React.useMemo(
+    () => [
+      { value: "temperature", label: "Temperature" },
+      { value: "precipitation", label: "Precipitation" },
+      { value: "humidity", label: "Humidity" },
+      { value: "wind", label: "Wind" },
+    ],
+    [],
+  );
+
+  React.useEffect(() => {
+    if (flatListRef.current && selectedDateHourly.length > 0) {
+      const scrollToCurrentHour = () => {
+        const currentHour = new Date().getHours();
+        const currentIndex = selectedDateHourly.findIndex(
+          hour => new Date(hour.time).getHours() === currentHour,
+        );
+
+        if (currentIndex >= 0) {
+          flatListRef.current?.scrollToIndex({
+            index: currentIndex,
+            animated: true,
+            viewOffset: 0,
+            viewPosition: 0.5,
+          });
+        } else {
+          // Fallback to scroll to middle if current hour not found
+          flatListRef.current?.scrollToOffset({
+            offset: (selectedDateHourly.length * 130) / 2 - 65,
+            animated: true,
+          });
+        }
+      };
+
+      // Add small delay to ensure list is rendered
+      const timer = setTimeout(scrollToCurrentHour, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [selectedDateHourly]);
 
   return (
     <Card style={styles.card}>
       <Card.Content>
-        <Text variant="titleMedium" style={styles.precipitationTitle}>
-          Hourly Conditions
-        </Text>
-        <SegmentedButtons
-          value={metricType}
-          onValueChange={value => setMetricType(value as MetricType)}
-          buttons={[
-            {
-              value: "temperature",
-              icon: ({ color }) => (
-                <MaterialCommunityIcons name="thermometer" size={18} color={color} />
-              ),
-            },
-            {
-              value: "precipitation",
-              icon: ({ color }) => (
-                <MaterialCommunityIcons name="weather-pouring" size={18} color={color} />
-              ),
-            },
-            {
-              value: "humidity",
-              icon: ({ color }) => (
-                <MaterialCommunityIcons name="water-percent" size={18} color={color} />
-              ),
-            },
-            {
-              value: "wind",
-              icon: ({ color }) => (
-                <MaterialCommunityIcons name="weather-windy" size={18} color={color} />
-              ),
-            },
-          ]}
-          density="small"
-          theme={{ roundness: 1 }}
-        />
-        <Divider style={styles.divider} />
+        <View
+          style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
+        >
+          <Text variant="titleMedium" style={styles.precipitationTitle}>
+            The Next Hours
+          </Text>
+        </View>
         <View style={styles.scrollContainer}>
           <FlatList
             horizontal
-            data={selectedDateHourly}
-            renderItem={({ item }) => <Hour item={item} metricType={metricType} />}
-            initialNumToRender={7}
-            windowSize={7}
-            contentContainerStyle={styles.hourlyContainer}
+            data={metricButtons}
+            renderItem={({ item: button }) => (
+              <TouchableOpacity
+                activeOpacity={0.5}
+                style={[styles.tabButton, metricType === button.value && styles.activeTab]}
+                onPress={() => setMetricType(button.value as MetricType)}
+              >
+                <Text style={styles.tabText}>{button.label}</Text>
+              </TouchableOpacity>
+            )}
+            keyExtractor={button => button.value}
+            contentContainerStyle={styles.scrollContent}
             showsHorizontalScrollIndicator={false}
+            initialNumToRender={5}
+            maxToRenderPerBatch={5}
+            windowSize={7}
             removeClippedSubviews={false}
           />
         </View>
+        <Divider style={styles.divider} />
+        <FlatList
+          ref={flatListRef}
+          horizontal
+          data={selectedDateHourly}
+          renderItem={({ item }) => <Hour item={item} metricType={metricType} />}
+          keyExtractor={item => item.time}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={10}
+          contentContainerStyle={styles.hourlyContainer}
+          removeClippedSubviews={false}
+          onScrollToIndexFailed={() => {
+            // Fallback to manual scrolling if automatic fails
+            flatListRef.current?.scrollToEnd();
+          }}
+        />
         <Text style={styles.scrollHint}>Swipe to see more hours →</Text>
       </Card.Content>
     </Card>

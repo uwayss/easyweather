@@ -19,26 +19,13 @@ export default function RootStack() {
         headerShown: false,
       }}
     >
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          title: "Weather",
-        }}
-      />
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
       <Stack.Screen
         name="DayDetails"
         component={DayDetails}
         options={{
           animation: "slide_from_right",
-        }}
-      />
-      <Stack.Screen
-        name="Settings"
-        component={SettingsScreen}
-        options={{
-          title: "Settings",
-          animation: "slide_from_left",
         }}
       />
     </Stack.Navigator>

@@ -51,7 +51,7 @@ export const LocationSearch = () => {
         setResults([]);
         setShowResults(false);
       }
-    }, 800),
+    }, 500),
     [],
   );
 

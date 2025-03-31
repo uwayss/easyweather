@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, ScrollView, ActivityIndicator, InteractionManager } from "react-native";
+import React from "react";
+import { StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import { useWeather } from "../context/WeatherContext";
 import { convertToForecastDays } from "../utils/weatherUtils";
 import { formatForecastDate, filterHourlyDataForDate } from "../utils/dateScreen.helpers";
 import { BackButton, DayTitle, StatsCard } from "./DateScreen/StatsCard";
 import { MergedConditionsCard } from "../components/HourlyConditions";
 import { RouteProp } from "@react-navigation/native";
-import PlaceholderCard from "../components/PlaceholderCard";
 import { Text, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -20,17 +19,8 @@ export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
   if (!route) return null;
   const date = route.params.date;
   const { weather, error } = useWeather();
-  const [renderLists, setRenderLists] = useState(false);
   const theme = useTheme();
   const styles = stylesheet(theme.colors.background);
-  useEffect(() => {
-    const interactionPromise = InteractionManager.runAfterInteractions(() => {
-      console.log("[DayDetails] Interactions complete, rendering lists...");
-      setRenderLists(true);
-    });
-
-    return () => interactionPromise.cancel();
-  }, []);
 
   if (!weather) {
     return (
@@ -60,19 +50,7 @@ export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
         <BackButton />
         <DayTitle title={formatForecastDate(selectedForecast?.date)} />
         <StatsCard selectedForecast={selectedForecast} />
-        {renderLists ? (
-          <>
-            <MergedConditionsCard selectedDateHourly={selectedDateHourly} />
-          </>
-        ) : (
-          <>
-            <PlaceholderCard />
-            <PlaceholderCard />
-            <PlaceholderCard />
-            <PlaceholderCard />
-            <PlaceholderCard />
-          </>
-        )}
+        <MergedConditionsCard selectedDateHourly={selectedDateHourly} />
       </ScrollView>
     </SafeAreaView>
   );

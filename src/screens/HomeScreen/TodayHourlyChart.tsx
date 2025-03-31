@@ -13,15 +13,6 @@ const PADDING_OUTSIDE_CARD = 16 * 2;
 
 const BAR_SECTION_WIDTH = 50;
 
-const formatSimpleHourLabel = (time: string): string => {
-  const date = new Date(time);
-  const hour = date.getHours();
-  if (hour === 0) return "12A";
-  if (hour === 12) return "12P";
-  if (hour < 12) return `${hour}A`;
-  return `${hour - 12}P`;
-};
-
 const TodayHourlyChart: React.FC = () => {
   const { weather, loading: weatherLoading } = useWeather();
   const { settings } = useSettings();
@@ -50,24 +41,33 @@ const TodayHourlyChart: React.FC = () => {
     };
   }, [todaysHourlyData, settings.useImperialUnits]);
 
-  const chartConfig = {
-    backgroundColor: theme.colors.surface,
-    backgroundGradientFrom: theme.colors.surface,
-    backgroundGradientTo: theme.colors.surface,
-    decimalPlaces: 0,
+  const chartConfig = React.useMemo(
+    () => ({
+      backgroundColor: theme.colors.surface,
+      backgroundGradientFrom: theme.colors.surface,
+      backgroundGradientTo: theme.colors.surface,
+      decimalPlaces: 0,
+      color: (opacity = 1) =>
+        theme.dark ? `rgba(255, 255, 255, ${opacity * 0.8})` : `rgba(0, 0, 0, ${opacity * 0.8})`,
+      barPercentage: 0.5,
+      propsForBackgroundLines: {
+        strokeWidth: 0,
+      },
+      propsForLabels: {
+        fontSize: 10,
+      },
+    }),
+    [theme],
+  );
 
-    color: (opacity = 1) =>
-      theme.dark ? `rgba(255, 255, 255, ${opacity * 0.8})` : `rgba(0, 0, 0, ${opacity * 0.8})`,
-
-    style: {},
-    barPercentage: 0.5,
-    propsForBackgroundLines: {
-      strokeWidth: 0,
-    },
-    propsForLabels: {
-      fontSize: 10,
-    },
-  };
+  const formatSimpleHourLabel = React.useCallback((time: string): string => {
+    const date = new Date(time);
+    const hour = date.getHours();
+    if (hour === 0) return "12A";
+    if (hour === 12) return "12P";
+    if (hour < 12) return `${hour}A`;
+    return `${hour - 12}P`;
+  }, []);
 
   const calculatedChartWidth = React.useMemo(() => {
     if (!todaysHourlyData) return screenWidth - PADDING_OUTSIDE_CARD;
