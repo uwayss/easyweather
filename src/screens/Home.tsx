@@ -13,7 +13,6 @@ import { filterHourlyDataForDate } from "../utils/dateScreen.helpers";
 import { ForecastHour } from "../types/weather";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
-import { Graph } from "../components/Graph";
 
 type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 type HomeProps = {
@@ -84,19 +83,13 @@ export default function Home({ navigation }: HomeProps) {
             accessibilityLabel="Open settings"
           />
         </View>
-        {/* <WeatherCard />
-        <ForecastList /> */}
+        <WeatherCard />
+        <ForecastList />
         <View>
           {todaysHourlyData && todaysHourlyData.length > 0 ? (
-            // <MergedConditionsCard selectedDateHourly={todaysHourlyData} />
-            <Graph
-              selectedDateHourly={todaysHourlyData}
-              config={{
-                title: "The Next Hours",
-                // titleCentered: true,
-              }}
-            />
+            <MergedConditionsCard selectedDateHourly={todaysHourlyData} />
           ) : (
+            // <Graph data={getMetricDataForForecast("temperature", todaysHourlyData, false)} />
             <PlaceholderCard />
           )}
         </View>
