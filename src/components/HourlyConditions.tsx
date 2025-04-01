@@ -155,37 +155,35 @@ export function MergedConditionsCard({
 
   return (
     <Card style={styles.card}>
-      <Card.Content>
+      <Card.Content style={{ gap: 8 }}>
         <View
           style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
         >
-          <Text variant="titleMedium" style={styles.precipitationTitle}>
+          <Text variant="titleMedium" style={{ textAlign: "center" }}>
             The Next Hours
           </Text>
         </View>
-        <View style={styles.scrollContainer}>
-          <FlatList
-            horizontal
-            data={metricButtons}
-            renderItem={({ item: button }) => (
-              <TouchableOpacity
-                activeOpacity={0.5}
-                style={[styles.tabButton, metricType === button.value && styles.activeTab]}
-                onPress={() => setMetricType(button.value as MetricType)}
-              >
-                <Text style={styles.tabText}>{button.label}</Text>
-              </TouchableOpacity>
-            )}
-            keyExtractor={button => button.value}
-            contentContainerStyle={styles.scrollContent}
-            showsHorizontalScrollIndicator={false}
-            initialNumToRender={5}
-            maxToRenderPerBatch={5}
-            windowSize={7}
-            removeClippedSubviews={false}
-          />
-        </View>
-        <Divider style={styles.divider} />
+        <FlatList
+          horizontal
+          data={metricButtons}
+          renderItem={({ item: button }) => (
+            <TouchableOpacity
+              activeOpacity={0.5}
+              style={[styles.tabButton, metricType === button.value && styles.activeTab]}
+              onPress={() => setMetricType(button.value as MetricType)}
+            >
+              <Text style={styles.tabText}>{button.label}</Text>
+            </TouchableOpacity>
+          )}
+          keyExtractor={button => button.value}
+          contentContainerStyle={styles.scrollContent}
+          showsHorizontalScrollIndicator={false}
+          initialNumToRender={5}
+          maxToRenderPerBatch={5}
+          windowSize={7}
+          removeClippedSubviews={false}
+        />
+        <Divider />
         <FlatList
           ref={flatListRef}
           horizontal

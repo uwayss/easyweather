@@ -16,10 +16,7 @@ export const styles = StyleSheet.create({
     alignSelf: "flex-start",
     marginBottom: 8,
   },
-  title: {
-    marginVertical: 8,
-    textAlign: "center",
-  },
+
   card: {
     marginBottom: 16,
   },
@@ -37,22 +34,15 @@ export const styles = StyleSheet.create({
   temperatureItem: {
     alignItems: "center",
   },
-  precipitationTitle: {
-    marginBottom: 8,
-    textAlign: "center",
-  },
-  divider: {
-    marginBottom: 16,
-  },
-  scrollContainer: {
-    position: "relative",
-    borderRadius: 12,
-    overflow: "hidden",
-  },
+
   hourlyScroll: {
     flexGrow: 0,
   },
   hourlyContainer: {
+    flexDirection: "row",
+    paddingVertical: 2,
+  },
+  graphContainer: {
     flexDirection: "row",
     paddingVertical: 2,
   },
@@ -65,7 +55,6 @@ export const styles = StyleSheet.create({
     width: 18,
     height: 80,
   },
-
   scrollFadeGradient: {
     position: "absolute",
     top: 0,
@@ -85,7 +74,7 @@ export const styles = StyleSheet.create({
   },
   scrollContent: {
     flexDirection: "row",
-    paddingVertical: 8,
+    paddingVertical: 4,
   },
   hourText: {
     fontSize: 12,
@@ -105,5 +94,11 @@ export const styles = StyleSheet.create({
   tabText: {
     fontSize: 14,
     fontWeight: "500",
+  },
+  titleContainer: {
+    width: "100%",
+  },
+  title: {
+    textAlign: "center",
   },
 });
