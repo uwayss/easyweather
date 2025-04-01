@@ -1,9 +1,10 @@
 import { FlatList, StyleSheet, View } from "react-native";
 import React from "react";
 import { Text } from "react-native-paper";
-import { MetricDataPoint } from "../utils/metricData";
-import CustomVerticalProgressBar from "../screens/DateScreen/CustomVerticalProgressBar";
-const Item = React.memo(function Item({ item }: { item: MetricDataPoint }) {
+import { GraphDataPoint } from "../../utils/metricData";
+import CustomVerticalProgressBar from "../../screens/DateScreen/CustomVerticalProgressBar";
+
+const Item = React.memo(function Item({ item }: { item: GraphDataPoint }) {
   return (
     <View style={[styles.itemContainer, item.highlight ? styles.hightlightedItem : undefined]}>
       <Text style={styles.itemText}>{item.label}</Text>
@@ -16,7 +17,7 @@ const Item = React.memo(function Item({ item }: { item: MetricDataPoint }) {
     </View>
   );
 });
-export default function Graph({ data }: { data: MetricDataPoint[] }) {
+export default function Graph({ data }: { data: GraphDataPoint[] }) {
   return (
     <FlatList
       horizontal
