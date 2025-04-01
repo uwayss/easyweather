@@ -16,7 +16,9 @@ export const styles = StyleSheet.create({
     alignSelf: "flex-start",
     marginBottom: 8,
   },
-
+  title: {
+    textAlign: "center",
+  },
   card: {
     marginBottom: 16,
   },
@@ -97,8 +99,5 @@ export const styles = StyleSheet.create({
   },
   titleContainer: {
     width: "100%",
-  },
-  title: {
-    textAlign: "center",
   },
 });

@@ -11,7 +11,7 @@ export function DayTitle({ title }: { title: string | undefined }) {
           {title}
         </Text>
       ) : (
-        <ActivityIndicator style={styles.title} size="large" />
+        <ActivityIndicator size="large" />
       )}
     </View>
   );
