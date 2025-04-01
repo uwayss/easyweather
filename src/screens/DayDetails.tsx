@@ -4,7 +4,7 @@ import { useWeather } from "../context/WeatherContext";
 import { convertToForecastDays } from "../utils/weatherUtils";
 import { formatForecastDate, filterHourlyDataForDate } from "../utils/dateScreen.helpers";
 import { StatsCard } from "./DateScreen/StatsCard";
-import { MergedConditionsCard } from "../components/HourlyConditions";
+import HourlyConditions from "../components/HourlyConditions";
 import { RouteProp } from "@react-navigation/native";
 import { Text, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -52,7 +52,7 @@ export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
         <BackButton />
         <DayTitle title={formatForecastDate(selectedForecast?.date)} />
         <StatsCard selectedForecast={selectedForecast} />
-        <MergedConditionsCard selectedDateHourly={selectedDateHourly} />
+        <HourlyConditions selectedDateHourly={selectedDateHourly} />
       </ScrollView>
     </SafeAreaView>
   );

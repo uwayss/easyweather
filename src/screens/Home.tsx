@@ -84,7 +84,6 @@ export default function Home({ navigation }: HomeProps) {
           />
         </View>
         <WeatherCard />
-        <ForecastList />
         <View>
           {todaysHourlyData && todaysHourlyData.length > 0 ? (
             <HourlyConditions selectedDateHourly={todaysHourlyData} />
@@ -93,6 +92,7 @@ export default function Home({ navigation }: HomeProps) {
             <PlaceholderCard />
           )}
         </View>
+        <ForecastList />
       </ScrollView>
     </SafeAreaView>
   );
