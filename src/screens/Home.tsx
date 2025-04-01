@@ -8,6 +8,7 @@ import ForecastList from "./HomeScreen/ForecastList";
 import PlaceholderCard from "../components/PlaceholderCard";
 import { MergedConditionsCard } from "../components/HourlyConditions";
 import { useWeather } from "../context/WeatherContext";
+import { useLocationContext } from "../context/LocationContext";
 import { filterHourlyDataForDate } from "../utils/dateScreen.helpers";
 import { ForecastHour } from "../types/weather";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -22,14 +23,24 @@ export default function Home({ navigation }: HomeProps) {
   const theme = useTheme();
   const { weather, fetchWeatherData } = useWeather();
   const [refreshing, setRefreshing] = useState(false);
+  const { location } = useLocationContext();
 
   const onRefresh = async () => {
     console.log("Pull to refresh triggered");
-    if (weather?.location) {
+
+    if (location) {
       setRefreshing(true);
       console.log("Fetching weather data...");
-      await fetchWeatherData(weather.location.latitude, weather.location.longitude);
-      console.log("Weather data fetched");
+      try {
+        await fetchWeatherData(location.latitude, location.longitude);
+        console.log("Weather data fetched");
+      } catch (e) {
+        console.error("Fetch error:", e);
+      } finally {
+        setRefreshing(false);
+      }
+    } else {
+      console.error("Cannot refresh - location is not available");
       setRefreshing(false);
     }
   };

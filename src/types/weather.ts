@@ -67,8 +67,4 @@ export interface WeatherResponse {
     "interval" | "apparent_temperature" | "wind_speed_10m" | "relative_humidity_2m"
   >;
   daily: DailyWeather;
-  location?: {
-    latitude: number;
-    longitude: number;
-  };
 }
