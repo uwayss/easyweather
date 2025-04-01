@@ -17,10 +17,10 @@ type MetricType = "temperature" | "precipitation" | "humidity" | "wind";
 
 interface HourItemProps {
   item: ForecastHour;
-  metricType: MetricType;
+  metric: MetricType;
 }
 
-const Hour = React.memo(function Hour({ item, metricType }: HourItemProps) {
+const Hour = React.memo(function Hour({ item, metric }: HourItemProps) {
   const { settings } = useSettings();
   const currentHour = new Date().getHours();
   const itemHour = new Date(item.time).getHours();
@@ -108,7 +108,7 @@ const Hour = React.memo(function Hour({ item, metricType }: HourItemProps) {
 
   // Get the appropriate data based on the metric type
   const getMetricData = () => {
-    switch (metricType) {
+    switch (metric) {
       case "temperature":
         return getTemperatureData();
       case "precipitation":
@@ -122,7 +122,7 @@ const Hour = React.memo(function Hour({ item, metricType }: HourItemProps) {
     }
   };
 
-  const metricData = React.useMemo(() => getMetricData(), [item, metricType]);
+  const metricData = React.useMemo(() => getMetricData(), [item, metric]);
   const isToday = new Date(item.time).toDateString() === new Date().toDateString();
   return (
     <HourProgress
@@ -134,16 +134,82 @@ const Hour = React.memo(function Hour({ item, metricType }: HourItemProps) {
     />
   );
 });
+function Title({ title, centered }: { title: string; centered?: boolean }) {
+  return (
+    <View style={styles.titleContainer}>
+      <Text variant="titleMedium" style={centered ? styles.title : undefined}>
+        {title}
+      </Text>
+    </View>
+  );
+}
 
-export function MergedConditionsCard({
+function MetricSelector({
+  metrics,
+  currentMetric,
+  setCurrentMetric,
+}: {
+  metrics: GraphItem[];
+  currentMetric: MetricType;
+  setCurrentMetric: React.Dispatch<React.SetStateAction<MetricType>>;
+}) {
+  return (
+    <FlatList
+      horizontal
+      data={metrics}
+      renderItem={({ item: button }) => (
+        <TouchableOpacity
+          activeOpacity={0.5}
+          style={[styles.tabButton, currentMetric === button.value && styles.activeTab]}
+          onPress={() => setCurrentMetric(button.value as MetricType)}
+        >
+          <Text style={styles.tabText}>{button.label}</Text>
+        </TouchableOpacity>
+      )}
+      // eslint-disable-next-line react/prop-types
+      keyExtractor={(button: { value: string; label: string }) => button.value}
+      contentContainerStyle={styles.scrollContent}
+      showsHorizontalScrollIndicator={false}
+      initialNumToRender={5}
+      maxToRenderPerBatch={5}
+      windowSize={7}
+      removeClippedSubviews={false}
+    />
+  );
+}
+function Items({ data, currentMetric }: { data: ForecastHour[]; currentMetric: MetricType }) {
+  return (
+    <FlatList
+      horizontal
+      data={data}
+      renderItem={({ item }) => <Hour item={item} metric={currentMetric} />}
+      keyExtractor={item => item.time}
+      initialNumToRender={10}
+      maxToRenderPerBatch={10}
+      windowSize={10}
+      contentContainerStyle={styles.graphContainer}
+      removeClippedSubviews={false}
+    />
+  );
+}
+interface GraphConfig {
+  title?: string;
+  titleCentered?: boolean;
+}
+interface GraphItem {
+  value: string;
+  label: string;
+}
+export function Graph({
   selectedDateHourly,
+  config,
 }: {
   selectedDateHourly: ForecastHour[];
+  config?: GraphConfig;
 }) {
-  const [metricType, setMetricType] = useState<MetricType>("temperature");
-  const flatListRef = React.useRef<FlatList>(null);
+  const [currentMetric, setCurrentMetric] = useState<MetricType>("temperature");
 
-  const metricButtons = React.useMemo(
+  const metricButtons: GraphItem[] = React.useMemo(
     () => [
       { value: "temperature", label: "Temperature" },
       { value: "precipitation", label: "Precipitation" },
@@ -156,50 +222,14 @@ export function MergedConditionsCard({
   return (
     <Card style={styles.card}>
       <Card.Content style={{ gap: 8 }}>
-        <View
-          style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
-        >
-          <Text variant="titleMedium" style={{ textAlign: "center" }}>
-            The Next Hours
-          </Text>
-        </View>
-        <FlatList
-          horizontal
-          data={metricButtons}
-          renderItem={({ item: button }) => (
-            <TouchableOpacity
-              activeOpacity={0.5}
-              style={[styles.tabButton, metricType === button.value && styles.activeTab]}
-              onPress={() => setMetricType(button.value as MetricType)}
-            >
-              <Text style={styles.tabText}>{button.label}</Text>
-            </TouchableOpacity>
-          )}
-          keyExtractor={button => button.value}
-          contentContainerStyle={styles.scrollContent}
-          showsHorizontalScrollIndicator={false}
-          initialNumToRender={5}
-          maxToRenderPerBatch={5}
-          windowSize={7}
-          removeClippedSubviews={false}
+        {config?.title && <Title title={config.title} centered={config.titleCentered} />}
+        <MetricSelector
+          currentMetric={currentMetric}
+          setCurrentMetric={setCurrentMetric}
+          metrics={metricButtons}
         />
         <Divider />
-        <FlatList
-          ref={flatListRef}
-          horizontal
-          data={selectedDateHourly}
-          renderItem={({ item }) => <Hour item={item} metricType={metricType} />}
-          keyExtractor={item => item.time}
-          initialNumToRender={10}
-          maxToRenderPerBatch={10}
-          windowSize={10}
-          contentContainerStyle={styles.hourlyContainer}
-          removeClippedSubviews={false}
-          onScrollToIndexFailed={() => {
-            // Fallback to manual scrolling if automatic fails
-            flatListRef.current?.scrollToEnd();
-          }}
-        />
+        <Items data={selectedDateHourly} currentMetric={currentMetric} />
         <Text style={styles.scrollHint}>Swipe to see more hours →</Text>
       </Card.Content>
     </Card>
