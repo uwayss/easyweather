@@ -18,7 +18,7 @@ export async function searchLocation(query: string): Promise<LocationResult[]> {
 
   const response = await fetch(url, {
     headers: {
-      "User-Agent": "WeatherApp by Uwayss/1.0",
+      "User-Agent": "EasyWeather by Uwayss/1.0",
     },
   });
 

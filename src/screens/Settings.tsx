@@ -1,10 +1,13 @@
 import React from "react";
 import { ScrollView, StyleSheet } from "react-native"; // Added View
 import { SafeAreaView } from "react-native-safe-area-context";
-import { List, Divider, useTheme, SegmentedButtons, Text } from "react-native-paper"; // Added SegmentedButtons, Text
+import { List, Divider, useTheme, SegmentedButtons, Text } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { Appbar } from "react-native-paper";
-import { useSettings, ThemePreference } from "../context/SettingsContext"; // Import ThemePreference type
+import { useSettings, ThemePreference } from "../context/SettingsContext";
+import { AboutSection } from "./SettingsScreen/AboutSection";
+import { LegalSection } from "./SettingsScreen/LegalSection";
+import { ActionsSection } from "./SettingsScreen/ActionsSection";
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
@@ -13,7 +16,6 @@ const SettingsScreen = () => {
   const { settings, updateSetting } = useSettings();
 
   const handleThemeChange = (value: string) => {
-    // Type assertion might be needed if 'value' isn't inferred correctly
     updateSetting("theme", value as ThemePreference);
   };
 
@@ -24,7 +26,6 @@ const SettingsScreen = () => {
         <Appbar.Content title="Settings" />
       </Appbar.Header>
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-        {/* --- Theme Selection --- */}
         <List.Section title="Appearance">
           <Text style={styles.label}>Theme</Text>
           <SegmentedButtons
@@ -35,7 +36,7 @@ const SettingsScreen = () => {
               {
                 value: "system",
                 label: "System",
-                icon: "theme-light-dark", // Or 'brightness-auto'
+                icon: "theme-light-dark",
               },
               {
                 value: "light",
@@ -50,10 +51,7 @@ const SettingsScreen = () => {
             ]}
           />
         </List.Section>
-
         <Divider style={styles.divider} />
-
-        {/* --- Units Selection --- */}
         <List.Section title="Units">
           <Text style={styles.label}>Temperature & Wind Speed</Text>
           <SegmentedButtons
@@ -75,6 +73,11 @@ const SettingsScreen = () => {
           />
         </List.Section>
         <Divider style={styles.divider} />
+
+        {/* --- Render the imported sections --- */}
+        <AboutSection />
+        <LegalSection />
+        <ActionsSection />
       </ScrollView>
     </SafeAreaView>
   );
@@ -91,21 +94,19 @@ const stylesheet = (themeBg: string) =>
     },
     contentContainer: {
       paddingVertical: 8,
-      paddingHorizontal: 0, // Use padding on sections/items instead
+      paddingHorizontal: 0,
     },
-    // Added styles for theme selector
     label: {
-      paddingHorizontal: 16, // Match List.Section title padding
+      paddingHorizontal: 16,
       paddingBottom: 8,
-      fontSize: 14, // Slightly smaller label
-      // color: theme.colors.onSurfaceVariant, // Use a secondary text color
+      fontSize: 14,
     },
     segmentedButtonContainer: {
-      paddingHorizontal: 16, // Add padding to the button group
+      paddingHorizontal: 16,
       paddingBottom: 8,
     },
     divider: {
-      marginVertical: 8, // Add space around dividers
+      marginVertical: 8,
     },
   });
 
