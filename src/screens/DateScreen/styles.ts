@@ -74,28 +74,11 @@ export const styles = StyleSheet.create({
     marginTop: 8,
     fontStyle: "italic",
   },
-  scrollContent: {
-    flexDirection: "row",
-    paddingVertical: 4,
-  },
   hourText: {
     fontSize: 12,
     marginTop: 2,
     textAlign: "center",
     width: "100%",
-  },
-  tabButton: {
-    padding: 8,
-    borderRadius: 8,
-    marginRight: 8,
-    borderWidth: 1,
-  },
-  activeTab: {
-    backgroundColor: "rgba(0, 109, 119, 0.2)",
-  },
-  tabText: {
-    fontSize: 14,
-    fontWeight: "500",
   },
   titleContainer: {
     width: "100%",

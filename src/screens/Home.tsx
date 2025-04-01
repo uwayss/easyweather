@@ -6,7 +6,7 @@ import { LocationSearch } from "./HomeScreen/LocationSearch";
 import WeatherCard from "./HomeScreen/WeatherCard";
 import ForecastList from "./HomeScreen/ForecastList";
 import PlaceholderCard from "../components/PlaceholderCard";
-import { MergedConditionsCard } from "../components/HourlyConditions";
+import HourlyConditions from "../components/HourlyConditions";
 import { useWeather } from "../context/WeatherContext";
 import { useLocationContext } from "../context/LocationContext";
 import { filterHourlyDataForDate } from "../utils/dateScreen.helpers";
@@ -87,7 +87,7 @@ export default function Home({ navigation }: HomeProps) {
         <ForecastList />
         <View>
           {todaysHourlyData && todaysHourlyData.length > 0 ? (
-            <MergedConditionsCard selectedDateHourly={todaysHourlyData} />
+            <HourlyConditions selectedDateHourly={todaysHourlyData} />
           ) : (
             // <Graph data={getMetricDataForForecast("temperature", todaysHourlyData, false)} />
             <PlaceholderCard />

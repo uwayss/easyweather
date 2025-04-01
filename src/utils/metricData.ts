@@ -8,7 +8,7 @@ import {
 } from "./unitConversion";
 export type MetricType = "temperature" | "precipitation" | "humidity" | "wind";
 
-export interface MetricDataPoint {
+export interface GraphDataPoint {
   progress: number;
   color: string;
   value: string;
@@ -23,7 +23,7 @@ export interface MetricDataPoint {
 const getTemperatureDataForHour = (
   item: ForecastHour,
   useImperialUnits: boolean,
-): MetricDataPoint => {
+): GraphDataPoint => {
   const tempCelsius: number = item.temperature;
   const temp = convertTemperature(tempCelsius, useImperialUnits);
 
@@ -65,7 +65,7 @@ const getTemperatureDataForHour = (
 };
 
 // Precipitation specific calculations for a single hour
-const getPrecipitationDataForHour = (item: ForecastHour): MetricDataPoint => {
+const getPrecipitationDataForHour = (item: ForecastHour): GraphDataPoint => {
   const rainProb = item.rainProb;
   let color = "#90be6d"; // Green
   if (rainProb > 30) color = "#f9c74f"; // Yellow
@@ -93,7 +93,7 @@ const getPrecipitationDataForHour = (item: ForecastHour): MetricDataPoint => {
 };
 
 // Humidity specific calculations for a single hour
-const getHumidityDataForHour = (item: ForecastHour): MetricDataPoint => {
+const getHumidityDataForHour = (item: ForecastHour): GraphDataPoint => {
   const humidity = item.humidity;
   let color = "#ffd166"; // Light Orange/Yellow
   if (humidity > 30) color = "#06d6a0"; // Teal
@@ -121,10 +121,7 @@ const getHumidityDataForHour = (item: ForecastHour): MetricDataPoint => {
 };
 
 // Wind speed specific calculations for a single hour
-const getWindSpeedDataForHour = (
-  item: ForecastHour,
-  useImperialUnits: boolean,
-): MetricDataPoint => {
+const getWindSpeedDataForHour = (item: ForecastHour, useImperialUnits: boolean): GraphDataPoint => {
   const windSpeed = item.windSpeed || 0;
   // Convert wind speed based on user preference
   const convertedWindSpeed = convertWindSpeed(windSpeed, useImperialUnits);
@@ -175,15 +172,15 @@ const getWindSpeedDataForHour = (
  * @param metricType The type of metric to calculate ("temperature", "precipitation", "humidity", "wind").
  * @param forecastHours An array of ForecastHour objects.
  * @param settings User settings, including unit preference.
- * @returns An array of MetricDataPoint objects corresponding to each forecast hour.
+ * @returns An array of GraphDataPoint objects corresponding to each forecast hour.
  */
 export const getMetricDataForForecast = (
   metricType: MetricType,
   forecastHours: ForecastHour[],
   useImperialUnits: boolean,
-): MetricDataPoint[] => {
+): GraphDataPoint[] => {
   // Map each hour to its corresponding metric data point
-  const metricDataArray = forecastHours.map((hour): MetricDataPoint => {
+  const metricDataArray = forecastHours.map((hour): GraphDataPoint => {
     switch (metricType) {
       case "temperature":
         return getTemperatureDataForHour(hour, useImperialUnits);
@@ -196,7 +193,7 @@ export const getMetricDataForForecast = (
       default:
         // Handle unexpected metricType. Throwing an error is often better
         // than returning potentially misleading default data in an array context.
-        // You could also return a default/error MetricDataPoint if preferred.
+        // You could also return a default/error GraphDataPoint if preferred.
         console.error(`Unknown metricType encountered: ${metricType}`);
         // Return a default/error state or throw
         return {
