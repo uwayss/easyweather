@@ -1,9 +1,8 @@
 import React from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Text, ActivityIndicator } from "react-native-paper";
-import { styles } from "./styles";
 
-export function DayTitle({ title }: { title: string | undefined }) {
+export default function DayTitle({ title }: { title: string | undefined }) {
   return (
     <View>
       {title ? (
@@ -17,4 +16,8 @@ export function DayTitle({ title }: { title: string | undefined }) {
   );
 }
 
-export default DayTitle;
+const styles = StyleSheet.create({
+  title: {
+    textAlign: "center",
+  },
+});

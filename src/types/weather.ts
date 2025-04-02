@@ -3,14 +3,40 @@ export interface WeatherResponseAPI {
   longitude: number;
   timezone: string;
   current_units: WeatherUnitsAPI;
-  current: CurrentWeatherAPI;
+  current: {
+    time: string;
+    interval: number;
+    temperature_2m: number;
+    relative_humidity_2m: number;
+    apparent_temperature: number;
+    is_day: 0 | 1;
+    weather_code: number;
+    wind_speed_10m: number;
+  };
   hourly_units: WeatherUnitsAPI;
-  hourly: HourlyWeatherAPI;
+  hourly: {
+    time: string[];
+    temperature_2m: number[];
+    relative_humidity_2m: number[];
+    precipitation_probability: number[];
+    weather_code: number[];
+    is_day: number[];
+    wind_speed_10m?: number[];
+  };
   daily_units: Omit<
     WeatherUnitsAPI,
     "interval" | "apparent_temperature" | "wind_speed_10m" | "relative_humidity_2m"
   >;
-  daily: DailyWeatherAPI;
+  daily: {
+    time: string[];
+    weather_code: number[];
+    temperature_2m_max: number[];
+    temperature_2m_min: number[];
+    precipitation_probability_max: number[];
+    sunset: string[];
+    sunrise: string[];
+    wind_speed_10m_max: number[];
+  };
 }
 
 export interface WeatherUnitsAPI {
@@ -25,26 +51,6 @@ export interface WeatherUnitsAPI {
   precipitation_probability?: string;
 }
 
-export interface CurrentWeatherAPI {
-  time: string;
-  interval: number;
-  temperature_2m: number;
-  relative_humidity_2m: number;
-  apparent_temperature: number;
-  is_day: 0 | 1;
-  weather_code: number;
-  wind_speed_10m: number;
-}
-
-export interface HourlyWeatherAPI {
-  time: string[];
-  temperature_2m: number[];
-  relative_humidity_2m: number[];
-  precipitation_probability: number[];
-  weather_code: number[];
-  is_day: number[];
-  wind_speed_10m?: number[];
-}
 export interface HourWeather {
   time: string;
   temp: number;
@@ -60,6 +66,9 @@ export interface DayWeather {
   minTemp: number;
   weatherCode: number;
   rainProb: number;
+  windSpeed: number;
+  sunset: string;
+  sunrise: string;
 }
 export interface CurrentWeather {
   temperature: number;
@@ -68,13 +77,6 @@ export interface CurrentWeather {
   isDay: boolean;
   weatherCode: number;
   windSpeed: number;
-}
-export interface DailyWeatherAPI {
-  time: string[];
-  weather_code: number[];
-  temperature_2m_max: number[];
-  temperature_2m_min: number[];
-  precipitation_probability_max: number[];
 }
 export interface Weather {
   current: CurrentWeather;

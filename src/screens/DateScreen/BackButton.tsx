@@ -1,9 +1,9 @@
 import React from "react";
 import { Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import { styles } from "./styles";
+import { StyleSheet } from "react-native";
 
-export function BackButton() {
+export default function BackButton() {
   const navigation = useNavigation();
   return (
     <Button
@@ -17,4 +17,9 @@ export function BackButton() {
   );
 }
 
-export default BackButton;
+const styles = StyleSheet.create({
+  button: {
+    alignSelf: "flex-start",
+    marginBottom: 8,
+  },
+});
