@@ -37,7 +37,7 @@ function AboutSectionComponent() {
         />
         <List.Item
           title="Developer"
-          description="Muhammed Uwayss"
+          description="Uwayss"
           left={props => <List.Icon {...props} icon="xml" />}
           onPress={() => openLink(DEVELOPER_URL)}
           right={props => <List.Icon {...props} icon="open-in-new" />}

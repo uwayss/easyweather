@@ -1,80 +1,28 @@
 import React from "react";
-import { ScrollView, StyleSheet } from "react-native"; // Added View
+import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { List, Divider, useTheme, SegmentedButtons, Text } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { Appbar } from "react-native-paper";
-import { useSettings, ThemePreference } from "../context/SettingsContext";
 import { AboutSection } from "./SettingsScreen/AboutSection";
 import { LegalSection } from "./SettingsScreen/LegalSection";
 import { ActionsSection } from "./SettingsScreen/ActionsSection";
+import UnitsSection from "./SettingsScreen/UnitsSection";
+import AppearanceSection from "./SettingsScreen/AppearanceSection";
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
-  const theme = useTheme();
-  const styles = stylesheet(theme.colors.background);
-  const { settings, updateSetting } = useSettings();
-
-  const handleThemeChange = (value: string) => {
-    updateSetting("theme", value as ThemePreference);
-  };
+  const themeBg = useTheme().colors.background;
 
   return (
-    <SafeAreaView style={styles.safeContainer}>
+    <SafeAreaView style={[styles.safeContainer, { backgroundColor: themeBg }]}>
       <Appbar.Header>
         <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title="Settings" />
       </Appbar.Header>
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-        <List.Section title="Appearance">
-          <Text style={styles.label}>Theme</Text>
-          <SegmentedButtons
-            value={settings.theme}
-            onValueChange={handleThemeChange}
-            style={styles.segmentedButtonContainer}
-            buttons={[
-              {
-                value: "system",
-                label: "System",
-                icon: "theme-light-dark",
-              },
-              {
-                value: "light",
-                label: "Light",
-                icon: "white-balance-sunny",
-              },
-              {
-                value: "dark",
-                label: "Dark",
-                icon: "weather-night",
-              },
-            ]}
-          />
-        </List.Section>
-        <Divider style={styles.divider} />
-        <List.Section title="Units">
-          <Text style={styles.label}>Temperature & Wind Speed</Text>
-          <SegmentedButtons
-            value={settings.useImperialUnits ? "imperial" : "metric"}
-            onValueChange={value => updateSetting("useImperialUnits", value === "imperial")}
-            style={styles.segmentedButtonContainer}
-            buttons={[
-              {
-                value: "metric",
-                label: "Metric",
-                icon: "temperature-celsius",
-              },
-              {
-                value: "imperial",
-                label: "Imperial",
-                icon: "temperature-fahrenheit",
-              },
-            ]}
-          />
-        </List.Section>
-        <Divider style={styles.divider} />
-
-        {/* --- Render the imported sections --- */}
+        <AppearanceSection />
+        <UnitsSection />
         <AboutSection />
         <LegalSection />
         <ActionsSection />
@@ -83,31 +31,17 @@ const SettingsScreen = () => {
   );
 };
 
-const stylesheet = (themeBg: string) =>
-  StyleSheet.create({
-    safeContainer: {
-      flex: 1,
-      backgroundColor: themeBg,
-    },
-    container: {
-      flex: 1,
-    },
-    contentContainer: {
-      paddingVertical: 8,
-      paddingHorizontal: 0,
-    },
-    label: {
-      paddingHorizontal: 16,
-      paddingBottom: 8,
-      fontSize: 14,
-    },
-    segmentedButtonContainer: {
-      paddingHorizontal: 16,
-      paddingBottom: 8,
-    },
-    divider: {
-      marginVertical: 8,
-    },
-  });
+const styles = StyleSheet.create({
+  safeContainer: {
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+  },
+  contentContainer: {
+    paddingVertical: 8,
+    paddingHorizontal: 0,
+  },
+});
 
 export default SettingsScreen;
