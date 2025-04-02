@@ -1,5 +1,4 @@
-import { View } from "react-native";
-import { styles } from "./styles";
+import { StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
 import React from "react";
 import CustomVerticalProgressBar from "./CustomVerticalProgressBar";
@@ -38,3 +37,25 @@ export default function HourProgress({
     </View>
   );
 }
+const styles = StyleSheet.create({
+  hourlyItem: {
+    alignItems: "center",
+    gap: 4,
+    width: 45,
+  },
+  currentHour: {
+    backgroundColor: "rgba(0, 109, 119, 0.2)",
+    borderRadius: 8,
+    paddingHorizontal: 4,
+  },
+  hourText: {
+    fontSize: 12,
+    marginTop: 2,
+    textAlign: "center",
+    width: "100%",
+  },
+  customProgressBar: {
+    width: 18,
+    height: 80,
+  },
+});

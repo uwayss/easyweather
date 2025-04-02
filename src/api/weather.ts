@@ -11,7 +11,8 @@ export async function fetchWeather(latitude: number, longitude: number): Promise
       "temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m",
     hourly:
       "temperature_2m,relative_humidity_2m,precipitation_probability,weather_code,is_day,wind_speed_10m",
-    daily: "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
+    daily:
+      "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunset,sunrise,wind_speed_10m_max",
     timezone: "auto",
     forecast_days: "16",
   });

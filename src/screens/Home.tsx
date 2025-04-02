@@ -48,8 +48,6 @@ export default function Home({ navigation }: HomeProps) {
     () => filterHourlyWeatherForToday(weather?.hourly),
     [weather?.hourly],
   );
-  // const styles = stylesheet(theme.colors.background, theme.colors.onSurface);
-
   return (
     <SafeAreaView style={[styles.safeContainer, { backgroundColor: theme.colors.background }]}>
       <ScrollView

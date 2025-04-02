@@ -25,13 +25,15 @@ export function processWeatherData(data: WeatherResponseAPI): Weather {
     isDay: data.hourly.is_day[index] === 1,
     windSpeed: data.hourly.wind_speed_10m ? data.hourly.wind_speed_10m[index] : 0,
   }));
-
   const daily: DayWeather[] = data.daily.time.map((date, index) => ({
     date,
     maxTemp: data.daily.temperature_2m_max[index],
     minTemp: data.daily.temperature_2m_min[index],
     weatherCode: data.daily.weather_code[index],
     rainProb: data.daily.precipitation_probability_max[index],
+    sunrise: data.daily.sunrise[index],
+    sunset: data.daily.sunset[index],
+    windSpeed: data.daily.wind_speed_10m_max[index],
   }));
 
   return {

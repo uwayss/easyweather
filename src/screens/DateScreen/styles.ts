@@ -19,22 +19,9 @@ export const styles = StyleSheet.create({
   title: {
     textAlign: "center",
   },
-  card: {
-    marginBottom: 16,
-  },
+
   cardContent: {
     padding: 12,
-  },
-  weatherHeader: {
-    alignItems: "center",
-  },
-  temperatureContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginTop: 16,
-  },
-  temperatureItem: {
-    alignItems: "center",
   },
 
   hourlyScroll: {
@@ -67,13 +54,7 @@ export const styles = StyleSheet.create({
     zIndex: 0,
     pointerEvents: "none",
   },
-  scrollHint: {
-    textAlign: "right",
-    fontSize: 12,
-    color: "#666",
-    marginTop: 8,
-    fontStyle: "italic",
-  },
+
   hourText: {
     fontSize: 12,
     marginTop: 2,

@@ -1,8 +1,7 @@
 import React from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Text, Card } from "react-native-paper";
 import { DayWeather } from "../../types/weather";
-import { styles } from "./styles";
 import weatherDescriptions from "../../utils/descriptions";
 import { useSettings } from "../../context/SettingsContext";
 import { convertTemperature, formatTemperature } from "../../utils/unitConversion";
@@ -51,5 +50,23 @@ export function StatsCard({ selectedForecast }: { selectedForecast: DayWeather |
     </Card>
   );
 }
-
+const styles = StyleSheet.create({
+  card: {
+    marginBottom: 16,
+  },
+  cardContent: {
+    padding: 12,
+  },
+  weatherHeader: {
+    alignItems: "center",
+  },
+  temperatureContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 16,
+  },
+  temperatureItem: {
+    alignItems: "center",
+  },
+});
 export default StatsCard;

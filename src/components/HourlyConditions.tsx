@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Text, Card, Divider } from "react-native-paper";
-import { View } from "react-native";
-import { styles } from "../screens/DateScreen/styles";
+import { StyleSheet, View } from "react-native";
 import { HourWeather } from "../types/weather";
 import { useSettings } from "../context/SettingsContext";
 import Graph from "./Graph/Graph";
@@ -38,3 +37,15 @@ export default function HourlyConditions({
     </Card>
   );
 }
+const styles = StyleSheet.create({
+  card: {
+    marginBottom: 16,
+  },
+  scrollHint: {
+    textAlign: "right",
+    fontSize: 12,
+    color: "#666",
+    marginTop: 8,
+    fontStyle: "italic",
+  },
+});
