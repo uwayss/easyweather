@@ -16,7 +16,7 @@ export function Details({ current }: DetailsProps) {
       <Surface style={styles.detailsContainer} elevation={5}>
         <View style={styles.detailItem}>
           <Text style={styles.detailLabel}>Humidity</Text>
-          <Text style={styles.detailValue}>{current?.relative_humidity_2m}%</Text>
+          <Text style={styles.detailValue}>{current?.humidity}%</Text>
         </View>
         <View style={styles.separator} />
         <View style={styles.detailItem}>
@@ -24,7 +24,7 @@ export function Details({ current }: DetailsProps) {
           <Text style={styles.detailValue}>
             {current
               ? formatWindSpeed(
-                  convertWindSpeed(current.wind_speed_10m, settings.useImperialUnits),
+                  convertWindSpeed(current.windSpeed, settings.useImperialUnits),
                   settings.useImperialUnits,
                 )
               : ""}

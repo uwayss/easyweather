@@ -1,10 +1,10 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { fetchWeather } from "../api/weather";
 import { useLocationContext } from "./LocationContext";
-import { WeatherResponse } from "../types/weather";
+import { Weather } from "../types/weather";
 
 interface WeatherContextProps {
-  weather: WeatherResponse | null;
+  weather: Weather | null;
   loading: boolean;
   error: string | null;
   fetchWeatherData: (latitude: number, longitude: number) => Promise<void>;
@@ -13,7 +13,7 @@ interface WeatherContextProps {
 const WeatherContext = createContext<WeatherContextProps | undefined>(undefined);
 
 export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [weather, setWeather] = useState<WeatherResponse | null>(null);
+  const [weather, setWeather] = useState<Weather | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { location, error: locationError } = useLocationContext();
@@ -52,12 +52,10 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [location]);
 
-  const combinedError = locationError || error;
-
   const value: WeatherContextProps = {
     weather,
     loading,
-    error: combinedError,
+    error: locationError || error,
     fetchWeatherData,
   };
 

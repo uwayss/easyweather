@@ -1,4 +1,19 @@
-export interface WeatherUnits {
+export interface WeatherResponseAPI {
+  latitude: number;
+  longitude: number;
+  timezone: string;
+  current_units: WeatherUnitsAPI;
+  current: CurrentWeatherAPI;
+  hourly_units: WeatherUnitsAPI;
+  hourly: HourlyWeatherAPI;
+  daily_units: Omit<
+    WeatherUnitsAPI,
+    "interval" | "apparent_temperature" | "wind_speed_10m" | "relative_humidity_2m"
+  >;
+  daily: DailyWeatherAPI;
+}
+
+export interface WeatherUnitsAPI {
   time: string;
   interval?: string;
   temperature_2m: string;
@@ -10,7 +25,7 @@ export interface WeatherUnits {
   precipitation_probability?: string;
 }
 
-export interface CurrentWeather {
+export interface CurrentWeatherAPI {
   time: string;
   interval: number;
   temperature_2m: number;
@@ -21,7 +36,7 @@ export interface CurrentWeather {
   wind_speed_10m: number;
 }
 
-export interface HourlyWeather {
+export interface HourlyWeatherAPI {
   time: string[];
   temperature_2m: number[];
   relative_humidity_2m: number[];
@@ -30,41 +45,42 @@ export interface HourlyWeather {
   is_day: number[];
   wind_speed_10m?: number[];
 }
-export interface ForecastHour {
+export interface HourWeather {
   time: string;
-  temperature: number;
+  temp: number;
   humidity: number;
   rainProb: number;
   weatherCode: number;
   isDay: boolean;
   windSpeed: number;
 }
-export interface ForecastDay {
+export interface DayWeather {
   date: string;
   maxTemp: number;
   minTemp: number;
   weatherCode: number;
-  precipitationProbability?: number;
+  rainProb: number;
 }
-export interface DailyWeather {
+export interface CurrentWeather {
+  temperature: number;
+  humidity: number;
+  feltTemp: number;
+  isDay: boolean;
+  weatherCode: number;
+  windSpeed: number;
+}
+export interface DailyWeatherAPI {
   time: string[];
   weather_code: number[];
   temperature_2m_max: number[];
   temperature_2m_min: number[];
   precipitation_probability_max: number[];
 }
-
-export interface WeatherResponse {
+export interface Weather {
+  current: CurrentWeather;
+  hourly: HourWeather[];
+  daily: DayWeather[];
+  timezone: string;
   latitude: number;
   longitude: number;
-  timezone: string;
-  current_units: WeatherUnits;
-  current: CurrentWeather;
-  hourly_units: WeatherUnits;
-  hourly: HourlyWeather;
-  daily_units: Omit<
-    WeatherUnits,
-    "interval" | "apparent_temperature" | "wind_speed_10m" | "relative_humidity_2m"
-  >;
-  daily: DailyWeather;
 }

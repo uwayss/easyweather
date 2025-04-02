@@ -1,7 +1,6 @@
 import React from "react";
 import { View, StyleSheet, FlatList } from "react-native";
-import { ForecastDay } from "../../types/weather";
-import { convertToForecastDays } from "../../utils/weatherUtils";
+import { DayWeather } from "../../types/weather";
 import { useWeather } from "../../context/WeatherContext";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -11,7 +10,7 @@ import ForecastItem from "./ForecastItem";
 export default function ForecastList() {
   const { weather } = useWeather();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const forecast = convertToForecastDays(weather?.daily);
+  const forecast = weather?.daily;
 
   if (!forecast) return null;
 
@@ -19,7 +18,7 @@ export default function ForecastList() {
     navigation.push("DayDetails", { date });
   };
 
-  const renderItem = ({ item, index }: { item: ForecastDay; index: number }) => (
+  const renderItem = ({ item, index }: { item: DayWeather; index: number }) => (
     <ForecastItem item={item} index={index} onPress={handleForecastPress} />
   );
 

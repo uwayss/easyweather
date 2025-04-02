@@ -1,13 +1,13 @@
 import React from "react";
 import { View } from "react-native";
 import { Text, Card } from "react-native-paper";
-import { ForecastDay } from "../../types/weather";
+import { DayWeather } from "../../types/weather";
 import { styles } from "./styles";
 import weatherDescriptions from "../../utils/descriptions";
 import { useSettings } from "../../context/SettingsContext";
 import { convertTemperature, formatTemperature } from "../../utils/unitConversion";
 
-export function StatsCard({ selectedForecast }: { selectedForecast: ForecastDay | undefined }) {
+export function StatsCard({ selectedForecast }: { selectedForecast: DayWeather | undefined }) {
   const { settings } = useSettings();
   return (
     <Card style={styles.card}>
