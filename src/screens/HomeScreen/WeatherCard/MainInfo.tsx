@@ -13,10 +13,10 @@ interface MainInfoProps {
 
 export function MainInfo({ name, current }: MainInfoProps) {
   const { settings } = useSettings();
-  const timeOfDay = current?.is_day ? "day" : "night";
+  const timeOfDay = current?.isDay ? "day" : "night";
 
   const description = current
-    ? weatherDescriptions[current.weather_code]?.[timeOfDay].description
+    ? weatherDescriptions[current.weatherCode]?.[timeOfDay].description
     : null;
 
   return (
@@ -30,7 +30,7 @@ export function MainInfo({ name, current }: MainInfoProps) {
         <Text style={styles.temperature}>
           {current
             ? formatTemperature(
-                convertTemperature(current.temperature_2m, settings.useImperialUnits),
+                convertTemperature(current.temperature, settings.useImperialUnits),
                 settings.useImperialUnits,
               )
             : ""}
@@ -42,7 +42,7 @@ export function MainInfo({ name, current }: MainInfoProps) {
           Feels like{" "}
           {current
             ? formatTemperature(
-                convertTemperature(current.apparent_temperature, settings.useImperialUnits),
+                convertTemperature(current.feltTemp, settings.useImperialUnits),
                 settings.useImperialUnits,
               ).replace(/°[CF]$/, "°")
             : ""}

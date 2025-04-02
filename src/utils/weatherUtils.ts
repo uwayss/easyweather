@@ -1,25 +1,67 @@
-import { ForecastDay } from "../types/weather";
+import {
+  CurrentWeather,
+  DayWeather,
+  HourWeather,
+  Weather,
+  WeatherResponseAPI,
+} from "../types/weather";
 
-interface DailyWeatherData {
-  time: string[];
-  weather_code: number[];
-  temperature_2m_max: number[];
-  temperature_2m_min: number[];
-  precipitation_probability_max: number[];
+export function processWeatherData(data: WeatherResponseAPI): Weather {
+  const current: CurrentWeather = {
+    temperature: data.current.temperature_2m,
+    humidity: data.current.relative_humidity_2m,
+    feltTemp: data.current.apparent_temperature,
+    isDay: data.current.is_day ? true : false,
+    weatherCode: data.current.weather_code,
+    windSpeed: data.current.wind_speed_10m,
+  };
+
+  const hourly: HourWeather[] = data.hourly.time.map((time, index) => ({
+    time,
+    temp: data.hourly.temperature_2m[index],
+    humidity: data.hourly.relative_humidity_2m[index],
+    rainProb: data.hourly.precipitation_probability[index],
+    weatherCode: data.hourly.weather_code[index],
+    isDay: data.hourly.is_day[index] === 1,
+    windSpeed: data.hourly.wind_speed_10m ? data.hourly.wind_speed_10m[index] : 0,
+  }));
+
+  const daily: DayWeather[] = data.daily.time.map((date, index) => ({
+    date,
+    maxTemp: data.daily.temperature_2m_max[index],
+    minTemp: data.daily.temperature_2m_min[index],
+    weatherCode: data.daily.weather_code[index],
+    rainProb: data.daily.precipitation_probability_max[index],
+  }));
+
+  return {
+    current,
+    hourly,
+    daily,
+    timezone: data.timezone,
+    latitude: data.latitude,
+    longitude: data.longitude,
+  };
 }
 
 /**
- * Converts the API's daily weather data format to an array of ForecastDay objects
+ * Filters hourly weather data for a specific date
+ * @param hourlyData The hourly weather data object
+ * @param date The date string to filter by (YYYY-MM-DD)
+ * @returns Filtered hourly data for the specified date
  */
-export function convertToForecastDays(
-  dailyData: DailyWeatherData | undefined,
-): ForecastDay[] | null {
-  if (!dailyData || !dailyData.time) return null;
-  return dailyData.time.map((date, index) => ({
-    date,
-    weatherCode: dailyData.weather_code[index],
-    maxTemp: dailyData.temperature_2m_max[index],
-    minTemp: dailyData.temperature_2m_min[index],
-    precipitationProbability: dailyData.precipitation_probability_max[index],
-  }));
+export const filterHourlyDataForDate = (
+  hourlyData: HourWeather[] | undefined,
+  date: string,
+): HourWeather[] | undefined | null => {
+  if (!hourlyData) return null;
+  return hourlyData.filter((hourData: HourWeather) => hourData.time.startsWith(date));
+};
+
+export function filterHourlyWeatherForToday(
+  hourlyData: HourWeather[] | undefined,
+): HourWeather[] | undefined {
+  if (!hourlyData) return undefined;
+  const todayDateString = new Date().toISOString().split("T")[0];
+  return hourlyData.filter((hourData: HourWeather) => hourData.time.startsWith(todayDateString));
 }

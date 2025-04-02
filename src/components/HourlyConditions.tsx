@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Text, Card, Divider } from "react-native-paper";
 import { View } from "react-native";
 import { styles } from "../screens/DateScreen/styles";
-import { ForecastHour } from "../types/weather";
+import { HourWeather } from "../types/weather";
 import { useSettings } from "../context/SettingsContext";
 import Graph from "./Graph/Graph";
 import { getMetricDataForForecast, MetricType } from "../utils/metricData";
@@ -11,7 +11,7 @@ import MetricSelector from "./Graph/MetricSelector";
 export default function HourlyConditions({
   selectedDateHourly,
 }: {
-  selectedDateHourly: ForecastHour[];
+  selectedDateHourly: HourWeather[];
 }) {
   const [currentMetric, setCurrentMetric] = useState<MetricType>("temperature");
   const { settings } = useSettings();

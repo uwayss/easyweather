@@ -19,7 +19,7 @@ export default function WeatherCard() {
   }
 
   console.log(
-    `[WeatherCard] Re-rendering. Loading: ${loading}, Location: ${location?.displayName}, Weather Temp: ${weather?.current?.temperature_2m}`,
+    `[WeatherCard] Re-rendering. Loading: ${loading}, Location: ${location?.displayName}, Weather Temp: ${weather?.current?.temperature}`,
   );
   const displayName = location
     ? location.displayName

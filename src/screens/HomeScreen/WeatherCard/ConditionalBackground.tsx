@@ -10,10 +10,10 @@ interface ConditionalBackgroundProps {
 }
 
 export function ConditionalBackground({ children, current }: ConditionalBackgroundProps) {
-  const timeOfDay = current?.is_day ? "day" : "night";
+  const timeOfDay = current?.isDay ? "day" : "night";
   let background;
   if (current) {
-    background = backgroundMappings[current.weather_code]?.[timeOfDay];
+    background = backgroundMappings[current.weatherCode]?.[timeOfDay];
   }
 
   return (

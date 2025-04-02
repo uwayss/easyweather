@@ -2,12 +2,12 @@ import React from "react";
 import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Text, Card } from "react-native-paper";
 import weatherDescriptions from "../../utils/descriptions";
-import { ForecastDay } from "../../types/weather";
+import { DayWeather } from "../../types/weather";
 import { useSettings } from "../../context/SettingsContext";
 import { convertTemperature, formatTemperature } from "../../utils/unitConversion";
 
 interface ForecastItemProps {
-  item: ForecastDay;
+  item: DayWeather;
   index: number;
   onPress: (date: string) => void;
 }

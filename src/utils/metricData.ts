@@ -1,4 +1,4 @@
-import { ForecastHour } from "../types/weather";
+import { HourWeather } from "../types/weather";
 import { DEFAULT_TEMP_COLOR_STOPS, getTemperatureGradientColor } from "./colorUtils";
 import {
   convertTemperature,
@@ -21,10 +21,10 @@ export interface GraphDataPoint {
 
 // Temperature specific calculations for a single hour
 const getTemperatureDataForHour = (
-  item: ForecastHour,
+  item: HourWeather,
   useImperialUnits: boolean,
 ): GraphDataPoint => {
-  const tempCelsius: number = item.temperature;
+  const tempCelsius: number = item.temp;
   const temp = convertTemperature(tempCelsius, useImperialUnits);
 
   // Adjust min/max temp range based on unit system FOR DISPLAY/PROGRESS
@@ -65,7 +65,7 @@ const getTemperatureDataForHour = (
 };
 
 // Precipitation specific calculations for a single hour
-const getPrecipitationDataForHour = (item: ForecastHour): GraphDataPoint => {
+const getPrecipitationDataForHour = (item: HourWeather): GraphDataPoint => {
   const rainProb = item.rainProb;
   let color = "#90be6d"; // Green
   if (rainProb > 30) color = "#f9c74f"; // Yellow
@@ -93,7 +93,7 @@ const getPrecipitationDataForHour = (item: ForecastHour): GraphDataPoint => {
 };
 
 // Humidity specific calculations for a single hour
-const getHumidityDataForHour = (item: ForecastHour): GraphDataPoint => {
+const getHumidityDataForHour = (item: HourWeather): GraphDataPoint => {
   const humidity = item.humidity;
   let color = "#ffd166"; // Light Orange/Yellow
   if (humidity > 30) color = "#06d6a0"; // Teal
@@ -121,7 +121,7 @@ const getHumidityDataForHour = (item: ForecastHour): GraphDataPoint => {
 };
 
 // Wind speed specific calculations for a single hour
-const getWindSpeedDataForHour = (item: ForecastHour, useImperialUnits: boolean): GraphDataPoint => {
+const getWindSpeedDataForHour = (item: HourWeather, useImperialUnits: boolean): GraphDataPoint => {
   const windSpeed = item.windSpeed || 0;
   // Convert wind speed based on user preference
   const convertedWindSpeed = convertWindSpeed(windSpeed, useImperialUnits);
@@ -176,7 +176,7 @@ const getWindSpeedDataForHour = (item: ForecastHour, useImperialUnits: boolean):
  */
 export const getMetricDataForForecast = (
   metricType: MetricType,
-  forecastHours: ForecastHour[],
+  forecastHours: HourWeather[],
   useImperialUnits: boolean,
 ): GraphDataPoint[] => {
   // Map each hour to its corresponding metric data point

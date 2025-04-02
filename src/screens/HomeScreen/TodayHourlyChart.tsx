@@ -3,10 +3,10 @@ import { View, Dimensions, StyleSheet, ScrollView } from "react-native";
 import { Card, Text, ActivityIndicator, useTheme } from "react-native-paper";
 import { BarChart } from "react-native-chart-kit";
 import { useWeather } from "../../context/WeatherContext";
-import { filterHourlyDataForDate } from "../../utils/dateScreen.helpers";
-import { ForecastHour } from "../../types/weather";
+import { HourWeather } from "../../types/weather";
 import { useSettings } from "../../context/SettingsContext";
 import { convertTemperature } from "../../utils/unitConversion";
+import { filterHourlyDataForDate } from "../../utils/weatherUtils";
 
 const screenWidth = Dimensions.get("window").width;
 const PADDING_OUTSIDE_CARD = 16 * 2;
@@ -21,7 +21,7 @@ const TodayHourlyChart: React.FC = () => {
 
   const todayDateString = new Date().toISOString().split("T")[0];
 
-  const todaysHourlyData: ForecastHour[] | null | undefined = React.useMemo(() => {
+  const todaysHourlyData: HourWeather[] | null | undefined = React.useMemo(() => {
     if (!weather?.hourly) return null;
     const filtered = filterHourlyDataForDate(weather.hourly, todayDateString);
     return filtered?.slice(0, 24);
@@ -33,8 +33,8 @@ const TodayHourlyChart: React.FC = () => {
       labels: todaysHourlyData.map(() => ""),
       datasets: [
         {
-          data: todaysHourlyData.map((hourData: ForecastHour) =>
-            Math.round(convertTemperature(hourData.temperature, settings.useImperialUnits)),
+          data: todaysHourlyData.map((hourData: HourWeather) =>
+            Math.round(convertTemperature(hourData.temp, settings.useImperialUnits)),
           ),
         },
       ],

@@ -1,8 +1,7 @@
 import React from "react";
 import { StyleSheet, ScrollView, ActivityIndicator } from "react-native";
 import { useWeather } from "../context/WeatherContext";
-import { convertToForecastDays } from "../utils/weatherUtils";
-import { formatForecastDate, filterHourlyDataForDate } from "../utils/dateScreen.helpers";
+import { formatForecastDate } from "../utils/dateScreen.helpers";
 import { StatsCard } from "./DateScreen/StatsCard";
 import HourlyConditions from "../components/HourlyConditions";
 import { RouteProp } from "@react-navigation/native";
@@ -10,6 +9,7 @@ import { Text, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackButton from "./DateScreen/BackButton";
 import DayTitle from "./DateScreen/DayTitle";
+import { filterHourlyDataForDate } from "../utils/weatherUtils";
 
 type DayDetailsParams = {
   date: string;
@@ -42,16 +42,15 @@ export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
       </SafeAreaView>
     );
 
-  const forecastDays = convertToForecastDays(weather?.daily);
-  const selectedForecast = forecastDays?.find(day => day.date === date);
+  const selectedDay = weather.daily?.find(day => day.date === date);
   const selectedDateHourly = filterHourlyDataForDate(weather?.hourly, String(date));
   if (!selectedDateHourly) return null;
   return (
     <SafeAreaView style={styles.safeContainer}>
       <ScrollView style={styles.container}>
         <BackButton />
-        <DayTitle title={formatForecastDate(selectedForecast?.date)} />
-        <StatsCard selectedForecast={selectedForecast} />
+        <DayTitle title={formatForecastDate(selectedDay?.date)} />
+        <StatsCard selectedForecast={selectedDay} />
         <HourlyConditions selectedDateHourly={selectedDateHourly} />
       </ScrollView>
     </SafeAreaView>
