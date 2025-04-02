@@ -5,47 +5,46 @@ import { DayWeather } from "../../types/weather";
 import weatherDescriptions from "../../utils/descriptions";
 import { useSettings } from "../../context/SettingsContext";
 import { convertTemperature, formatTemperature } from "../../utils/unitConversion";
+import SunTimes from "./SunTimes";
 
 export function StatsCard({ selectedForecast }: { selectedForecast: DayWeather | undefined }) {
   const { settings } = useSettings();
   return (
     <Card style={styles.card}>
       <Card.Content style={styles.cardContent}>
-        <>
-          <View style={styles.weatherHeader}>
-            <Text variant="headlineSmall">
+        <View style={styles.weatherHeader}>
+          <Text variant="headlineSmall">
+            {selectedForecast
+              ? weatherDescriptions[selectedForecast.weatherCode].day.description
+              : ""}
+          </Text>
+        </View>
+        <View style={styles.temperatureContainer}>
+          <View style={styles.temperatureItem}>
+            <Text variant="labelLarge">High</Text>
+            <Text variant="headlineMedium">
               {selectedForecast
-                ? weatherDescriptions[selectedForecast.weatherCode].day.description
+                ? formatTemperature(
+                    convertTemperature(selectedForecast.maxTemp, settings.useImperialUnits),
+                    settings.useImperialUnits,
+                  ).replace(/°[CF]$/, "°")
                 : ""}
             </Text>
           </View>
 
-          <View style={styles.temperatureContainer}>
-            <View style={styles.temperatureItem}>
-              <Text variant="labelLarge">High</Text>
-              <Text variant="headlineMedium">
-                {selectedForecast
-                  ? formatTemperature(
-                      convertTemperature(selectedForecast.maxTemp, settings.useImperialUnits),
-                      settings.useImperialUnits,
-                    ).replace(/°[CF]$/, "°")
-                  : ""}
-              </Text>
-            </View>
-
-            <View style={styles.temperatureItem}>
-              <Text variant="labelLarge">Low</Text>
-              <Text variant="headlineMedium">
-                {selectedForecast
-                  ? formatTemperature(
-                      convertTemperature(selectedForecast.minTemp, settings.useImperialUnits),
-                      settings.useImperialUnits,
-                    ).replace(/°[CF]$/, "°")
-                  : ""}
-              </Text>
-            </View>
+          <View style={styles.temperatureItem}>
+            <Text variant="labelLarge">Low</Text>
+            <Text variant="headlineMedium">
+              {selectedForecast
+                ? formatTemperature(
+                    convertTemperature(selectedForecast.minTemp, settings.useImperialUnits),
+                    settings.useImperialUnits,
+                  ).replace(/°[CF]$/, "°")
+                : ""}
+            </Text>
           </View>
-        </>
+        </View>
+        <SunTimes dayData={selectedForecast} />
       </Card.Content>
     </Card>
   );
@@ -56,6 +55,7 @@ const styles = StyleSheet.create({
   },
   cardContent: {
     padding: 12,
+    gap: 12,
   },
   weatherHeader: {
     alignItems: "center",

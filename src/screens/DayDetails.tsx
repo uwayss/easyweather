@@ -10,7 +10,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import BackButton from "./DateScreen/BackButton";
 import DayTitle from "./DateScreen/DayTitle";
 import { filterHourlyDataForDate } from "../utils/weatherUtils";
-import SunTimes from "./DateScreen/SunTimes";
 
 type DayDetailsParams = {
   date: string;
@@ -53,7 +52,6 @@ export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
         <DayTitle title={formatForecastDate(selectedDay?.date)} />
         <StatsCard selectedForecast={selectedDay} />
         <HourlyConditions selectedDateHourly={selectedDateHourly} />
-        <SunTimes dayData={selectedDay} />
       </ScrollView>
     </SafeAreaView>
   );
