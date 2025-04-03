@@ -1,57 +1,101 @@
+// src/screens/DayDetails.tsx
 import React from "react";
-import { StyleSheet, ScrollView, ActivityIndicator } from "react-native";
+import { StyleSheet, ScrollView, ActivityIndicator, View } from "react-native";
 import { useWeather } from "../context/WeatherContext";
 import { formatForecastDate } from "../utils/dateScreen.helpers";
-import { StatsCard } from "./DateScreen/StatsCard";
-import HourlyConditions from "../components/HourlyConditions";
 import { RouteProp } from "@react-navigation/native";
-import { Text, useTheme } from "react-native-paper";
+import { Text, useTheme, Appbar } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import BackButton from "./DateScreen/BackButton";
-import DayTitle from "./DateScreen/DayTitle";
 import { filterHourlyDataForDate } from "../utils/weatherUtils";
+import { RootStackParamList } from "../../App"; // Adjust import if needed
+import DailySummaryCard from "./DateScreen/DailySummaryCard"; // New component
+import HourlyForecastCard from "./DateScreen/HourlyForecastCard"; // Refined component (renamed HourlyConditions)
+import { useNavigation } from "@react-navigation/native";
 
-type DayDetailsParams = {
-  date: string;
-};
+type DayDetailsRouteProp = RouteProp<RootStackParamList, "DayDetails">;
 
-type DayDetailsRouteProp = RouteProp<{ DayDetails: DayDetailsParams }, "DayDetails">;
-
-export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
-  if (!route) return null;
+export default function DayDetails({ route }: { route: DayDetailsRouteProp }) {
+  const navigation = useNavigation();
   const date = route.params.date;
-  const { weather, error } = useWeather();
+  const { weather, loading, error } = useWeather();
   const theme = useTheme();
   const styles = stylesheet(theme.colors.background);
 
-  if (!weather) {
+  const selectedDay = React.useMemo(
+    () => weather?.daily?.find(day => day.date === date),
+    [weather?.daily, date],
+  );
+  const selectedDateHourly = React.useMemo(
+    () => filterHourlyDataForDate(weather?.hourly, String(date)),
+    [weather?.hourly, date],
+  );
+
+  const formattedTitle = formatForecastDate(selectedDay?.date);
+
+  if (loading && !weather) {
+    // Show loading only initially
     return (
-      <SafeAreaView style={styles.container}>
-        <BackButton />
-        <DayTitle title={formatForecastDate(date)} />
-        <ActivityIndicator size="large" color="#006d77" />
+      <SafeAreaView style={styles.safeContainer}>
+        <Appbar.Header>
+          <Appbar.BackAction onPress={() => navigation.goBack()} />
+          <Appbar.Content title={formattedTitle || "Loading..."} />
+        </Appbar.Header>
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+        </View>
       </SafeAreaView>
     );
   }
-  if (error)
+
+  if (error) {
     return (
       <SafeAreaView style={styles.safeContainer}>
-        <Text variant="headlineMedium" style={{ textAlign: "center" }}>
-          {"Error: " + error}
-        </Text>
+        <Appbar.Header>
+          <Appbar.BackAction onPress={() => navigation.goBack()} />
+          <Appbar.Content title="Error" />
+        </Appbar.Header>
+        <View style={styles.centered}>
+          <Text variant="headlineMedium" style={{ textAlign: "center", color: theme.colors.error }}>
+            {"Error: " + error}
+          </Text>
+        </View>
       </SafeAreaView>
     );
+  }
 
-  const selectedDay = weather.daily?.find(day => day.date === date);
-  const selectedDateHourly = filterHourlyDataForDate(weather?.hourly, String(date));
-  if (!selectedDateHourly) return null;
+  if (!selectedDay) {
+    // Handle case where day data might be missing after load
+    return (
+      <SafeAreaView style={styles.safeContainer}>
+        <Appbar.Header>
+          <Appbar.BackAction onPress={() => navigation.goBack()} />
+          <Appbar.Content title={formattedTitle || "Details"} />
+        </Appbar.Header>
+        <View style={styles.centered}>
+          <Text>Weather data for this day is unavailable.</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.safeContainer}>
-      <ScrollView style={styles.container}>
-        <BackButton />
-        <DayTitle title={formatForecastDate(selectedDay?.date)} />
-        <StatsCard selectedForecast={selectedDay} />
-        <HourlyConditions selectedDateHourly={selectedDateHourly} />
+      <Appbar.Header elevated>
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
+        <Appbar.Content title={formattedTitle || "Details"} titleStyle={styles.appBarTitle} />
+      </Appbar.Header>
+      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+        {/* Pass the selected day data */}
+        <DailySummaryCard dayData={selectedDay} />
+
+        {/* Pass the hourly data for that day */}
+        {selectedDateHourly && selectedDateHourly.length > 0 ? (
+          <HourlyForecastCard hourlyData={selectedDateHourly} />
+        ) : (
+          <View style={styles.centered}>
+            <Text>No hourly data available for this day.</Text>
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -59,13 +103,25 @@ export default function DayDetails({ route }: { route?: DayDetailsRouteProp }) {
 
 const stylesheet = (themeBg: string) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 16,
-      gap: 20,
-      backgroundColor: themeBg,
-    },
     safeContainer: {
       flex: 1,
+      backgroundColor: themeBg, // Apply background to SafeAreaView
+    },
+    container: {
+      flex: 1,
+    },
+    contentContainer: {
+      padding: 16,
+      paddingTop: 8, // Reduce top padding as Appbar has height
+      gap: 20,
+    },
+    centered: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      padding: 16,
+    },
+    appBarTitle: {
+      fontWeight: "500", // Less aggressive than default bold
     },
   });
