@@ -35,7 +35,7 @@ const AppThemeProvider = () => {
 function AppRoot() {
   // Wrap everything in SettingsProvider
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <SettingsProvider>
         <AppThemeProvider />
       </SettingsProvider>

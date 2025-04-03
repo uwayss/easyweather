@@ -1,4 +1,3 @@
-// src/screens/DateScreen/HourlyForecastCard.tsx
 import React, { useMemo, useState } from "react";
 import { Text, Card, Divider, useTheme, MD3Theme } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
@@ -8,7 +7,13 @@ import { getMetricDataForForecast, MetricType, GraphDataPoint } from "../../util
 import MetricSelector from "../../components/Graph/MetricSelector"; // Re-use existing selector
 import HourlyChart from "./HourlyChart";
 
-export default function HourlyForecastCard({ hourlyData }: { hourlyData: HourWeather[] }) {
+export default function HourlyForecastCard({
+  hourlyData,
+  inSheet,
+}: {
+  hourlyData: HourWeather[];
+  inSheet?: boolean;
+}) {
   const [currentMetric, setCurrentMetric] = useState<MetricType>("temperature");
   const { settings } = useSettings();
   const theme = useTheme();
@@ -26,16 +31,23 @@ export default function HourlyForecastCard({ hourlyData }: { hourlyData: HourWea
         <View style={styles.header}>
           <Text variant="titleMedium">Hourly Forecast</Text>
         </View>
-        <MetricSelector currentMetric={currentMetric} setCurrentMetric={setCurrentMetric} />
+        <MetricSelector
+          currentMetric={currentMetric}
+          setCurrentMetric={setCurrentMetric}
+          inSheet={inSheet}
+        />
         <Divider style={styles.divider} />
         {graphData ? (
           // Pass both raw hourly data (for icons) and processed graph data
-          <HourlyChart data={graphData} hourlySource={hourlyData} metric={currentMetric} />
+          <HourlyChart
+            data={graphData}
+            hourlySource={hourlyData}
+            metric={currentMetric}
+            inSheet={inSheet}
+          />
         ) : (
           <Text style={styles.noDataText}>Hourly data calculation failed.</Text>
         )}
-        {/* Consider removing the swipe hint if the graph is intuitive */}
-        {/* <Text style={styles.scrollHint}>Swipe to see more hours →</Text> */}
       </Card.Content>
     </Card>
   );

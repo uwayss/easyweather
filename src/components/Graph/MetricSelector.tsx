@@ -1,14 +1,17 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { MetricType } from "../../utils/metricData";
 import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
 export default function MetricSelector({
   currentMetric,
   setCurrentMetric,
+  inSheet,
 }: {
   currentMetric: MetricType;
   setCurrentMetric: React.Dispatch<React.SetStateAction<MetricType>>;
+  inSheet?: boolean;
 }) {
   const metrics = React.useMemo(
     () => [
@@ -19,12 +22,30 @@ export default function MetricSelector({
     ],
     [],
   );
+  function ScrollWrapper({ children }: { children: ReactNode }) {
+    if (inSheet) {
+      return (
+        <BottomSheetScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {children}
+        </BottomSheetScrollView>
+      );
+    }
+    return (
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {children}
+      </ScrollView>
+    );
+  }
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.scrollContent}
-    >
+    <ScrollWrapper>
       {metrics.map(button => (
         <TouchableOpacity
           key={button.value}
@@ -35,7 +56,7 @@ export default function MetricSelector({
           <Text style={styles.tabText}>{button.label}</Text>
         </TouchableOpacity>
       ))}
-    </ScrollView>
+    </ScrollWrapper>
   );
 }
 

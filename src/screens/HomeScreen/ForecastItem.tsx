@@ -2,21 +2,31 @@ import React from "react";
 import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Text, Card } from "react-native-paper";
 import weatherDescriptions from "../../utils/descriptions";
-import { DayWeather } from "../../types/weather";
+import { DayWeather, HourWeather } from "../../types/weather";
 import { useSettings } from "../../context/SettingsContext";
 import { convertTemperature, formatTemperature } from "../../utils/unitConversion";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
+import { filterHourlyDataForDate } from "../../utils/weatherUtils";
+import { useWeather } from "../../context/WeatherContext";
 
 interface ForecastItemProps {
   item: DayWeather;
   index: number;
-  onPress: (date: string) => void;
+  bottomSheetRef: React.RefObject<BottomSheetMethods>;
+  setSelectedDayData: React.Dispatch<React.SetStateAction<DayWeather | undefined>>;
+  setSelectedHourlyData: React.Dispatch<React.SetStateAction<HourWeather[] | undefined>>;
 }
 
-const ForecastItem = React.memo(function ForecastItem({ item, index, onPress }: ForecastItemProps) {
+const ForecastItem = React.memo(function ForecastItem({
+  item,
+  index,
+  bottomSheetRef,
+  setSelectedDayData,
+  setSelectedHourlyData,
+}: ForecastItemProps) {
   const { settings } = useSettings();
-  const weather = weatherDescriptions[item.weatherCode]?.day;
+  const weatherDescription = weatherDescriptions[item.weatherCode]?.day;
   const date = new Date(item.date);
-
   let dayName;
   if (index === 0) {
     dayName = "Today";
@@ -25,20 +35,31 @@ const ForecastItem = React.memo(function ForecastItem({ item, index, onPress }: 
   } else {
     dayName = date.toLocaleDateString("en-UK", { weekday: "long" });
   }
-
+  const { weather } = useWeather();
   const currentDate = new Date().toISOString().split("T")[0];
   const isToday = item.date === currentDate;
-
+  // Inside onPress in ForecastItem
+  function onPress() {
+    // Inside onPress in ForecastItem
+    const hourly = filterHourlyDataForDate(weather?.hourly, item.date);
+    setSelectedDayData(item);
+    setSelectedHourlyData(hourly);
+    bottomSheetRef.current?.expand();
+  }
   return (
-    <TouchableOpacity onPress={() => onPress(item.date)} activeOpacity={0.6}>
+    <TouchableOpacity onPress={() => onPress()} activeOpacity={0.6}>
       <Card style={[styles.card, isToday ? styles.todayCard : null]} mode="contained">
         <Card.Content style={styles.cardContent}>
           <Text variant="titleMedium" numberOfLines={1} style={styles.dayName}>
             {dayName}
           </Text>
-          <Image source={weather.image} style={styles.weatherIcon} resizeMode="contain" />
+          <Image
+            source={weatherDescription.image}
+            style={styles.weatherIcon}
+            resizeMode="contain"
+          />
           <Text variant="bodyMedium" style={styles.description} numberOfLines={1}>
-            {weather.description}
+            {weatherDescription.description}
           </Text>
           <View style={styles.temperatures}>
             <Text style={styles.maxTemp}>
