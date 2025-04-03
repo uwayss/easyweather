@@ -8,6 +8,7 @@ import { darkTheme, lightTheme } from "./src/theme";
 import { WeatherProvider } from "./src/context/WeatherContext";
 import { LocationProvider } from "./src/context/LocationContext";
 import { SettingsProvider, useSettings } from "./src/context/SettingsContext"; // Import SettingsProvider and useSettings
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // Component to bridge SettingsContext and PaperProvider
 const AppThemeProvider = () => {
@@ -34,9 +35,11 @@ const AppThemeProvider = () => {
 function AppRoot() {
   // Wrap everything in SettingsProvider
   return (
-    <SettingsProvider>
-      <AppThemeProvider />
-    </SettingsProvider>
+    <GestureHandlerRootView>
+      <SettingsProvider>
+        <AppThemeProvider />
+      </SettingsProvider>
+    </GestureHandlerRootView>
   );
 }
 
