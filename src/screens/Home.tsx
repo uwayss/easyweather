@@ -1,5 +1,5 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -11,16 +11,70 @@ import { filterHourlyWeatherForNext24HoursIncludingNow } from "../utils/weatherU
 import ForecastList from "./HomeScreen/ForecastList";
 import WeatherCard from "./HomeScreen/WeatherCard";
 import SearchRow from "./HomeScreen/SearchRow";
+import BottomSheet, {
+  BottomSheetBackdropProps,
+  TouchableWithoutFeedback,
+} from "@gorhom/bottom-sheet";
+import Animated, { Extrapolation, interpolate, useAnimatedStyle } from "react-native-reanimated";
+import DayDetails from "./Details";
+import { DayWeather, HourWeather } from "../types/weather";
 
 export type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 type HomeProps = {
   navigation: HomeNavigationProp;
 };
+
+const CustomBackdrop = ({
+  animatedIndex,
+  style,
+  onPress,
+}: BottomSheetBackdropProps & { onPress?: () => void }) => {
+  const containerAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: interpolate(animatedIndex.value, [-1, 0], [0, 0.5], Extrapolation.CLAMP),
+  }));
+
+  const containerStyle = useMemo(
+    () => [
+      style,
+      {
+        backgroundColor: "#000",
+      },
+      containerAnimatedStyle,
+      StyleSheet.absoluteFillObject,
+    ],
+    [style, containerAnimatedStyle],
+  );
+
+  return (
+    <TouchableWithoutFeedback
+      onPress={onPress} // Use the passed onPress handler
+      accessibilityLabel="Close bottom sheet"
+      accessibilityRole="button"
+    >
+      <Animated.View style={containerStyle} />
+    </TouchableWithoutFeedback>
+  );
+};
+
 export default function Home({ navigation }: HomeProps) {
   const theme = useTheme();
   const { weather, fetchWeatherData } = useWeather();
   const [refreshing, setRefreshing] = useState(false);
   const { location } = useLocationContext();
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const [selectedDayData, setSelectedDayData] = useState<DayWeather | undefined>(undefined);
+  const [selectedHourlyData, setSelectedHourlyData] = useState<HourWeather[] | undefined>(
+    undefined,
+  );
+  // callbacks
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log("handleSheetChanges", index);
+  }, []);
+  const handleClosePress = useCallback(() => {
+    bottomSheetRef.current?.close();
+  }, []);
+
+  const snapPoints = useMemo(() => ["90%"], []);
 
   const onRefresh = async () => {
     console.log("Pull to refresh triggered");
@@ -45,7 +99,10 @@ export default function Home({ navigation }: HomeProps) {
     () => filterHourlyWeatherForNext24HoursIncludingNow(weather?.hourly),
     [weather?.hourly],
   );
-
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => <CustomBackdrop {...props} onPress={handleClosePress} />,
+    [handleClosePress], // Add dependency
+  );
   return (
     <SafeAreaView style={[styles.safeContainer, { backgroundColor: theme.colors.background }]}>
       <ScrollView
@@ -67,8 +124,25 @@ export default function Home({ navigation }: HomeProps) {
         <View>
           <HourlyConditions selectedDateHourly={todaysHourlyData} />
         </View>
-        <ForecastList />
+        <ForecastList
+          bottomSheetRef={bottomSheetRef}
+          setSelectedDayData={setSelectedDayData}
+          setSelectedHourlyData={setSelectedHourlyData}
+        />
       </ScrollView>
+      <BottomSheet
+        ref={bottomSheetRef}
+        onChange={handleSheetChanges}
+        snapPoints={snapPoints}
+        index={-1}
+        backdropComponent={renderBackdrop}
+        handleStyle={{ backgroundColor: theme.colors.background }}
+        enableContentPanningGesture={false}
+        enablePanDownToClose
+        enableHandlePanningGesture
+      >
+        <DayDetails selectedDateHourly={selectedHourlyData} selectedDay={selectedDayData} />
+      </BottomSheet>
     </SafeAreaView>
   );
 }

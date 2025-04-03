@@ -1,4 +1,3 @@
-// src/screens/DayDetails.tsx
 import React from "react";
 import { StyleSheet, ScrollView, ActivityIndicator, View } from "react-native";
 import { useWeather } from "../context/WeatherContext";
@@ -7,9 +6,9 @@ import { RouteProp } from "@react-navigation/native";
 import { Text, useTheme, Appbar } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { filterHourlyDataForDate } from "../utils/weatherUtils";
-import { RootStackParamList } from "../../App"; // Adjust import if needed
-import DailySummaryCard from "./DateScreen/DailySummaryCard"; // New component
-import HourlyForecastCard from "./DateScreen/HourlyForecastCard"; // Refined component (renamed HourlyConditions)
+import { RootStackParamList } from "../../App";
+import DailySummaryCard from "./DateScreen/DailySummaryCard";
+import HourlyForecastCard from "./DateScreen/HourlyForecastCard";
 import { useNavigation } from "@react-navigation/native";
 
 type DayDetailsRouteProp = RouteProp<RootStackParamList, "DayDetails">;
@@ -19,7 +18,6 @@ export default function DayDetails({ route }: { route: DayDetailsRouteProp }) {
   const date = route.params.date;
   const { weather, loading, error } = useWeather();
   const theme = useTheme();
-  const styles = stylesheet(theme.colors.background);
 
   const selectedDay = React.useMemo(
     () => weather?.daily?.find(day => day.date === date),
@@ -33,9 +31,8 @@ export default function DayDetails({ route }: { route: DayDetailsRouteProp }) {
   const formattedTitle = formatForecastDate(selectedDay?.date);
 
   if (loading && !weather) {
-    // Show loading only initially
     return (
-      <SafeAreaView style={styles.safeContainer}>
+      <SafeAreaView style={[styles.safeContainer, { backgroundColor: theme.colors.background }]}>
         <Appbar.Header>
           <Appbar.BackAction onPress={() => navigation.goBack()} />
           <Appbar.Content title={formattedTitle || "Loading..."} />
@@ -49,13 +46,19 @@ export default function DayDetails({ route }: { route: DayDetailsRouteProp }) {
 
   if (error) {
     return (
-      <SafeAreaView style={styles.safeContainer}>
+      <SafeAreaView style={[styles.safeContainer, { backgroundColor: theme.colors.background }]}>
         <Appbar.Header>
           <Appbar.BackAction onPress={() => navigation.goBack()} />
           <Appbar.Content title="Error" />
         </Appbar.Header>
         <View style={styles.centered}>
-          <Text variant="headlineMedium" style={{ textAlign: "center", color: theme.colors.error }}>
+          <Text
+            variant="headlineMedium"
+            style={{
+              textAlign: "center",
+              color: theme.colors.error,
+            }}
+          >
             {"Error: " + error}
           </Text>
         </View>
@@ -64,9 +67,8 @@ export default function DayDetails({ route }: { route: DayDetailsRouteProp }) {
   }
 
   if (!selectedDay) {
-    // Handle case where day data might be missing after load
     return (
-      <SafeAreaView style={styles.safeContainer}>
+      <SafeAreaView style={[styles.safeContainer, { backgroundColor: theme.colors.background }]}>
         <Appbar.Header>
           <Appbar.BackAction onPress={() => navigation.goBack()} />
           <Appbar.Content title={formattedTitle || "Details"} />
@@ -79,7 +81,7 @@ export default function DayDetails({ route }: { route: DayDetailsRouteProp }) {
   }
 
   return (
-    <SafeAreaView style={styles.safeContainer}>
+    <SafeAreaView style={[styles.safeContainer, { backgroundColor: theme.colors.background }]}>
       <Appbar.Header elevated>
         <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title={formattedTitle || "Details"} titleStyle={styles.appBarTitle} />
@@ -101,27 +103,25 @@ export default function DayDetails({ route }: { route: DayDetailsRouteProp }) {
   );
 }
 
-const stylesheet = (themeBg: string) =>
-  StyleSheet.create({
-    safeContainer: {
-      flex: 1,
-      backgroundColor: themeBg, // Apply background to SafeAreaView
-    },
-    container: {
-      flex: 1,
-    },
-    contentContainer: {
-      padding: 16,
-      paddingTop: 8, // Reduce top padding as Appbar has height
-      gap: 20,
-    },
-    centered: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      padding: 16,
-    },
-    appBarTitle: {
-      fontWeight: "500", // Less aggressive than default bold
-    },
-  });
+const styles = StyleSheet.create({
+  safeContainer: {
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+  },
+  contentContainer: {
+    padding: 16,
+    paddingTop: 8,
+    gap: 20,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
+  },
+  appBarTitle: {
+    fontWeight: "500",
+  },
+});

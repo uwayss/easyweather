@@ -6,11 +6,13 @@ import { GraphDataPoint, MetricType } from "../../utils/metricData";
 import { HourWeather } from "../../types/weather";
 import weatherDescriptions from "../../utils/descriptions";
 import CustomVerticalProgressBar from "./CustomVerticalProgressBar"; // Keep the progress bar logic
+import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 
 interface HourlyChartProps {
   data: GraphDataPoint[];
   hourlySource: HourWeather[]; // Need the original data for icons
   metric: MetricType;
+  inSheet?: boolean;
 }
 
 const HourItem = React.memo(function HourItem({
@@ -46,7 +48,7 @@ const HourItem = React.memo(function HourItem({
   );
 });
 
-export default function HourlyChart({ data, hourlySource }: HourlyChartProps) {
+export default function HourlyChart({ data, hourlySource, inSheet }: HourlyChartProps) {
   const theme = useTheme();
   const styles = chartStyles(theme);
 
@@ -54,7 +56,24 @@ export default function HourlyChart({ data, hourlySource }: HourlyChartProps) {
   if (data.length !== hourlySource.length) {
     return <Text style={styles.errorText}>Data mismatch</Text>;
   }
-
+  if (inSheet) {
+    return (
+      <BottomSheetFlatList
+        horizontal
+        data={data} // Use the processed data for the list items
+        renderItem={({ item, index }) => (
+          <HourItem graphPoint={item} hourInfo={hourlySource[index]} />
+        )}
+        keyExtractor={item => item.time}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={10}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.listContentContainer}
+        removeClippedSubviews={false} // Keep this false if performance is okay
+      />
+    );
+  }
   return (
     <FlatList
       horizontal

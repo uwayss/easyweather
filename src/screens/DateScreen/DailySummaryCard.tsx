@@ -1,4 +1,3 @@
-// src/screens/DateScreen/DailySummaryCard.tsx
 import React from "react";
 import { StyleSheet, View, Image } from "react-native";
 import { Text, Card, Divider, Icon, useTheme, MD3Theme } from "react-native-paper";
@@ -35,11 +34,11 @@ const DetailItem: React.FC<DetailItemProps> = ({ icon, label, value }) => {
   );
 };
 
-export default function DailySummaryCard({ dayData }: { dayData: DayWeather }) {
+export default function DailySummaryCard({ dayData }: { dayData: DayWeather | undefined }) {
   const { settings } = useSettings();
   const theme = useTheme();
   const styles = summaryCardStyles(theme);
-
+  if (!dayData) return undefined;
   const weatherInfo = weatherDescriptions[dayData.weatherCode]?.day; // Assuming day for daily summary
 
   const formattedHigh = formatTemperature(

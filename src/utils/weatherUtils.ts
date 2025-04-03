@@ -55,8 +55,8 @@ export function processWeatherData(data: WeatherResponseAPI): Weather {
 export const filterHourlyDataForDate = (
   hourlyData: HourWeather[] | undefined,
   date: string,
-): HourWeather[] | undefined | null => {
-  if (!hourlyData) return null;
+): HourWeather[] | undefined => {
+  if (!hourlyData) return undefined;
   return hourlyData.filter((hourData: HourWeather) => hourData.time.startsWith(date));
 };
 
@@ -66,7 +66,7 @@ export function filterHourlyWeatherForToday(hourlyData?: HourWeather[]): HourWea
   return hourlyData.filter((hourData: HourWeather) => hourData.time.startsWith(todayDateString));
 }
 export function filterHourlyWeatherForNext24HoursIncludingNow(
-  hourlyData: HourWeather[] | undefined,
+  hourlyData?: HourWeather[],
 ): HourWeather[] | undefined {
   if (!hourlyData) return undefined;
 
