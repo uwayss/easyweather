@@ -60,10 +60,29 @@ export const filterHourlyDataForDate = (
   return hourlyData.filter((hourData: HourWeather) => hourData.time.startsWith(date));
 };
 
-export function filterHourlyWeatherForToday(
-  hourlyData: HourWeather[] | undefined,
-): HourWeather[] | undefined {
+export function filterHourlyWeatherForToday(hourlyData?: HourWeather[]): HourWeather[] | undefined {
   if (!hourlyData) return undefined;
   const todayDateString = new Date().toISOString().split("T")[0];
   return hourlyData.filter((hourData: HourWeather) => hourData.time.startsWith(todayDateString));
+}
+export function filterHourlyWeatherForNext24HoursIncludingNow(
+  hourlyData: HourWeather[] | undefined,
+): HourWeather[] | undefined {
+  if (!hourlyData) return undefined;
+
+  const now = new Date();
+  // Create a date representing the START of the current hour
+  const startOfCurrentHour = new Date(now);
+  startOfCurrentHour.setMinutes(0, 0, 0); // Set minutes, seconds, milliseconds to 0
+
+  const twentyFourHoursLater = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+  const filteredData = hourlyData.filter((hourData: HourWeather) => {
+    const hourTime = new Date(hourData.time);
+    // Filter starts from the beginning of the current hour onwards
+    return hourTime >= startOfCurrentHour && hourTime < twentyFourHoursLater;
+  });
+
+  // Take only the first 24 items from the filtered list
+  return filteredData.slice(0, 24);
 }

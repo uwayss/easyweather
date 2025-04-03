@@ -1,23 +1,21 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useMemo, useState } from "react";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
-import { IconButton, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "../../App";
 import HourlyConditions from "../components/HourlyConditions";
-import PlaceholderCard from "../components/PlaceholderCard";
 import { useLocationContext } from "../context/LocationContext";
 import { useWeather } from "../context/WeatherContext";
-import { filterHourlyWeatherForToday } from "../utils/weatherUtils";
+import { filterHourlyWeatherForNext24HoursIncludingNow } from "../utils/weatherUtils";
 import ForecastList from "./HomeScreen/ForecastList";
-import { LocationSearch } from "./HomeScreen/LocationSearch";
 import WeatherCard from "./HomeScreen/WeatherCard";
+import SearchRow from "./HomeScreen/SearchRow";
 
-type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
+export type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 type HomeProps = {
   navigation: HomeNavigationProp;
 };
-
 export default function Home({ navigation }: HomeProps) {
   const theme = useTheme();
   const { weather, fetchWeatherData } = useWeather();
@@ -43,11 +41,11 @@ export default function Home({ navigation }: HomeProps) {
       setRefreshing(false);
     }
   };
-
   const todaysHourlyData = useMemo(
-    () => filterHourlyWeatherForToday(weather?.hourly),
+    () => filterHourlyWeatherForNext24HoursIncludingNow(weather?.hourly),
     [weather?.hourly],
   );
+
   return (
     <SafeAreaView style={[styles.safeContainer, { backgroundColor: theme.colors.background }]}>
       <ScrollView
@@ -64,27 +62,10 @@ export default function Home({ navigation }: HomeProps) {
           />
         }
       >
-        <View style={styles.topRow}>
-          <View style={styles.searchWrapper}>
-            <LocationSearch />
-          </View>
-          <IconButton
-            icon="cog-outline"
-            iconColor={theme.colors.onSurface}
-            size={28}
-            onPress={() => navigation.navigate("Settings")}
-            style={styles.settingsIcon}
-            accessibilityLabel="Open settings"
-          />
-        </View>
+        <SearchRow textColor={theme.colors.onSurface} navigation={navigation} />
         <WeatherCard />
         <View>
-          {todaysHourlyData && todaysHourlyData.length > 0 ? (
-            <HourlyConditions selectedDateHourly={todaysHourlyData} />
-          ) : (
-            // <Graph data={getMetricDataForForecast("temperature", todaysHourlyData, false)} />
-            <PlaceholderCard />
-          )}
+          <HourlyConditions selectedDateHourly={todaysHourlyData} />
         </View>
         <ForecastList />
       </ScrollView>
@@ -104,16 +85,5 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     paddingTop: 10,
     gap: 20,
-  },
-  topRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  searchWrapper: {
-    flex: 1,
-  },
-  settingsIcon: {
-    marginLeft: 8,
-    marginRight: -8,
   },
 });

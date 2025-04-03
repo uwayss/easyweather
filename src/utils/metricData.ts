@@ -14,7 +14,6 @@ export interface GraphDataPoint {
   value: string;
   time: string;
   label: string;
-  highlight?: boolean;
 }
 
 // --- Refactored Metric Calculation Functions ---
@@ -51,16 +50,13 @@ const getTemperatureDataForHour = (
       : hourTime > 12
       ? `${hourTime - 12} PM`
       : `${hourTime} AM`;
-  const itemHour = new Date(item.time).getHours();
-  const currentHour = new Date().getHours();
-  const highlight = itemHour === currentHour;
+
   return {
     progress: tempProgress,
     color,
     value: formatTemperature(temp, useImperialUnits),
     time: item.time,
     label: formattedHour,
-    highlight,
   };
 };
 
@@ -79,16 +75,12 @@ const getPrecipitationDataForHour = (item: HourWeather): GraphDataPoint => {
       : hourTime > 12
       ? `${hourTime - 12} PM`
       : `${hourTime} AM`;
-  const itemHour = new Date(item.time).getHours();
-  const currentHour = new Date().getHours();
-  const highlight = itemHour === currentHour;
   return {
     progress: rainProb / 100,
     color,
     value: Math.round(rainProb) + "%", // Round probability for display
     time: item.time,
     label: formattedHour,
-    highlight,
   };
 };
 
@@ -107,16 +99,13 @@ const getHumidityDataForHour = (item: HourWeather): GraphDataPoint => {
       : hourTime > 12
       ? `${hourTime - 12} PM`
       : `${hourTime} AM`;
-  const itemHour = new Date(item.time).getHours();
-  const currentHour = new Date().getHours();
-  const highlight = itemHour === currentHour;
+
   return {
     progress: humidity / 100,
     color,
     value: Math.round(humidity) + "%", // Round humidity for display
     time: item.time,
     label: formattedHour,
-    highlight,
   };
 };
 
@@ -152,16 +141,12 @@ const getWindSpeedDataForHour = (item: HourWeather, useImperialUnits: boolean): 
       : hourTime > 12
       ? `${hourTime - 12} PM`
       : `${hourTime} AM`;
-  const itemHour = new Date(item.time).getHours();
-  const currentHour = new Date().getHours();
-  const highlight = itemHour === currentHour;
   return {
     progress,
     color,
     value: formatWindSpeed(convertedWindSpeed, useImperialUnits),
     time: item.time,
     label: formattedHour,
-    highlight,
   };
 };
 
@@ -176,11 +161,11 @@ const getWindSpeedDataForHour = (item: HourWeather, useImperialUnits: boolean): 
  */
 export const getMetricDataForForecast = (
   metricType: MetricType,
-  forecastHours: HourWeather[],
+  forecastHours: HourWeather[] | undefined,
   useImperialUnits: boolean,
-): GraphDataPoint[] => {
+): GraphDataPoint[] | undefined => {
   // Map each hour to its corresponding metric data point
-  const metricDataArray = forecastHours.map((hour): GraphDataPoint => {
+  const metricDataArray = forecastHours?.map((hour): GraphDataPoint => {
     switch (metricType) {
       case "temperature":
         return getTemperatureDataForHour(hour, useImperialUnits);
@@ -202,7 +187,6 @@ export const getMetricDataForForecast = (
           value: "N/A",
           time: "",
           label: "",
-          highlight: false,
         };
       // throw new Error(`Unsupported metricType: ${metricType}`);
     }
