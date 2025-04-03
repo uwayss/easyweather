@@ -6,7 +6,7 @@ import CustomVerticalProgressBar from "../../screens/DateScreen/CustomVerticalPr
 
 const Item = React.memo(function Item({ item }: { item: GraphDataPoint }) {
   return (
-    <View style={[styles.itemContainer, item.highlight ? styles.hightlightedItem : undefined]}>
+    <View style={styles.itemContainer}>
       <Text style={styles.itemText}>{item.value}</Text>
       <CustomVerticalProgressBar
         progress={item.progress}

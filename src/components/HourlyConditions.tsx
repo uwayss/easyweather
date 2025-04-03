@@ -6,11 +6,12 @@ import { useSettings } from "../context/SettingsContext";
 import Graph from "./Graph/Graph";
 import { getMetricDataForForecast, MetricType } from "../utils/metricData";
 import MetricSelector from "./Graph/MetricSelector";
+import PlaceholderCard from "./PlaceholderCard";
 
 export default function HourlyConditions({
   selectedDateHourly,
 }: {
-  selectedDateHourly: HourWeather[];
+  selectedDateHourly: HourWeather[] | undefined;
 }) {
   const [currentMetric, setCurrentMetric] = useState<MetricType>("temperature");
   const { settings } = useSettings();
@@ -31,7 +32,7 @@ export default function HourlyConditions({
         </View>
         <MetricSelector currentMetric={currentMetric} setCurrentMetric={setCurrentMetric} />
         <Divider />
-        <Graph data={graphData} />
+        {graphData ? <Graph data={graphData} /> : <PlaceholderCard withoutContainer />}
         <Text style={styles.scrollHint}>Swipe to see more hours →</Text>
       </Card.Content>
     </Card>
