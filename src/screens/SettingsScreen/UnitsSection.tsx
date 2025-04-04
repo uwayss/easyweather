@@ -3,7 +3,7 @@ import React from "react";
 import { Divider, List, Text, SegmentedButtons } from "react-native-paper";
 import { useSettings } from "../../context/SettingsContext";
 
-export default function UnitsSection() {
+export default React.memo(function UnitsSection() {
   const { settings, updateSetting } = useSettings();
 
   return (
@@ -31,7 +31,7 @@ export default function UnitsSection() {
       <Divider style={styles.divider} />
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   label: {

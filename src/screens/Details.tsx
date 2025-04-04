@@ -39,8 +39,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-start",
-    paddingHorizontal: 16,
+    marginHorizontal: 16,
   },
   safeContainer: {
     flex: 1,

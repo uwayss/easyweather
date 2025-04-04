@@ -156,9 +156,10 @@ export default function Home({ navigation }: HomeProps) {
           borderRadius: 16,
           paddingBottom: 32,
         }}
+        backgroundStyle={{ backgroundColor: theme.colors.background }}
         enableContentPanningGesture={false}
-        enablePanDownToClose={false}
         enableHandlePanningGesture
+        enablePanDownToClose
       >
         <DayDetails selectedDateHourly={selectedHourlyData} selectedDay={selectedDayData} />
       </BottomSheet>

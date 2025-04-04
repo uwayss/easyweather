@@ -12,10 +12,10 @@ import AppearanceSection from "./SettingsScreen/AppearanceSection";
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
-  const themeBg = useTheme().colors.background;
+  const theme = useTheme();
 
   return (
-    <SafeAreaView style={[styles.safeContainer, { backgroundColor: themeBg }]}>
+    <SafeAreaView style={[styles.safeContainer, { backgroundColor: theme.colors.background }]}>
       <Appbar.Header>
         <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title="Settings" />
