@@ -14,7 +14,11 @@ export default function RootStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="Settings" component={SettingsScreen} />
+      <Stack.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{ animation: "slide_from_left" }}
+      />
     </Stack.Navigator>
   );
 }

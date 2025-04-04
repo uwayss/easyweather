@@ -3,7 +3,7 @@ import React from "react";
 import { Divider, List, SegmentedButtons, Text } from "react-native-paper";
 import { ThemePreference, useSettings } from "../../context/SettingsContext";
 
-export default function AppearanceSection() {
+export default React.memo(function AppearanceSection() {
   const { settings, updateSetting } = useSettings();
   const handleThemeChange = (value: string) => {
     updateSetting("theme", value as ThemePreference);
@@ -38,7 +38,7 @@ export default function AppearanceSection() {
       <Divider style={styles.divider} />
     </View>
   );
-}
+});
 const styles = StyleSheet.create({
   label: {
     paddingHorizontal: 16,

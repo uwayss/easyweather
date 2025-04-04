@@ -67,7 +67,6 @@ export default function HourlyChart({ data, hourlySource, inSheet }: HourlyChart
         maxToRenderPerBatch={10}
         windowSize={10}
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.listContentContainer}
         removeClippedSubviews={false}
       />
     );
@@ -84,7 +83,6 @@ export default function HourlyChart({ data, hourlySource, inSheet }: HourlyChart
       maxToRenderPerBatch={10}
       windowSize={10}
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.listContentContainer}
       removeClippedSubviews={false}
     />
   );
@@ -92,9 +90,6 @@ export default function HourlyChart({ data, hourlySource, inSheet }: HourlyChart
 
 const chartStyles = (theme: MD3Theme) =>
   StyleSheet.create({
-    listContentContainer: {
-      paddingVertical: 8,
-    },
     itemContainer: {
       alignItems: "center",
       gap: 6,

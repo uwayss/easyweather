@@ -1,5 +1,6 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
+import { useTheme } from "react-native-paper";
 
 interface CustomVerticalProgressBarProps {
   progress: number;
@@ -8,18 +9,21 @@ interface CustomVerticalProgressBarProps {
   trackColor?: string;
 }
 
-const DEFAULT_LIGHT_TRACK_COLOR = "rgba(0, 0, 0, 0.1)";
-
 const CustomVerticalProgressBar: React.FC<CustomVerticalProgressBarProps> = ({
   progress,
   color,
   style = {},
-  trackColor = DEFAULT_LIGHT_TRACK_COLOR,
 }) => {
   const clampedProgress = Math.max(0, Math.min(1, progress));
-
+  const theme = useTheme();
   return (
-    <View style={[styles.track, style, { backgroundColor: trackColor }]}>
+    <View
+      style={[
+        styles.track,
+        style,
+        { backgroundColor: theme.colors.onSurfaceDisabled, width: "35%" },
+      ]}
+    >
       <View
         style={[
           styles.fill,
@@ -37,12 +41,10 @@ const styles = StyleSheet.create({
   track: {
     justifyContent: "flex-end",
     overflow: "hidden",
-
     borderRadius: 6,
   },
   fill: {
     width: "100%",
-    borderRadius: 6,
   },
 });
 
