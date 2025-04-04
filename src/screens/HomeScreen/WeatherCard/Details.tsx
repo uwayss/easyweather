@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     width: "100%",
-    opacity: 0.85,
+    opacity: 0.8,
   },
   detailItem: {
     flex: 1,

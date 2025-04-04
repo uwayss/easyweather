@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import React from "react";
-import { Divider, List, SegmentedButtons } from "react-native-paper";
+import { Divider, List, Text, SegmentedButtons } from "react-native-paper";
 import { useSettings } from "../../context/SettingsContext";
 
 export default function UnitsSection() {

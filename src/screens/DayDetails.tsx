@@ -87,10 +87,7 @@ export default function DayDetails({ route }: { route: DayDetailsRouteProp }) {
         <Appbar.Content title={formattedTitle || "Details"} titleStyle={styles.appBarTitle} />
       </Appbar.Header>
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-        {/* Pass the selected day data */}
         <DailySummaryCard dayData={selectedDay} />
-
-        {/* Pass the hourly data for that day */}
         {selectedDateHourly && selectedDateHourly.length > 0 ? (
           <HourlyForecastCard hourlyData={selectedDateHourly} />
         ) : (

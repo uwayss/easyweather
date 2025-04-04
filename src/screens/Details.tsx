@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { formatForecastDate } from "../utils/dateScreen.helpers";
+import { formatForecastDate } from "../utils/timeUtils";
 import { useTheme, Title, IconButton } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DailySummaryCard from "./DateScreen/DailySummaryCard";
@@ -8,13 +8,12 @@ import HourlyForecastCard from "./DateScreen/HourlyForecastCard";
 import { DayWeather, HourWeather } from "../types/weather";
 import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
 
-export default function DayDetails({
-  selectedDay,
-  selectedDateHourly,
-}: {
+type DetailsProps = {
   selectedDay?: DayWeather;
   selectedDateHourly?: HourWeather[];
-}) {
+};
+
+export default function Details({ selectedDay, selectedDateHourly }: DetailsProps) {
   const theme = useTheme();
 
   const formattedTitle = formatForecastDate(selectedDay?.date);

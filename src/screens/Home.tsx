@@ -11,51 +11,68 @@ import { filterHourlyWeatherForNext24HoursIncludingNow } from "../utils/weatherU
 import ForecastList from "./HomeScreen/ForecastList";
 import WeatherCard from "./HomeScreen/WeatherCard";
 import SearchRow from "./HomeScreen/SearchRow";
-import BottomSheet, {
-  BottomSheetBackdropProps,
-  TouchableWithoutFeedback,
-} from "@gorhom/bottom-sheet";
-import Animated, { Extrapolation, interpolate, useAnimatedStyle } from "react-native-reanimated";
+import BottomSheet, { BottomSheetBackdropProps, useBottomSheet } from "@gorhom/bottom-sheet";
+import Animated, {
+  Extrapolation,
+  FadeIn,
+  FadeOut,
+  interpolate,
+  useAnimatedStyle,
+} from "react-native-reanimated";
 import DayDetails from "./Details";
 import { DayWeather, HourWeather } from "../types/weather";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 export type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 type HomeProps = {
   navigation: HomeNavigationProp;
 };
 
-const CustomBackdrop = ({
-  animatedIndex,
-  style,
-  onPress,
-}: BottomSheetBackdropProps & { onPress?: () => void }) => {
-  const containerAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(animatedIndex.value, [-1, 0], [0, 0.5], Extrapolation.CLAMP),
-  }));
+export const Backdrop = ({ animatedIndex, style }: BottomSheetBackdropProps) => {
+  const { close } = useBottomSheet();
 
+  // animated variables
+  const containerAnimatedStyle = useAnimatedStyle(() => {
+    "worklet";
+    const isHidden = animatedIndex.value === -1;
+
+    return {
+      opacity: interpolate(animatedIndex.value, [-1, 0], [0, 0.75], Extrapolation.CLAMP),
+      backgroundColor: "rgba(0,0,0,0.4)",
+      backfaceVisibility: "hidden",
+      pointerEvents: isHidden ? "none" : "auto",
+      display: isHidden ? "none" : "flex",
+    };
+  });
+
+  // styles
   const containerStyle = useMemo(
     () => [
       style,
       {
-        backgroundColor: "#000",
+        flex: 1,
       },
       containerAnimatedStyle,
-      StyleSheet.absoluteFillObject,
     ],
     [style, containerAnimatedStyle],
   );
 
+  const closeSheet = () => {
+    close();
+  };
+
+  const backdropTap = Gesture.Tap().maxDuration(100000).onEnd(closeSheet).runOnJS(true);
+
   return (
-    <TouchableWithoutFeedback
-      onPress={onPress} // Use the passed onPress handler
-      accessibilityLabel="Close bottom sheet"
-      accessibilityRole="button"
-    >
-      <Animated.View style={containerStyle} />
-    </TouchableWithoutFeedback>
+    <GestureDetector gesture={backdropTap}>
+      <Animated.View
+        entering={FadeIn}
+        exiting={FadeOut}
+        style={[containerStyle, styles.backdrop, style]}
+      />
+    </GestureDetector>
   );
 };
-
 export default function Home({ navigation }: HomeProps) {
   const theme = useTheme();
   const { weather, fetchWeatherData } = useWeather();
@@ -100,7 +117,7 @@ export default function Home({ navigation }: HomeProps) {
     [weather?.hourly],
   );
   const renderBackdrop = useCallback(
-    (props: BottomSheetBackdropProps) => <CustomBackdrop {...props} onPress={handleClosePress} />,
+    (props: BottomSheetBackdropProps) => <Backdrop {...props} />,
     [handleClosePress], // Add dependency
   );
   return (
@@ -138,7 +155,7 @@ export default function Home({ navigation }: HomeProps) {
         backdropComponent={renderBackdrop}
         handleStyle={{ backgroundColor: theme.colors.background }}
         enableContentPanningGesture={false}
-        enablePanDownToClose
+        enablePanDownToClose={false}
         enableHandlePanningGesture
       >
         <DayDetails selectedDateHourly={selectedHourlyData} selectedDay={selectedDayData} />
@@ -159,5 +176,9 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     paddingTop: 10,
     gap: 20,
+  },
+  backdrop: {
+    height: "100%",
+    width: "100%",
   },
 });

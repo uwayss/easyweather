@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import React from "react";
-import { Divider, List, SegmentedButtons } from "react-native-paper";
+import { Divider, List, SegmentedButtons, Text } from "react-native-paper";
 import { ThemePreference, useSettings } from "../../context/SettingsContext";
 
 export default function AppearanceSection() {
