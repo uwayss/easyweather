@@ -1,6 +1,6 @@
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
-# Weather App
+# EasyWeather
 
 A beautiful and intuitive weather application that provides accurate forecasts based on your location. Features include:
 
@@ -9,7 +9,7 @@ A beautiful and intuitive weather application that provides accurate forecasts b
 - Location-based weather data
 - Customizable units and themes
 
-## Installing
+### Installing
 
 1. Clone this repository
 2. Install dependencies: `npm install`
@@ -17,7 +17,7 @@ A beautiful and intuitive weather application that provides accurate forecasts b
 
 For development, ensure you have the React Native environment set up as per the [official documentation](https://reactnative.dev/docs/environment-setup).
 
-## Modifying
+### Modifying
 
 Now that you have successfully run the app, let's modify it.
 
@@ -26,11 +26,11 @@ Now that you have successfully run the app, let's modify it.
 
    For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
 
-# Troubleshooting
+### Troubleshooting
 
 If you can't get it to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
 
-## Privacy Statement
+# Privacy Statement
 
 This app respects your privacy. Here's what you need to know:
 
