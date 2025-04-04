@@ -38,9 +38,8 @@ const ForecastItem = React.memo(function ForecastItem({
   const { weather } = useWeather();
   const currentDate = new Date().toISOString().split("T")[0];
   const isToday = item.date === currentDate;
-  // Inside onPress in ForecastItem
+
   function onPress() {
-    // Inside onPress in ForecastItem
     const hourly = filterHourlyDataForDate(weather?.hourly, item.date);
     setSelectedDayData(item);
     setSelectedHourlyData(hourly);

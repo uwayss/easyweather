@@ -31,7 +31,6 @@ type HomeProps = {
 export const Backdrop = ({ animatedIndex, style }: BottomSheetBackdropProps) => {
   const { close } = useBottomSheet();
 
-  // animated variables
   const containerAnimatedStyle = useAnimatedStyle(() => {
     "worklet";
     const isHidden = animatedIndex.value === -1;
@@ -45,7 +44,6 @@ export const Backdrop = ({ animatedIndex, style }: BottomSheetBackdropProps) => 
     };
   });
 
-  // styles
   const containerStyle = useMemo(
     () => [
       style,
@@ -83,7 +81,7 @@ export default function Home({ navigation }: HomeProps) {
   const [selectedHourlyData, setSelectedHourlyData] = useState<HourWeather[] | undefined>(
     undefined,
   );
-  // callbacks
+
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
   }, []);
@@ -118,7 +116,7 @@ export default function Home({ navigation }: HomeProps) {
   );
   const renderBackdrop = useCallback(
     (props: BottomSheetBackdropProps) => <Backdrop {...props} />,
-    [handleClosePress], // Add dependency
+    [handleClosePress],
   );
   return (
     <SafeAreaView style={[styles.safeContainer, { backgroundColor: theme.colors.background }]}>

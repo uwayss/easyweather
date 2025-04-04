@@ -1,16 +1,12 @@
-// FILE: src/screens/SettingsScreen/AboutSection.tsx
 import React from "react";
 import { Linking, Alert, View } from "react-native";
 import { List, Divider } from "react-native-paper";
-// Optional: import DeviceInfo from 'react-native-device-info';
 
-// --- Constants ---
 const DATA_SOURCE_URL = "https://open-meteo.com/";
-const DEVELOPER_URL = "https://www.github.com/uwayss"; // Your portfolio/github
-// const appVersion = DeviceInfo.getVersion(); // Use this if installed
+const DEVELOPER_URL = "https://www.github.com/uwayss";
+
 const appVersion = "1.0.0";
 
-// --- Helper ---
 const openLink = async (url: string) => {
   try {
     await Linking.openURL(url);
@@ -49,4 +45,4 @@ function AboutSectionComponent() {
 }
 AboutSectionComponent.displayName = "AboutSection";
 
-export const AboutSection = React.memo(AboutSectionComponent); // Memoize the named component
+export const AboutSection = React.memo(AboutSectionComponent);
