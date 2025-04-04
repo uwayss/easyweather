@@ -16,20 +16,23 @@ interface DetailItemProps {
   icon: string;
   label: string;
   value: string;
+  color?: string;
 }
 
-const DetailItem: React.FC<DetailItemProps> = ({ icon, label, value }) => {
+const DetailItem: React.FC<DetailItemProps> = ({ icon, label, value, color }) => {
   const theme = useTheme();
   const styles = detailItemStyles(theme);
   return (
     <View style={styles.detailItem}>
-      <Icon source={icon} size={24} color={theme.colors.onSurfaceVariant} />
-      <Text style={styles.detailValue} variant="bodyLarge">
-        {value}
-      </Text>
-      <Text style={styles.detailLabel} variant="labelSmall">
-        {label}
-      </Text>
+      <Icon source={icon} size={24} color={color ? color : undefined} />
+      <View style={styles.detailTextsContainer}>
+        <Text style={styles.detailValue} variant="bodyLarge">
+          {value}
+        </Text>
+        <Text style={styles.detailLabel} variant="labelSmall" numberOfLines={1}>
+          {label}
+        </Text>
+      </View>
     </View>
   );
 };
@@ -38,18 +41,18 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
   const { settings } = useSettings();
   const theme = useTheme();
   const styles = summaryCardStyles(theme);
-  if (!dayData) return undefined;
-  const weatherInfo = weatherDescriptions[dayData.weatherCode]?.day; // Assuming day for daily summary
+  if (!dayData) return <View></View>;
+  const weatherInfo = weatherDescriptions[dayData.weatherCode]?.day;
 
   const formattedHigh = formatTemperature(
     convertTemperature(dayData.maxTemp, settings.useImperialUnits),
     settings.useImperialUnits,
-  ).replace(/°[CF]$/, "°"); // Remove C/F suffix
+  ).replace(/°[CF]$/, "°");
 
   const formattedLow = formatTemperature(
     convertTemperature(dayData.minTemp, settings.useImperialUnits),
     settings.useImperialUnits,
-  ).replace(/°[CF]$/, "°"); // Remove C/F suffix
+  ).replace(/°[CF]$/, "°");
 
   const formattedWind = formatWindSpeed(
     convertWindSpeed(dayData.windSpeed, settings.useImperialUnits),
@@ -60,7 +63,7 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
   const formattedSunset = formatTimeStringToHour(dayData.sunset);
 
   return (
-    <Card style={styles.card} mode="contained">
+    <Card mode="contained">
       <Card.Content style={styles.cardContent}>
         {/* Top Section: Icon, Description, Temps */}
         <View style={styles.topSection}>
@@ -80,25 +83,28 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
           </View>
         </View>
 
-        <Divider style={styles.divider} />
+        <Divider />
 
         {/* Bottom Section: Grid of Details */}
         <View style={styles.detailsGrid}>
           <DetailItem
             icon="weather-rainy"
-            label="Max Precip."
+            label="Max Precip..."
             value={`${Math.round(dayData.rainProb)}%`}
+            color="#2196F3"
           />
-          <DetailItem icon="weather-windy" label="Max Wind" value={formattedWind} />
+          <DetailItem icon="weather-windy" label="Max Wind" value={formattedWind} color="#81D4FA" />
           <DetailItem
-            icon="weather-sunset-up"
+            icon="white-balance-sunny"
+            color="#FFA726"
             label="Sunrise"
             value={formattedSunrise || "--:--"}
           />
           <DetailItem
-            icon="weather-sunset-down"
+            icon="weather-night"
             label="Sunset"
             value={formattedSunset || "--:--"}
+            color="#7E57C2"
           />
         </View>
       </Card.Content>
@@ -106,15 +112,10 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
   );
 }
 
-// Styles for the Summary Card
 const summaryCardStyles = (theme: MD3Theme) =>
   StyleSheet.create({
-    card: {
-      // backgroundColor: theme.colors.surfaceVariant, // Slightly different background
-    },
     cardContent: {
-      padding: 16,
-      gap: 16, // Space between sections
+      gap: 16,
     },
     topSection: {
       flexDirection: "row",
@@ -127,7 +128,7 @@ const summaryCardStyles = (theme: MD3Theme) =>
     },
     topTextContainer: {
       flex: 1,
-      alignItems: "flex-start", // Align text to the start
+      alignItems: "flex-start",
     },
     description: {
       fontWeight: "500",
@@ -135,40 +136,40 @@ const summaryCardStyles = (theme: MD3Theme) =>
     },
     tempsContainer: {
       flexDirection: "row",
-      alignItems: "baseline", // Align temps nicely
+      alignItems: "baseline",
       gap: 8,
     },
     highTemp: {
       fontWeight: "bold",
     },
     lowTemp: {
-      color: theme.colors.onSurfaceVariant, // Muted color for low temp
-    },
-    divider: {
-      marginVertical: 8, // Add some space around the divider
+      color: theme.colors.onSurfaceVariant,
     },
     detailsGrid: {
       flexDirection: "row",
-      justifyContent: "space-around", // Distribute items evenly
-      alignItems: "flex-start", // Align items to top
+      justifyContent: "space-between",
+      alignItems: "flex-start",
     },
   });
 
-// Styles for the DetailItem sub-component
 const detailItemStyles = (theme: MD3Theme) =>
   StyleSheet.create({
     detailItem: {
       alignItems: "center",
-      gap: 4, // Space between icon, value, label
-      flex: 1, // Allow items to take equal space
-      paddingHorizontal: 4, // Prevent text collision
+      gap: 4,
+      flex: 1,
     },
     detailValue: {
-      fontWeight: "600", // Make value slightly bolder
+      fontWeight: "600",
     },
     detailLabel: {
-      color: theme.colors.onSurfaceVariant, // Muted color for label
-      fontSize: 11, // Smaller label
+      color: theme.colors.onSurfaceVariant,
       textAlign: "center",
+      fontSize: 9,
+      width: "100%",
+    },
+    detailTextsContainer: {
+      alignItems: "center",
+      flex: 1,
     },
   });

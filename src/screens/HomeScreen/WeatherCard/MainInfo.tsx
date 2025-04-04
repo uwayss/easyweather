@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     width: "100%",
     alignSelf: "center",
     alignItems: "center",
-    opacity: 0.85,
+    opacity: 0.8,
   },
   temperature: {
     fontWeight: "bold",
