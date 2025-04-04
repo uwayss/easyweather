@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "flex-start",
     paddingHorizontal: 16,
   },
   safeContainer: {
@@ -62,6 +63,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     textAlign: "center",
-    marginVertical: 16,
+    width: "70%",
   },
 });
