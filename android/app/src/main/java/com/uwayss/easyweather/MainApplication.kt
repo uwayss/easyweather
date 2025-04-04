@@ -1,4 +1,4 @@
-package com.weatherapp
+package com.uwayss.easyweather
 
 import android.app.Application
 import com.facebook.react.PackageList

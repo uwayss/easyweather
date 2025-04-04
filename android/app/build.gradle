@@ -83,9 +83,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.weatherapp"
+    namespace "com.uwayss.easyweather"
     defaultConfig {
-        applicationId "com.weatherapp"
+        applicationId "com.uwayss.easyweather"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
