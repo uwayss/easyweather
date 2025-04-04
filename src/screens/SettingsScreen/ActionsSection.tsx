@@ -1,15 +1,12 @@
-// FILE: src/screens/SettingsScreen/ActionsSection.tsx
 import React from "react";
 import { Linking, Share, Platform, Alert } from "react-native";
 import { List } from "react-native-paper";
 
-// --- Constants ---
 const FEEDBACK_EMAIL = "antar.muhammed1@gmail.com";
-const PLAY_STORE_URL_ANDROID = `market://details?id=com.uwayss.weather`;
+const PLAY_STORE_URL_ANDROID = `market://details?id=com.uwayss.easyweather`;
 const APP_SHARE_MESSAGE = "Check out this Weather App!";
-const APP_SHARE_URL = "https://play.google.com/store/apps/details?id=com.uwayss.weather";
+const APP_SHARE_URL = "https://play.google.com/store/apps/details?id=com.uwayss.easyweather";
 
-// --- Helpers ---
 const openLink = async (url: string) => {
   try {
     const supported = await Linking.canOpenURL(url);
@@ -76,6 +73,6 @@ const ActionsSectionComponent = React.memo(() => {
     </>
   );
 });
-ActionsSectionComponent.displayName = "ActionsSection"; // Add displayName
+ActionsSectionComponent.displayName = "ActionsSection";
 
-export const ActionsSection = React.memo(ActionsSectionComponent); // Memoize
+export const ActionsSection = React.memo(ActionsSectionComponent);

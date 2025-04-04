@@ -4,8 +4,6 @@ import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 
 const Sheet = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
-
-  // callbacks
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
   }, []);
@@ -13,7 +11,6 @@ const Sheet = () => {
   const handleClosePress = () => bottomSheetRef.current?.close();
   const handleOpenPress = () => bottomSheetRef.current?.expand();
 
-  // renders
   return (
     <View style={styles.container}>
       <Button title="Close meee" onPress={handleClosePress} />

@@ -1,16 +1,15 @@
-// src/screens/DateScreen/HourlyChart.tsx
 import { FlatList, StyleSheet, View, Image } from "react-native";
 import React from "react";
 import { MD3Theme, Text, useTheme } from "react-native-paper";
 import { GraphDataPoint, MetricType } from "../../utils/metricData";
 import { HourWeather } from "../../types/weather";
 import weatherDescriptions from "../../utils/descriptions";
-import CustomVerticalProgressBar from "./CustomVerticalProgressBar"; // Keep the progress bar logic
+import CustomVerticalProgressBar from "./CustomVerticalProgressBar";
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 
 interface HourlyChartProps {
   data: GraphDataPoint[];
-  hourlySource: HourWeather[]; // Need the original data for icons
+  hourlySource: HourWeather[];
   metric: MetricType;
   inSheet?: boolean;
 }
@@ -36,7 +35,7 @@ const HourItem = React.memo(function HourItem({
         progress={graphPoint.progress}
         color={graphPoint.color}
         style={styles.customProgressBar}
-        trackColor={theme.dark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)"} // Theme-aware track
+        trackColor={theme.dark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)"}
       />
       {weatherIconInfo && (
         <Image source={weatherIconInfo.image} style={styles.weatherIcon} resizeMode="contain" />
@@ -52,7 +51,6 @@ export default function HourlyChart({ data, hourlySource, inSheet }: HourlyChart
   const theme = useTheme();
   const styles = chartStyles(theme);
 
-  // Basic check to ensure data arrays align, though they should if processed correctly
   if (data.length !== hourlySource.length) {
     return <Text style={styles.errorText}>Data mismatch</Text>;
   }
@@ -60,7 +58,7 @@ export default function HourlyChart({ data, hourlySource, inSheet }: HourlyChart
     return (
       <BottomSheetFlatList
         horizontal
-        data={data} // Use the processed data for the list items
+        data={data}
         renderItem={({ item, index }) => (
           <HourItem graphPoint={item} hourInfo={hourlySource[index]} />
         )}
@@ -70,14 +68,14 @@ export default function HourlyChart({ data, hourlySource, inSheet }: HourlyChart
         windowSize={10}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.listContentContainer}
-        removeClippedSubviews={false} // Keep this false if performance is okay
+        removeClippedSubviews={false}
       />
     );
   }
   return (
     <FlatList
       horizontal
-      data={data} // Use the processed data for the list items
+      data={data}
       renderItem={({ item, index }) => (
         <HourItem graphPoint={item} hourInfo={hourlySource[index]} />
       )}
@@ -87,7 +85,7 @@ export default function HourlyChart({ data, hourlySource, inSheet }: HourlyChart
       windowSize={10}
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={styles.listContentContainer}
-      removeClippedSubviews={false} // Keep this false if performance is okay
+      removeClippedSubviews={false}
     />
   );
 }
@@ -99,8 +97,8 @@ const chartStyles = (theme: MD3Theme) =>
     },
     itemContainer: {
       alignItems: "center",
-      gap: 6, // Adjusted gap
-      width: 60, // Increased width for icon
+      gap: 6,
+      width: 60,
       paddingHorizontal: 4,
     },
     itemValueText: {
@@ -109,8 +107,8 @@ const chartStyles = (theme: MD3Theme) =>
       color: theme.colors.onSurface,
     },
     customProgressBar: {
-      width: 12, // Slimmer bar
-      height: 60, // Shorter bar
+      width: 12,
+      height: 60,
     },
     weatherIcon: {
       width: 28,

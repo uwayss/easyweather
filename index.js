@@ -1,5 +1,5 @@
 import React from "react";
-import { AppRegistry } from "react-native"; // Renamed import
+import { AppRegistry } from "react-native";
 import App from "./App";
 import { NavigationContainer } from "@react-navigation/native";
 import { name as appName } from "./app.json";
@@ -7,18 +7,16 @@ import { PaperProvider } from "react-native-paper";
 import { darkTheme, lightTheme } from "./src/theme";
 import { WeatherProvider } from "./src/context/WeatherContext";
 import { LocationProvider } from "./src/context/LocationContext";
-import { SettingsProvider, useSettings } from "./src/context/SettingsContext"; // Import SettingsProvider and useSettings
+import { SettingsProvider, useSettings } from "./src/context/SettingsContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import BootSplash from "react-native-bootsplash";
 
-// Component to bridge SettingsContext and PaperProvider
 const AppThemeProvider = () => {
   const { activeTheme } = useSettings();
 
-  // Choose the theme object based on the active theme
   const themeToApply = activeTheme === "dark" ? darkTheme : lightTheme;
 
-  console.log(`Applying theme: ${activeTheme}`); // Debug log
+  console.log(`Applying theme: ${activeTheme}`);
 
   return (
     <PaperProvider theme={themeToApply}>
@@ -34,7 +32,6 @@ const AppThemeProvider = () => {
 };
 
 function AppRoot() {
-  // Wrap everything in SettingsProvider
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SettingsProvider>

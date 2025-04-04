@@ -1,12 +1,9 @@
-// FILE: src/screens/SettingsScreen/LegalSection.tsx
 import React from "react";
 import { Linking, Alert } from "react-native";
 import { List, Divider } from "react-native-paper";
 
-// --- Constants ---
 const PRIVACY_POLICY_URL = "https://github.com/Uwayss/weather-v2#privacy-statement";
 
-// --- Helper ---
 const openLink = async (url: string) => {
   try {
     await Linking.openURL(url);
@@ -31,6 +28,6 @@ const LegalSectionComponent = () => {
   );
 };
 
-LegalSectionComponent.displayName = "LegalSection"; // Add displayName
+LegalSectionComponent.displayName = "LegalSection";
 
-export const LegalSection = React.memo(LegalSectionComponent); // Memoize
+export const LegalSection = React.memo(LegalSectionComponent);

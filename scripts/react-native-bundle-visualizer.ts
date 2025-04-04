@@ -48,7 +48,6 @@ function getReactNativeBin() {
   }
 }
 
-// Get (default) arguments
 const baseDir = path.join(os.tmpdir(), "react-native-bundle-visualizer");
 const tmpDir = path.join(baseDir, getAppName());
 const outDir = path.join(tmpDir, "output");
@@ -65,18 +64,15 @@ const bundleOutputExplorerFile = path.join(outDir, "explorer." + format);
 const onlyMapped = !!argv["only-mapped"] || false;
 const borderChecks = argv["border-checks"] || false;
 
-// Make sure the temp dir exists
 fs.ensureDirSync(baseDir);
 fs.ensureDirSync(tmpDir);
 
-// Try to obtain the previous file size
 let prevBundleSize: number;
 if (fs.existsSync(bundleOutput)) {
   const stats = fs.statSync(bundleOutput);
   prevBundleSize = stats.size;
 }
 
-// Bundle
 console.log(chalk.green.bold("Generating bundle..."));
 const commands = [
   "bundle",
@@ -102,55 +98,45 @@ const reactNativeBin = getReactNativeBin();
 const bundlePromise = execa(reactNativeBin, commands);
 bundlePromise.stdout.pipe(process.stdout);
 
-// Upon bundle completion, run `source-map-explorer`
 bundlePromise
-  .then(
-    () => {
-      // Log bundle-size
-      const stats = fs.statSync(bundleOutput);
+  .then(() => {
+    const stats = fs.statSync(bundleOutput);
 
-      // Log increase or decrease since last run
-      let deltaSuffix = "";
-      if (prevBundleSize) {
-        const delta = stats.size - prevBundleSize;
-        if (delta > 0) {
-          deltaSuffix = chalk.yellow(
-            " (+++ has increased with " + delta + " bytes since last run)",
-          );
-        } else if (delta < 0) {
-          deltaSuffix = chalk.green.bold(
-            " (--- has decreased with " + (0 - delta) + " bytes since last run)",
-          );
-        } else {
-          deltaSuffix = chalk.green(" (unchanged since last run)");
-        }
+    let deltaSuffix = "";
+    if (prevBundleSize) {
+      const delta = stats.size - prevBundleSize;
+      if (delta > 0) {
+        deltaSuffix = chalk.yellow(" (+++ has increased with " + delta + " bytes since last run)");
+      } else if (delta < 0) {
+        deltaSuffix = chalk.green.bold(
+          " (--- has decreased with " + (0 - delta) + " bytes since last run)",
+        );
+      } else {
+        deltaSuffix = chalk.green(" (unchanged since last run)");
       }
-      console.log(
-        chalk.green.bold(
-          "Bundle is " + Math.round((stats.size / (1024 * 1024)) * 100) / 100 + " MB in size",
-        ) + deltaSuffix,
-      );
+    }
+    console.log(
+      chalk.green.bold(
+        "Bundle is " + Math.round((stats.size / (1024 * 1024)) * 100) / 100 + " MB in size",
+      ) + deltaSuffix,
+    );
 
-      // Make sure the explorer output dir is removed
-      fs.removeSync(outDir);
-      return explore(
-        {
-          code: bundleOutput,
-          map: bundleOutputSourceMap,
+    fs.removeSync(outDir);
+    return explore(
+      {
+        code: bundleOutput,
+        map: bundleOutputSourceMap,
+      },
+      {
+        onlyMapped,
+        noBorderChecks: borderChecks === false,
+        output: {
+          format,
+          filename: bundleOutputExplorerFile,
         },
-        {
-          onlyMapped,
-          noBorderChecks: borderChecks === false,
-          output: {
-            format,
-            filename: bundleOutputExplorerFile,
-          },
-        },
-      );
-    },
-
-    // Log info and open output file
-  )
+      },
+    );
+  })
   .then(
     (result: {
       bundles: Array<{ files: Record<string, { size: number }> }>;
@@ -164,7 +150,6 @@ bundlePromise
         });
       }
 
-      // Log any errors
       if (result.errors) {
         result.errors.forEach(error => {
           if (error.isWarning) {
@@ -175,7 +160,6 @@ bundlePromise
         });
       }
 
-      // Open output file
       return open(bundleOutputExplorerFile);
     },
   )

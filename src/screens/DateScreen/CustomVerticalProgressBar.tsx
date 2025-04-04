@@ -5,22 +5,20 @@ interface CustomVerticalProgressBarProps {
   progress: number;
   color: string;
   style?: object;
-  trackColor?: string; // Added prop
+  trackColor?: string;
 }
 
-// Define a default light track color
 const DEFAULT_LIGHT_TRACK_COLOR = "rgba(0, 0, 0, 0.1)";
 
 const CustomVerticalProgressBar: React.FC<CustomVerticalProgressBarProps> = ({
   progress,
   color,
   style = {},
-  trackColor = DEFAULT_LIGHT_TRACK_COLOR, // Use the passed or default color
+  trackColor = DEFAULT_LIGHT_TRACK_COLOR,
 }) => {
   const clampedProgress = Math.max(0, Math.min(1, progress));
 
   return (
-    // Use the trackColor prop here
     <View style={[styles.track, style, { backgroundColor: trackColor }]}>
       <View
         style={[
@@ -39,13 +37,12 @@ const styles = StyleSheet.create({
   track: {
     justifyContent: "flex-end",
     overflow: "hidden",
-    // width: 18, // Width controlled by style prop now
-    // height: 80, // Height controlled by style prop now
-    borderRadius: 6, // More rounded
+
+    borderRadius: 6,
   },
   fill: {
     width: "100%",
-    borderRadius: 6, // Match track rounding
+    borderRadius: 6,
   },
 });
 

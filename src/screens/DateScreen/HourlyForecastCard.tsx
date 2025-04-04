@@ -4,7 +4,7 @@ import { StyleSheet, View } from "react-native";
 import { HourWeather } from "../../types/weather";
 import { useSettings } from "../../context/SettingsContext";
 import { getMetricDataForForecast, MetricType, GraphDataPoint } from "../../utils/metricData";
-import MetricSelector from "../../components/Graph/MetricSelector"; // Re-use existing selector
+import MetricSelector from "../../components/Graph/MetricSelector";
 import HourlyChart from "./HourlyChart";
 
 export default function HourlyForecastCard({
@@ -19,7 +19,6 @@ export default function HourlyForecastCard({
   const theme = useTheme();
   const styles = hourlyStyles(theme);
 
-  // We still need the processed graph data
   const graphData: GraphDataPoint[] | undefined = useMemo(
     () => getMetricDataForForecast(currentMetric, hourlyData, settings.useImperialUnits),
     [currentMetric, hourlyData, settings.useImperialUnits],
@@ -38,7 +37,6 @@ export default function HourlyForecastCard({
         />
         <Divider style={styles.divider} />
         {graphData ? (
-          // Pass both raw hourly data (for icons) and processed graph data
           <HourlyChart
             data={graphData}
             hourlySource={hourlyData}
@@ -54,21 +52,16 @@ export default function HourlyForecastCard({
 }
 const hourlyStyles = (theme: MD3Theme) =>
   StyleSheet.create({
-    card: {
-      // backgroundColor: theme.colors.surfaceVariant,
-    },
+    card: {},
     content: {
-      gap: 12, // Consistent spacing
-      paddingBottom: 16, // Ensure padding at bottom
+      gap: 12,
+      paddingBottom: 16,
     },
-    header: {
-      // Optional: Add styling or icons to header
-    },
+    header: {},
     divider: {
       marginVertical: 4,
     },
     scrollHint: {
-      // Kept for reference if needed
       textAlign: "right",
       fontSize: 12,
       color: theme.colors.onSurfaceVariant,

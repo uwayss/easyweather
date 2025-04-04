@@ -10,7 +10,7 @@ import { useLocationContext } from "../../context/LocationContext";
 export default function WeatherCard() {
   const { location, loading: locationLoading, error: locationError } = useLocationContext();
   const { weather, loading } = useWeather();
-  // You might want to show locationLoading or locationError here
+  // TODO: You might want to show locationLoading or locationError here
   if (locationLoading) {
     // Optional: Render a loading state specifically for location
   }
