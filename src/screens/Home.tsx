@@ -153,7 +153,11 @@ export default function Home({ navigation }: HomeProps) {
         snapPoints={snapPoints}
         index={-1}
         backdropComponent={renderBackdrop}
-        handleStyle={{ backgroundColor: theme.colors.background }}
+        handleStyle={{
+          backgroundColor: theme.colors.background,
+          borderRadius: 16,
+          paddingBottom: 32,
+        }}
         enableContentPanningGesture={false}
         enablePanDownToClose={false}
         enableHandlePanningGesture

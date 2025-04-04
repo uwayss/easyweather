@@ -37,7 +37,6 @@ export default function ForecastList({
         keyExtractor={item => item.date}
         horizontal
         initialNumToRender={7}
-        showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.container}
         removeClippedSubviews={false}
       />
