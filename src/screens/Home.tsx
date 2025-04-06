@@ -11,66 +11,16 @@ import { filterHourlyWeatherForNext24HoursIncludingNow } from "../utils/weatherU
 import ForecastList from "./HomeScreen/ForecastList";
 import WeatherCard from "./HomeScreen/WeatherCard";
 import SearchRow from "./HomeScreen/SearchRow";
-import BottomSheet, { BottomSheetBackdropProps, useBottomSheet } from "@gorhom/bottom-sheet";
-import Animated, {
-  Extrapolation,
-  FadeIn,
-  FadeOut,
-  interpolate,
-  useAnimatedStyle,
-} from "react-native-reanimated";
+import BottomSheet, { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
 import DayDetails from "./Details";
 import { DayWeather, HourWeather } from "../types/weather";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { Backdrop } from "./HomeScreen/BackDrop";
 
 export type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 type HomeProps = {
   navigation: HomeNavigationProp;
 };
 
-export const Backdrop = ({ animatedIndex, style }: BottomSheetBackdropProps) => {
-  const { close } = useBottomSheet();
-
-  const containerAnimatedStyle = useAnimatedStyle(() => {
-    "worklet";
-    const isHidden = animatedIndex.value === -1;
-
-    return {
-      opacity: interpolate(animatedIndex.value, [-1, 0], [0, 0.75], Extrapolation.CLAMP),
-      backgroundColor: "rgba(0,0,0,0.4)",
-      backfaceVisibility: "hidden",
-      pointerEvents: isHidden ? "none" : "auto",
-      display: isHidden ? "none" : "flex",
-    };
-  });
-
-  const containerStyle = useMemo(
-    () => [
-      style,
-      {
-        flex: 1,
-      },
-      containerAnimatedStyle,
-    ],
-    [style, containerAnimatedStyle],
-  );
-
-  const closeSheet = () => {
-    close();
-  };
-
-  const backdropTap = Gesture.Tap().maxDuration(100000).onEnd(closeSheet).runOnJS(true);
-
-  return (
-    <GestureDetector gesture={backdropTap}>
-      <Animated.View
-        entering={FadeIn}
-        exiting={FadeOut}
-        style={[containerStyle, styles.backdrop, style]}
-      />
-    </GestureDetector>
-  );
-};
 export default function Home({ navigation }: HomeProps) {
   const theme = useTheme();
   const { weather, fetchWeatherData } = useWeather();
@@ -82,9 +32,6 @@ export default function Home({ navigation }: HomeProps) {
     undefined,
   );
 
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log("handleSheetChanges", index);
-  }, []);
   const handleClosePress = useCallback(() => {
     bottomSheetRef.current?.close();
   }, []);
@@ -147,7 +94,6 @@ export default function Home({ navigation }: HomeProps) {
       </ScrollView>
       <BottomSheet
         ref={bottomSheetRef}
-        onChange={handleSheetChanges}
         snapPoints={snapPoints}
         index={-1}
         backdropComponent={renderBackdrop}

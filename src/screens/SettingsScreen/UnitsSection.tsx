@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native";
 import React from "react";
-import { Divider, List, Text, SegmentedButtons } from "react-native-paper";
+import { Divider, List, SegmentedButtons } from "react-native-paper";
 import { useSettings } from "../../context/SettingsContext";
 
 export default React.memo(function UnitsSection() {
@@ -9,7 +9,6 @@ export default React.memo(function UnitsSection() {
   return (
     <View>
       <List.Section title="Units">
-        <Text style={styles.label}>Temperature & Wind Speed</Text>
         <SegmentedButtons
           value={settings.useImperialUnits ? "imperial" : "metric"}
           onValueChange={value => updateSetting("useImperialUnits", value === "imperial")}

@@ -1,27 +1,14 @@
 import React from "react";
-import { Linking, Share, Platform, Alert } from "react-native";
-import { List } from "react-native-paper";
+import { Share, Platform, Alert } from "react-native";
+import { Item, ListSection, openLink } from "./Common";
 
 const FEEDBACK_EMAIL = "antar.muhammed1@gmail.com";
 const PLAY_STORE_URL_ANDROID = `market://details?id=com.uwayss.easyweather`;
 const APP_SHARE_MESSAGE = "Check out this Weather App!";
 const APP_SHARE_URL = "https://play.google.com/store/apps/details?id=com.uwayss.easyweather";
 
-const openLink = async (url: string) => {
-  try {
-    const supported = await Linking.canOpenURL(url);
-    if (supported) {
-      await Linking.openURL(url);
-    } else {
-      Alert.alert("Error", `Cannot open this URL: ${url}`);
-    }
-  } catch {
-    Alert.alert("Error", "An error occurred while trying to open the link.");
-  }
-};
-
 const sendFeedback = () => {
-  Linking.openURL(`mailto:${FEEDBACK_EMAIL}?subject=Weather App Feedback`);
+  openLink(`mailto:${FEEDBACK_EMAIL}?subject=Weather App Feedback`);
 };
 
 const rateApp = () => {
@@ -47,29 +34,29 @@ const shareApp = async () => {
 const ActionsSectionComponent = React.memo(() => {
   return (
     <>
-      <List.Section title="Feedback & Support">
-        <List.Item
+      <ListSection title="Feedback & Support">
+        <Item
           title="Send Feedback"
           description="Report issues or suggest features"
-          left={props => <List.Icon {...props} icon="email-fast-outline" />}
+          left="email-fast-outline"
           onPress={sendFeedback}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
+          right="chevron-right"
         />
-        <List.Item
+        <Item
           title="Rate This App"
           description="Support us with a review"
-          left={props => <List.Icon {...props} icon="star-outline" />}
+          left="star-outline"
           onPress={rateApp}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
+          right="chevron-right"
         />
-        <List.Item
+        <Item
           title="Share This App"
           description="Tell your friends"
-          left={props => <List.Icon {...props} icon="share-variant-outline" />}
+          left="share-variant-outline"
           onPress={shareApp}
-          right={props => <List.Icon {...props} icon="chevron-right" />}
+          right="chevron-right"
         />
-      </List.Section>
+      </ListSection>
     </>
   );
 });

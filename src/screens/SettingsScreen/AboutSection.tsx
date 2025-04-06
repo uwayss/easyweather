@@ -1,44 +1,34 @@
 import React from "react";
-import { Linking, Alert, View } from "react-native";
-import { List, Divider } from "react-native-paper";
+import { View } from "react-native";
+import { Divider } from "react-native-paper";
+import { Item, ListSection } from "./Common";
+import { openLink } from "./Common";
 
 const DATA_SOURCE_URL = "https://open-meteo.com/";
 const DEVELOPER_URL = "https://www.github.com/uwayss";
 
 const appVersion = "1.0.0";
 
-const openLink = async (url: string) => {
-  try {
-    await Linking.openURL(url);
-  } catch {
-    Alert.alert("Error", "An error occurred while trying to open the link.");
-  }
-};
-
 function AboutSectionComponent() {
   return (
     <View>
-      <List.Section title="About">
-        <List.Item
-          title="App Version"
-          description={`v${appVersion}`}
-          left={props => <List.Icon {...props} icon="information-outline" />}
-        />
-        <List.Item
+      <ListSection title="About">
+        <Item title="App Version" description={`v${appVersion}`} left="information-outline" />
+        <Item
           title="Data Source"
           description="Open-Meteo API"
-          left={props => <List.Icon {...props} icon="database-search-outline" />}
+          left="database-search-outline"
           onPress={() => openLink(DATA_SOURCE_URL)}
-          right={props => <List.Icon {...props} icon="open-in-new" />}
+          right="open-in-new"
         />
-        <List.Item
+        <Item
           title="Developer"
           description="Uwayss"
-          left={props => <List.Icon {...props} icon="xml" />}
+          left="xml"
           onPress={() => openLink(DEVELOPER_URL)}
-          right={props => <List.Icon {...props} icon="open-in-new" />}
+          right="open-in-new"
         />
-      </List.Section>
+      </ListSection>
       <Divider />
     </View>
   );

@@ -44,4 +44,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SettingsScreen;
+export default React.memo(SettingsScreen);

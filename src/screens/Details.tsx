@@ -21,7 +21,7 @@ export default function Details({ selectedDay, selectedDateHourly }: DetailsProp
   return (
     <SafeAreaView style={[styles.safeContainer, { backgroundColor: theme.colors.background }]}>
       <View style={styles.titleContainer}>
-        <IconButton icon={"arrow-up"} onPress={close} />
+        <IconButton icon={"arrow-up"} onPress={() => close()} />
         <Title style={styles.appBarTitle}>{formattedTitle || "Details"}</Title>
       </View>
       <BottomSheetScrollView
