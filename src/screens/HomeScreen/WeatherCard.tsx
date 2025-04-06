@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     padding: 16,
-    backgroundColor: "rgba(0,0,0,0.25)",
+    // backgroundColor: "rgba(0,0,0,0.25)",
     justifyContent: "space-around",
   },
 });

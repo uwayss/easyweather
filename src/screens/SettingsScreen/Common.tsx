@@ -37,7 +37,9 @@ export function Item({
 }) {
   const Wrapper = ({ children, style }: { children: React.ReactNode; style?: ViewStyle }) => {
     return onPress ? (
-      <TouchableOpacity style={[styles.wrapper, style]}>{children}</TouchableOpacity>
+      <TouchableOpacity style={[styles.wrapper, style]} onPress={onPress} activeOpacity={0.5}>
+        {children}
+      </TouchableOpacity>
     ) : (
       <View style={styles.wrapper}>{children}</View>
     );
