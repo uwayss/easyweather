@@ -1,7 +1,8 @@
 import { View, StyleSheet } from "react-native";
 import React from "react";
-import { Divider, List, SegmentedButtons, Text } from "react-native-paper";
+import { Divider, SegmentedButtons } from "react-native-paper";
 import { ThemePreference, useSettings } from "../../context/SettingsContext";
+import { ListSection } from "./Common";
 
 export default React.memo(function AppearanceSection() {
   const { settings, updateSetting } = useSettings();
@@ -10,8 +11,7 @@ export default React.memo(function AppearanceSection() {
   };
   return (
     <View>
-      <List.Section title="Appearance">
-        <Text style={styles.label}>Theme</Text>
+      <ListSection title="Theme">
         <SegmentedButtons
           value={settings.theme}
           onValueChange={handleThemeChange}
@@ -34,7 +34,7 @@ export default React.memo(function AppearanceSection() {
             },
           ]}
         />
-      </List.Section>
+      </ListSection>
       <Divider style={styles.divider} />
     </View>
   );

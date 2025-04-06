@@ -9,7 +9,6 @@ import { WeatherProvider } from "./src/context/WeatherContext";
 import { LocationProvider } from "./src/context/LocationContext";
 import { SettingsProvider, useSettings } from "./src/context/SettingsContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import BootSplash from "react-native-bootsplash";
 
 const AppThemeProvider = () => {
   const { activeTheme } = useSettings();
@@ -20,7 +19,7 @@ const AppThemeProvider = () => {
 
   return (
     <PaperProvider theme={themeToApply}>
-      <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
+      <NavigationContainer>
         <LocationProvider>
           <WeatherProvider>
             <App />
