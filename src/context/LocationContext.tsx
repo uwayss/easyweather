@@ -77,7 +77,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
         };
         updateLocation(newLocation);
       } else {
-        console.warn("[LocationContext] Geolocation data missing lat/lon");
+        console.log("[LocationContext] Geolocation data missing lat/lon");
         longToast("[LocationContext] Geolocation data missing lat/lon");
         setError("Failed to retrieve coordinates from IP.");
       }

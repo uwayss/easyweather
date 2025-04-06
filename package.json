@@ -15,7 +15,8 @@
     "doctor": "react-native doctor",
     "arch-build": "cd android && gradlew.bat assembleRelease -PreactNativeArchitectures=armeabi-v7a",
     "arch-install": "adb install -f android/app/build/outputs/apk/release/app-release.apk",
-    "arch": "npm run arch-build && npm run arch-install"
+    "arch": "npm run arch-build && npm run arch-install",
+    "build-both": "npm run arch && npm start"
   },
   "dependencies": {
     "@gorhom/bottom-sheet": "^5.1.2",
