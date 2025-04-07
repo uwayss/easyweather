@@ -31,7 +31,7 @@ export function Item({
 }: {
   title: string;
   description?: string;
-  left: React.ReactNode;
+  left?: React.ReactNode;
   right?: React.ReactNode;
   onPress?: () => void;
 }) {
@@ -46,12 +46,12 @@ export function Item({
   };
   return (
     <Wrapper>
-      <Icon source={left} size={24} />
+      {left && <Icon source={left} size={24} />}
       <View style={{ flex: 1, justifyContent: "center" }}>
         <Text variant="titleMedium">{title}</Text>
         {description && <Text>{description}</Text>}
       </View>
-      <Icon source={right} size={24} />
+      {right && <Icon source={right} size={24} />}
     </Wrapper>
   );
 }
