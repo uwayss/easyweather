@@ -102,6 +102,9 @@ export default function Home({ navigation }: HomeProps) {
           borderRadius: 16,
           paddingBottom: 32,
         }}
+        handleIndicatorStyle={{
+          backgroundColor: theme.colors.onSurface,
+        }}
         backgroundStyle={{ backgroundColor: theme.colors.background }}
         enableContentPanningGesture={false}
         enableHandlePanningGesture
