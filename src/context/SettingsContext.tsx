@@ -7,6 +7,7 @@ export type ThemePreference = "system" | "light" | "dark";
 export interface AppSettings {
   theme: ThemePreference;
   useImperialUnits: boolean;
+  language: string;
 }
 
 interface SettingsContextProps {
@@ -21,6 +22,7 @@ const SETTINGS_KEY = "userAppSettings";
 const defaultSettings: AppSettings = {
   theme: "system",
   useImperialUnits: false,
+  language: "en",
 };
 
 const SettingsContext = createContext<SettingsContextProps | undefined>(undefined);

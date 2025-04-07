@@ -3,6 +3,7 @@ import { HomeNavigationProp } from "../Home";
 import React from "react";
 import { LocationSearch } from "./LocationSearch";
 import { IconButton } from "react-native-paper";
+import { useTranslation } from "react-i18next";
 
 export default React.memo(function SearchRow({
   textColor,
@@ -11,6 +12,7 @@ export default React.memo(function SearchRow({
   textColor: string;
   navigation: HomeNavigationProp;
 }) {
+  const { t } = useTranslation();
   return (
     <View style={styles.topRow}>
       <View style={styles.searchWrapper}>
@@ -22,7 +24,7 @@ export default React.memo(function SearchRow({
         size={28}
         onPress={() => navigation.navigate("Settings")}
         style={styles.settingsIcon}
-        accessibilityLabel="Open settings"
+        accessibilityLabel={t("settings.title")}
       />
     </View>
   );

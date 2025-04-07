@@ -2,9 +2,10 @@ import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Surface, Text } from "react-native-paper";
 import { CurrentWeather } from "../../../types/weather";
-import weatherDescriptions from "../../../utils/descriptions";
+import { useWeatherDescriptions } from "../../../utils/descriptions";
 import { useSettings } from "../../../context/SettingsContext";
 import { convertTemperature, formatTemperature } from "../../../utils/unitConversion";
+import { useTranslation } from "react-i18next";
 
 interface MainInfoProps {
   name: string;
@@ -13,12 +14,13 @@ interface MainInfoProps {
 
 export function MainInfo({ name, current }: MainInfoProps) {
   const { settings } = useSettings();
+  const { t } = useTranslation();
   const timeOfDay = current?.isDay ? "day" : "night";
+  const translatedDescriptions = useWeatherDescriptions();
 
   const description = current
-    ? weatherDescriptions[current.weatherCode]?.[timeOfDay].description
+    ? translatedDescriptions[current.weatherCode]?.[timeOfDay].description
     : null;
-
   return (
     <View style={styles.mainInfoContainer}>
       <Surface style={styles.mainInfo} elevation={5}>
@@ -39,7 +41,7 @@ export function MainInfo({ name, current }: MainInfoProps) {
           {description ? description : ""}
         </Text>
         <Text variant="titleMedium" style={styles.feelsLike}>
-          Feels like{" "}
+          {t("weather.feltTemperature")}
           {current
             ? formatTemperature(
                 convertTemperature(current.feltTemp, settings.useImperialUnits),

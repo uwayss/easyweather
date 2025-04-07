@@ -6,10 +6,12 @@ import { Details } from "./WeatherCard/Details";
 import { MainInfo } from "./WeatherCard/MainInfo";
 import { useWeather } from "../../context/WeatherContext";
 import { useLocationContext } from "../../context/LocationContext";
+import { useTranslation } from "react-i18next";
 
 export default function WeatherCard() {
   const { location, loading: locationLoading, error: locationError } = useLocationContext();
   const { weather, loading } = useWeather();
+  const { t } = useTranslation();
   // TODO: You might want to show locationLoading or locationError here
   if (locationLoading) {
     // Optional: Render a loading state specifically for location
@@ -24,8 +26,8 @@ export default function WeatherCard() {
   const displayName = location
     ? location.displayName
     : locationLoading
-    ? "Loading Location..."
-    : "Unknown Location";
+    ? t("weather.loading_location")
+    : t("weather.unknown_location");
 
   return (
     <Card style={styles.card}>

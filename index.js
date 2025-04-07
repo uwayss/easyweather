@@ -9,6 +9,8 @@ import { WeatherProvider } from "./src/context/WeatherContext";
 import { LocationProvider } from "./src/context/LocationContext";
 import { SettingsProvider, useSettings } from "./src/context/SettingsContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+// Import i18next configuration
+import "./services/i18next";
 
 const AppThemeProvider = () => {
   const { activeTheme } = useSettings();

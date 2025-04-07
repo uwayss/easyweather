@@ -5,6 +5,7 @@ import { searchLocation, LocationResult } from "../../api/location";
 import LocationSearchResults from "./LocationSearchResults";
 import { longToast } from "../../utils/debug";
 import { useLocationContext } from "../../context/LocationContext";
+import { useTranslation } from "react-i18next";
 
 type DebouncedSearchFunction = (query: string) => Promise<void> | void;
 
@@ -19,6 +20,7 @@ function debounce(func: DebouncedSearchFunction, wait: number): DebouncedSearchF
 export const LocationSearch = () => {
   const theme = useTheme();
   const { updateLocation } = useLocationContext();
+  const { t } = useTranslation();
 
   const onLocationSelect = (selectedLocation: LocationResult) => {
     updateLocation({
@@ -96,7 +98,7 @@ export const LocationSearch = () => {
   return (
     <View style={styles.container}>
       <Searchbar
-        placeholder="Search for a location"
+        placeholder={t("search.placeholder")}
         onChangeText={handleSearchChange}
         value={searchQuery}
         style={styles.searchbar}

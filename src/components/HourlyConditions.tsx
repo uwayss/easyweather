@@ -7,6 +7,7 @@ import Graph from "./Graph/Graph";
 import { getMetricDataForForecast, MetricType } from "../utils/metricData";
 import MetricSelector from "./Graph/MetricSelector";
 import PlaceholderCard from "./PlaceholderCard";
+import { useTranslation } from "react-i18next";
 
 export default function HourlyConditions({
   selectedDateHourly,
@@ -15,6 +16,7 @@ export default function HourlyConditions({
 }) {
   const [currentMetric, setCurrentMetric] = useState<MetricType>("temperature");
   const { settings } = useSettings();
+  const { t } = useTranslation();
 
   const graphData = useMemo(
     () => getMetricDataForForecast(currentMetric, selectedDateHourly, settings.useImperialUnits),
@@ -27,13 +29,13 @@ export default function HourlyConditions({
           style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
         >
           <Text variant="titleMedium" style={{ textAlign: "center" }}>
-            The Next Hours
+            {t("weather.hourly_title")}
           </Text>
         </View>
         <MetricSelector currentMetric={currentMetric} setCurrentMetric={setCurrentMetric} />
         <Divider />
         {graphData ? <Graph data={graphData} /> : <PlaceholderCard withoutContainer />}
-        <Text style={styles.scrollHint}>Swipe to see more hours →</Text>
+        <Text style={styles.scrollHint}>{t("weather.hourly_scroll_hint")}</Text>
       </Card.Content>
     </Card>
   );

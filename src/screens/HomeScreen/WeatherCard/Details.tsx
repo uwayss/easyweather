@@ -4,6 +4,7 @@ import { Surface, Text } from "react-native-paper";
 import { CurrentWeather } from "../../../types/weather";
 import { useSettings } from "../../../context/SettingsContext";
 import { convertWindSpeed, formatWindSpeed } from "../../../utils/unitConversion";
+import { useTranslation } from "react-i18next";
 
 interface DetailsProps {
   current: CurrentWeather | undefined;
@@ -11,16 +12,17 @@ interface DetailsProps {
 
 export function Details({ current }: DetailsProps) {
   const { settings } = useSettings();
+  const { t } = useTranslation();
   return (
     <View>
       <Surface style={styles.detailsContainer} elevation={5}>
         <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Humidity</Text>
-          <Text style={styles.detailValue}>{current?.humidity}%</Text>
+          <Text style={styles.detailLabel}>{t("weather.humidity")}</Text>
+          <Text style={styles.detailValue}>{current?.humidity ? current?.humidity + "%" : ""}</Text>
         </View>
         <View style={styles.separator} />
         <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>Wind Speed</Text>
+          <Text style={styles.detailLabel}>{t("weather.wind_speed")}</Text>
           <Text style={styles.detailValue}>
             {current
               ? formatWindSpeed(

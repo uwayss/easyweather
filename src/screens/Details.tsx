@@ -1,5 +1,5 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
+import React, { useEffect } from "react";
+import { StyleSheet, View, BackHandler } from "react-native";
 import { formatForecastDate } from "../utils/timeUtils";
 import { useTheme, Title, IconButton } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -7,6 +7,7 @@ import DailySummaryCard from "./DateScreen/DailySummaryCard";
 import HourlyForecastCard from "./DateScreen/HourlyForecastCard";
 import { DayWeather, HourWeather } from "../types/weather";
 import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
+import { useTranslation } from "react-i18next";
 
 type DetailsProps = {
   selectedDay?: DayWeather;
@@ -15,14 +16,28 @@ type DetailsProps = {
 
 export default function Details({ selectedDay, selectedDateHourly }: DetailsProps) {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const formattedTitle = formatForecastDate(selectedDay?.date);
   const { close } = useBottomSheet();
+
+  // Add back button handler
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+      // Close the sheet instead of exiting the app
+      close();
+      return true; // Prevent default behavior (app exit)
+    });
+
+    // Clean up the event listener when component unmounts
+    return () => backHandler.remove();
+  }, [close]);
+
   return (
     <SafeAreaView style={[styles.safeContainer, { backgroundColor: theme.colors.background }]}>
       <View style={styles.titleContainer}>
         <IconButton icon={"arrow-up"} onPress={() => close()} />
-        <Title style={styles.appBarTitle}>{formattedTitle || "Details"}</Title>
+        <Title style={styles.appBarTitle}>{formattedTitle || t("weather.hourly_forecast")}</Title>
       </View>
       <BottomSheetScrollView
         style={styles.container}

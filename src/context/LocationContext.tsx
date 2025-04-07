@@ -4,6 +4,7 @@ import { fetchCurrentLocation } from "../api/geolocation";
 import { longToast } from "../utils/debug";
 import Geolocation from "react-native-geolocation-service";
 import { Platform, PermissionsAndroid } from "react-native";
+import { useTranslation } from "react-i18next";
 
 const storage = new MMKV({ id: "location-storage" });
 
@@ -29,6 +30,7 @@ interface LocationContextProps {
 const LocationContext = createContext<LocationContextProps | undefined>(undefined);
 
 export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const { t } = useTranslation();
   const [location, setLocation] = useState<Location | null>(() => {
     const storedLocation = storage.getString(STORAGE_KEYS.LOCATION);
     if (storedLocation) {
@@ -133,7 +135,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
       updateLocation({
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
-        displayName: "Current Location",
+        displayName: t("weather.current_location"),
       });
     } catch (error) {
       console.error("Geolocation error:", error);
