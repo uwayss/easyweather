@@ -2,8 +2,9 @@ import React from "react";
 import { StyleSheet, View, Image } from "react-native";
 import { Text, Card, Divider, Icon, useTheme, MD3Theme } from "react-native-paper";
 import { DayWeather } from "../../types/weather";
-import weatherDescriptions from "../../utils/descriptions";
+import { useWeatherDescriptions } from "../../utils/descriptions";
 import { useSettings } from "../../context/SettingsContext";
+import { useTranslation } from "react-i18next";
 import {
   convertTemperature,
   formatTemperature,
@@ -41,8 +42,11 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
   const { settings } = useSettings();
   const theme = useTheme();
   const styles = summaryCardStyles(theme);
+  const { t } = useTranslation();
+  const translatedWeatherDescriptions = useWeatherDescriptions();
+
   if (!dayData) return <View></View>;
-  const weatherInfo = weatherDescriptions[dayData.weatherCode]?.day;
+  const weatherInfo = translatedWeatherDescriptions[dayData.weatherCode]?.day;
 
   const formattedHigh = formatTemperature(
     convertTemperature(dayData.maxTemp, settings.useImperialUnits),
@@ -89,20 +93,25 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
         <View style={styles.detailsGrid}>
           <DetailItem
             icon="weather-rainy"
-            label="Max Precip..."
+            label={t("weather.max_precipitation")}
             value={`${Math.round(dayData.rainProb)}%`}
             color="#2196F3"
           />
-          <DetailItem icon="weather-windy" label="Max Wind" value={formattedWind} color="#81D4FA" />
+          <DetailItem
+            icon="weather-windy"
+            label={t("weather.max_wind")}
+            value={formattedWind}
+            color="#81D4FA"
+          />
           <DetailItem
             icon="white-balance-sunny"
             color="#FFA726"
-            label="Sunrise"
+            label={t("weather.sunrise")}
             value={formattedSunrise || "--:--"}
           />
           <DetailItem
             icon="weather-night"
-            label="Sunset"
+            label={t("weather.sunset")}
             value={formattedSunset || "--:--"}
             color="#7E57C2"
           />

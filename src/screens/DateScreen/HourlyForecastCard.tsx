@@ -6,6 +6,7 @@ import { useSettings } from "../../context/SettingsContext";
 import { getMetricDataForForecast, MetricType, GraphDataPoint } from "../../utils/metricData";
 import MetricSelector from "../../components/Graph/MetricSelector";
 import HourlyChart from "./HourlyChart";
+import { useTranslation } from "react-i18next";
 
 export default function HourlyForecastCard({
   hourlyData,
@@ -23,12 +24,12 @@ export default function HourlyForecastCard({
     () => getMetricDataForForecast(currentMetric, hourlyData, settings.useImperialUnits),
     [currentMetric, hourlyData, settings.useImperialUnits],
   );
-
+  const { t } = useTranslation();
   return (
     <Card style={styles.card} mode="contained">
       <Card.Content style={styles.content}>
         <View style={styles.header}>
-          <Text variant="titleMedium">Hourly Forecast</Text>
+          <Text variant="titleMedium">{t("weather.hourly_forecast")}</Text>
         </View>
         <MetricSelector
           currentMetric={currentMetric}

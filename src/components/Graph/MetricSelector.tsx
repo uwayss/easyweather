@@ -3,6 +3,7 @@ import { MetricType } from "../../utils/metricData";
 import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { useTranslation } from "react-i18next";
 
 export default function MetricSelector({
   currentMetric,
@@ -13,14 +14,16 @@ export default function MetricSelector({
   setCurrentMetric: React.Dispatch<React.SetStateAction<MetricType>>;
   inSheet?: boolean;
 }) {
+  const { t } = useTranslation();
+
   const metrics = React.useMemo(
     () => [
-      { value: "temperature", label: "Temperature" },
-      { value: "precipitation", label: "Precipitation" },
-      { value: "humidity", label: "Humidity" },
-      { value: "wind", label: "Wind" },
+      { value: "temperature", label: t("metrics.temperature") },
+      { value: "precipitation", label: t("metrics.precipitation") },
+      { value: "humidity", label: t("metrics.humidity") },
+      { value: "wind", label: t("metrics.wind") },
     ],
-    [],
+    [t],
   );
   function ScrollWrapper({ children }: { children: ReactNode }) {
     if (inSheet) {

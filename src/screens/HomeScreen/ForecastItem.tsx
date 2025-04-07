@@ -1,13 +1,14 @@
 import React from "react";
 import { View, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { Text, Card } from "react-native-paper";
-import weatherDescriptions from "../../utils/descriptions";
+import { useWeatherDescriptions } from "../../utils/descriptions";
 import { DayWeather, HourWeather } from "../../types/weather";
 import { useSettings } from "../../context/SettingsContext";
 import { convertTemperature, formatTemperature } from "../../utils/unitConversion";
 import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { filterHourlyDataForDate } from "../../utils/weatherUtils";
 import { useWeather } from "../../context/WeatherContext";
+import { useTranslation } from "react-i18next";
 
 interface ForecastItemProps {
   item: DayWeather;
@@ -25,15 +26,19 @@ const ForecastItem = React.memo(function ForecastItem({
   setSelectedHourlyData,
 }: ForecastItemProps) {
   const { settings } = useSettings();
-  const weatherDescription = weatherDescriptions[item.weatherCode]?.day;
+  const { t, i18n } = useTranslation();
+  const translatedDescriptions = useWeatherDescriptions();
+  const weatherDescription = translatedDescriptions[item.weatherCode]?.day;
   const date = new Date(item.date);
   let dayName;
   if (index === 0) {
-    dayName = "Today";
+    dayName = t("forecast.today");
   } else if (index === 1) {
-    dayName = "Tomorrow";
+    dayName = t("forecast.tomorrow");
   } else {
-    dayName = date.toLocaleDateString("en-UK", { weekday: "long" });
+    // Use the current language for date formatting
+    const locale = i18n.language === "ar" ? "ar-SA" : i18n.language === "tr" ? "tr-TR" : "en-UK";
+    dayName = date.toLocaleDateString(locale, { weekday: "long" });
   }
   const { weather } = useWeather();
   const currentDate = new Date().toISOString().split("T")[0];

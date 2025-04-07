@@ -1,6 +1,7 @@
 import React from "react";
 import { Share, Platform, Alert } from "react-native";
 import { Item, ListSection, openLink } from "./Common";
+import { useTranslation } from "react-i18next";
 
 const FEEDBACK_EMAIL = "antar.muhammed1@gmail.com";
 const PLAY_STORE_URL_ANDROID = `market://details?id=com.uwayss.easyweather`;
@@ -32,26 +33,28 @@ const shareApp = async () => {
 };
 
 const ActionsSectionComponent = React.memo(() => {
+  const { t } = useTranslation();
+
   return (
     <>
-      <ListSection title="Feedback & Support">
+      <ListSection title={t("feedback.title")}>
         <Item
-          title="Send Feedback"
-          description="Report issues or suggest features"
+          title={t("feedback.send_feedback")}
+          description={t("feedback.send_feedback_description")}
           left="email-fast-outline"
           onPress={sendFeedback}
           right="chevron-right"
         />
         <Item
-          title="Rate This App"
-          description="Support us with a review"
+          title={t("feedback.rate_app")}
+          description={t("feedback.rate_app_description")}
           left="star-outline"
           onPress={rateApp}
           right="chevron-right"
         />
         <Item
-          title="Share This App"
-          description="Tell your friends"
+          title={t("feedback.share_app")}
+          description={t("feedback.share_app_description")}
           left="share-variant-outline"
           onPress={shareApp}
           right="chevron-right"

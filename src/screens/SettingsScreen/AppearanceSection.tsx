@@ -3,15 +3,17 @@ import React from "react";
 import { Divider, SegmentedButtons } from "react-native-paper";
 import { ThemePreference, useSettings } from "../../context/SettingsContext";
 import { ListSection } from "./Common";
+import { useTranslation } from "react-i18next";
 
 export default React.memo(function AppearanceSection() {
   const { settings, updateSetting } = useSettings();
+  const { t } = useTranslation();
   const handleThemeChange = (value: string) => {
     updateSetting("theme", value as ThemePreference);
   };
   return (
     <View>
-      <ListSection title="Theme">
+      <ListSection title={t("theme.system").split(" ")[0]}>
         <SegmentedButtons
           value={settings.theme}
           onValueChange={handleThemeChange}
@@ -19,17 +21,17 @@ export default React.memo(function AppearanceSection() {
           buttons={[
             {
               value: "system",
-              label: "System",
+              label: t("theme.system"),
               icon: "theme-light-dark",
             },
             {
               value: "light",
-              label: "Light",
+              label: t("theme.light"),
               icon: "white-balance-sunny",
             },
             {
               value: "dark",
-              label: "Dark",
+              label: t("theme.dark"),
               icon: "weather-night",
             },
           ]}
