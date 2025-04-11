@@ -6,5 +6,9 @@
   },
   "android": {
     "package": "com.uwayss.easyweather"
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-2933834243243547~1866423461",
+    "ios_app_id": "ca-app-pub-2933834243243547~1866423461"
   }
 }

@@ -9,7 +9,8 @@ import { WeatherProvider } from "./src/context/WeatherContext";
 import { LocationProvider } from "./src/context/LocationContext";
 import { SettingsProvider, useSettings } from "./src/context/SettingsContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-// Import i18next configuration
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
+// import { TestIds } from "react-native-google-mobile-ads";
 import "./services/i18next";
 
 const AppThemeProvider = () => {
@@ -18,13 +19,15 @@ const AppThemeProvider = () => {
   const themeToApply = activeTheme === "dark" ? darkTheme : lightTheme;
 
   console.log(`Applying theme: ${activeTheme}`);
-
+  const bannerID = "ca-app-pub-2933834243243547/5697502047";
+  // const testID = TestIds.BANNER;
   return (
     <PaperProvider theme={themeToApply}>
       <NavigationContainer>
         <LocationProvider>
           <WeatherProvider>
             <App />
+            <BannerAd unitId={bannerID} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
           </WeatherProvider>
         </LocationProvider>
       </NavigationContainer>
