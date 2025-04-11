@@ -15,7 +15,21 @@ import BottomSheet, { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
 import DayDetails from "./Details";
 import { DayWeather, HourWeather } from "../types/weather";
 import { Backdrop } from "./HomeScreen/BackDrop";
-import { InterstitialAd, AdEventType } from "react-native-google-mobile-ads";
+import MobileAds, {
+  InterstitialAd,
+  AdEventType,
+  MaxAdContentRating,
+} from "react-native-google-mobile-ads";
+
+// Set global ad content rating to family-friendly
+MobileAds().setRequestConfiguration({
+  // Set max ad content rating to family-friendly (G rating)
+  maxAdContentRating: MaxAdContentRating.G,
+  // Enable Google's child-directed treatment
+  tagForChildDirectedTreatment: true,
+  // Enable Google's under-age-of-consent treatment
+  tagForUnderAgeOfConsent: true,
+});
 
 // Create an interstitial ad instance
 const adUnitId = Platform.select({
@@ -58,9 +72,16 @@ export default function Home({ navigation }: HomeProps) {
       });
 
       const unsubscribeError = ad.addAdEventListener(AdEventType.ERROR, error => {
-        console.error("Interstitial ad error:", error);
-        // If ad fails to load, just exit the app
-        BackHandler.exitApp();
+        console.warn("Interstitial ad error:", error);
+        // Check if it's a no-fill error
+        if (error && error.message && error.message.includes("no-fill")) {
+          console.log("No ad available, continuing app execution");
+          // Don't exit the app for no-fill errors
+          setAdLoaded(false);
+        } else {
+          // For other errors, exit the app
+          BackHandler.exitApp();
+        }
       });
 
       // Start loading the ad
@@ -83,12 +104,20 @@ export default function Home({ navigation }: HomeProps) {
     const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
       // Only on the home screen, we want to show an ad before exiting
       if (interstitialAd && adLoaded) {
-        // Show the ad
-        interstitialAd.show();
-        return true; // Prevent default behavior
+        try {
+          // Show the ad
+          interstitialAd.show();
+          return true; // Prevent default behavior
+        } catch (error) {
+          console.warn("Error showing ad:", error);
+          // If showing ad fails, exit the app
+          BackHandler.exitApp();
+          return true;
+        }
       } else {
         // If ad is not loaded, just exit the app
-        return false; // Allow default behavior (exit app)
+        BackHandler.exitApp();
+        return true; // We're handling the back press ourselves
       }
     });
 
