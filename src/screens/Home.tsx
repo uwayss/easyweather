@@ -1,6 +1,6 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React, { useCallback, useMemo, useRef, useState } from "react";
-import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { RefreshControl, ScrollView, StyleSheet, View, BackHandler, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "../../App";
@@ -15,6 +15,13 @@ import BottomSheet, { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
 import DayDetails from "./Details";
 import { DayWeather, HourWeather } from "../types/weather";
 import { Backdrop } from "./HomeScreen/BackDrop";
+import { InterstitialAd, AdEventType } from "react-native-google-mobile-ads";
+
+// Create an interstitial ad instance
+const adUnitId = Platform.select({
+  android: "ca-app-pub-2933834243243547/1658013245", // Using the banner ad ID for now, replace with actual interstitial ad ID
+  ios: "ca-app-pub-2933834243243547/1658013245", // Using the banner ad ID for now, replace with actual interstitial ad ID
+});
 
 export type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 type HomeProps = {
@@ -31,6 +38,62 @@ export default function Home({ navigation }: HomeProps) {
   const [selectedHourlyData, setSelectedHourlyData] = useState<HourWeather[] | undefined>(
     undefined,
   );
+  const [interstitialAd, setInterstitialAd] = useState<InterstitialAd | null>(null);
+  const [adLoaded, setAdLoaded] = useState(false);
+
+  // Load the interstitial ad
+  useEffect(() => {
+    const loadInterstitialAd = () => {
+      const ad = InterstitialAd.createForAdRequest(adUnitId || "");
+
+      const unsubscribeLoaded = ad.addAdEventListener(AdEventType.LOADED, () => {
+        console.log("Interstitial ad loaded");
+        setAdLoaded(true);
+      });
+
+      const unsubscribeClosed = ad.addAdEventListener(AdEventType.CLOSED, () => {
+        console.log("Interstitial ad closed");
+        // Exit the app after ad is closed
+        BackHandler.exitApp();
+      });
+
+      const unsubscribeError = ad.addAdEventListener(AdEventType.ERROR, error => {
+        console.error("Interstitial ad error:", error);
+        // If ad fails to load, just exit the app
+        BackHandler.exitApp();
+      });
+
+      // Start loading the ad
+      ad.load();
+      setInterstitialAd(ad);
+
+      // Cleanup function
+      return () => {
+        unsubscribeLoaded();
+        unsubscribeClosed();
+        unsubscribeError();
+      };
+    };
+
+    loadInterstitialAd();
+  }, []);
+
+  // Handle back button press
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+      // Only on the home screen, we want to show an ad before exiting
+      if (interstitialAd && adLoaded) {
+        // Show the ad
+        interstitialAd.show();
+        return true; // Prevent default behavior
+      } else {
+        // If ad is not loaded, just exit the app
+        return false; // Allow default behavior (exit app)
+      }
+    });
+
+    return () => backHandler.remove();
+  }, [interstitialAd, adLoaded]);
 
   const handleClosePress = useCallback(() => {
     bottomSheetRef.current?.close();
