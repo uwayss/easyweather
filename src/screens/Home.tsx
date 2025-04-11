@@ -99,8 +99,6 @@ export default function Home({ navigation }: HomeProps) {
         backdropComponent={renderBackdrop}
         handleStyle={{
           backgroundColor: theme.colors.background,
-          borderRadius: 16,
-          paddingBottom: 32,
         }}
         handleIndicatorStyle={{
           backgroundColor: theme.colors.onSurface,

@@ -17,6 +17,9 @@ export default function RootStack() {
       <Stack.Screen
         name="Settings"
         component={SettingsScreen}
+        options={{
+          animation: "slide_from_left",
+        }}
       />
     </Stack.Navigator>
   );

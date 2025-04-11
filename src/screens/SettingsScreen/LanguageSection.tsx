@@ -32,7 +32,14 @@ function LanguageSection() {
   );
 
   const renderLanguageItem = useCallback(
-    ({ item }: { item: any }) => (
+    ({
+      item,
+    }: {
+      item: {
+        value: string;
+        label: string;
+      };
+    }) => (
       <TouchableOpacity
         style={styles.languageItem}
         onPress={() => handleLanguageChange(item.value)}
