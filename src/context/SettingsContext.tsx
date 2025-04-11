@@ -1,6 +1,7 @@
-import React, { createContext, useState, useContext, ReactNode, useEffect } from "react";
+import React, { createContext, useState, useContext, ReactNode, useEffect, useMemo } from "react";
 import { MMKV } from "react-native-mmkv";
 import { useColorScheme } from "react-native";
+import i18next from "i18next";
 
 export type ThemePreference = "system" | "light" | "dark";
 
@@ -18,11 +19,22 @@ interface SettingsContextProps {
 
 const storage = new MMKV({ id: "app-settings-v2" });
 const SETTINGS_KEY = "userAppSettings";
-
+const getInitialLanguage = () => {
+  const storedSettings = storage.getString(SETTINGS_KEY);
+  if (storedSettings) {
+    try {
+      const parsed = JSON.parse(storedSettings);
+      return parsed.language || "en";
+    } catch (e) {
+      console.error("Failed to parse stored settings for language:", e);
+    }
+  }
+  return "en";
+};
 const defaultSettings: AppSettings = {
   theme: "system",
   useImperialUnits: false,
-  language: "en",
+  language: getInitialLanguage(),
 };
 
 const SettingsContext = createContext<SettingsContextProps | undefined>(undefined);
@@ -36,29 +48,63 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
       try {
         const parsed = JSON.parse(storedSettings);
 
-        return { ...defaultSettings, ...parsed };
+        const loadedSettings = { ...defaultSettings, ...parsed };
+        // Sync i18next language on initial load if necessary
+        if (i18next.language !== loadedSettings.language) {
+          console.log(
+            `[SettingsContext] Initializing language from storage to: ${loadedSettings.language}`,
+          );
+          i18next.changeLanguage(loadedSettings.language);
+        }
+        return loadedSettings;
       } catch (e) {
         console.error("Failed to parse stored settings:", e);
         storage.delete(SETTINGS_KEY);
       }
     }
+    if (i18next.language !== defaultSettings.language) {
+      console.log(
+        `[SettingsContext] Initializing language to default: ${defaultSettings.language}`,
+      );
+      i18next.changeLanguage(defaultSettings.language);
+    }
     return defaultSettings;
   });
 
-  const updateSetting = <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => {
-    setSettings(prevSettings => ({ ...prevSettings, [key]: value }));
-  };
-
   useEffect(() => {
     storage.set(SETTINGS_KEY, JSON.stringify(settings));
-    console.log("Settings saved:", settings);
-  }, [settings]);
+    console.log("[SettingsContext] Settings saved:", settings);
 
-  const activeTheme = React.useMemo((): "light" | "dark" => {
-    if (settings.theme === "system") {
-      return systemColorScheme ?? "light";
+    // Also update i18next language if it changed in settings
+    if (settings.language !== i18next.language) {
+      console.log(
+        `[SettingsContext] Language changed in settings, updating i18next to: ${settings.language}`,
+      );
+      i18next.changeLanguage(settings.language);
     }
-    return settings.theme;
+  }, [settings]);
+  const updateSetting = <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => {
+    setSettings(prevSettings => {
+      console.log(`[SettingsContext] Updating setting ${key} to ${value}`);
+      return { ...prevSettings, [key]: value };
+    });
+  };
+
+  // Determine the active theme based on settings and system preference
+  const activeTheme = useMemo((): "light" | "dark" => {
+    const { theme } = settings;
+    if (theme === "system") {
+      // Directly use the hook's value. Fallback to 'light' if null/undefined.
+      const determinedTheme = systemColorScheme ?? "light";
+      console.log(
+        `[SettingsContext] System theme selected. Detected: ${systemColorScheme}. Using: ${determinedTheme}`,
+      );
+      return determinedTheme;
+    } else {
+      // Use the manually selected theme
+      console.log(`[SettingsContext] Manual theme selected: ${theme}`);
+      return theme;
+    }
   }, [settings.theme, systemColorScheme]);
 
   const value: SettingsContextProps = {
