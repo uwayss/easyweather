@@ -1,17 +1,17 @@
 import React from "react";
 import { Linking, StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
 import { Icon, Text, useTheme } from "react-native-paper";
-import analytics from "@react-native-firebase/analytics";
+import { getAnalytics } from "@react-native-firebase/analytics";
 
 export const openLink = async (url: string, linkContext?: string) => {
   // Add context param
   if (linkContext) {
-    analytics().logEvent("open_external_link", {
+    getAnalytics().logEvent("open_external_link", {
       target_url: url,
       link_context: linkContext, // e.g., 'privacy_policy', 'developer_github'
     });
   } else {
-    analytics().logEvent("open_external_link", {
+    getAnalytics().logEvent("open_external_link", {
       target_url: url,
     });
   }
