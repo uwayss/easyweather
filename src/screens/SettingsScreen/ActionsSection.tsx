@@ -2,14 +2,14 @@ import React from "react";
 import { Share, Platform, Alert } from "react-native";
 import { Item, ListSection, openLink } from "./Common";
 import { useTranslation } from "react-i18next";
-
+import analytics from "@react-native-firebase/analytics";
 const FEEDBACK_EMAIL = "antar.muhammed1@gmail.com";
 const PLAY_STORE_URL_ANDROID = `market://details?id=com.uwayss.easyweather`;
 const APP_SHARE_MESSAGE = "Check out this Weather App!";
 const APP_SHARE_URL = "https://play.google.com/store/apps/details?id=com.uwayss.easyweather";
 
 const sendFeedback = () => {
-  openLink(`mailto:${FEEDBACK_EMAIL}?subject=Weather App Feedback`);
+  openLink(`mailto:${FEEDBACK_EMAIL}?subject=Weather App Feedback`, "send_feedback_email");
 };
 
 const rateApp = () => {
@@ -17,17 +17,22 @@ const rateApp = () => {
     android: PLAY_STORE_URL_ANDROID,
     default: APP_SHARE_URL,
   });
+  analytics().logEvent("rate_app_clicked");
   openLink(url);
 };
 
 const shareApp = async () => {
   try {
+    analytics().logEvent("share_app_clicked");
     await Share.share({
       message: `${APP_SHARE_MESSAGE}\n${APP_SHARE_URL}`,
       url: APP_SHARE_URL,
       title: "Share Weather App",
     });
+    analytics().logEvent("share_app_success");
   } catch {
+    analytics().logEvent("share_app_failure");
+
     Alert.alert("Error", "Could not share the app at this time.");
   }
 };

@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useTranslation } from "react-i18next";
+import analytics from "@react-native-firebase/analytics";
 
 export default function MetricSelector({
   currentMetric,
@@ -47,6 +48,14 @@ export default function MetricSelector({
       </ScrollView>
     );
   }
+  const handleMetricChange = (newMetric: MetricType) => {
+    analytics().logEvent("change_hourly_metric", {
+      metric: newMetric,
+      // Add context if possible (e.g., screen: 'home' or 'details')
+      screen_context: inSheet ? "details_sheet" : "home_screen",
+    });
+    setCurrentMetric(newMetric);
+  };
   return (
     <ScrollWrapper>
       {metrics.map(button => (
@@ -54,7 +63,7 @@ export default function MetricSelector({
           key={button.value}
           activeOpacity={0.5}
           style={[styles.tabButton, currentMetric === button.value && styles.activeTab]}
-          onPress={() => setCurrentMetric(button.value as MetricType)}
+          onPress={() => handleMetricChange(button.value as MetricType)}
         >
           <Text style={styles.tabText}>{button.label}</Text>
         </TouchableOpacity>

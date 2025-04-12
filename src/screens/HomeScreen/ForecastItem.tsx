@@ -9,6 +9,7 @@ import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 import { filterHourlyDataForDate } from "../../utils/weatherUtils";
 import { useWeather } from "../../context/WeatherContext";
 import { useTranslation } from "react-i18next";
+import analytics from "@react-native-firebase/analytics";
 
 interface ForecastItemProps {
   item: DayWeather;
@@ -45,6 +46,10 @@ const ForecastItem = React.memo(function ForecastItem({
   const isToday = item.date === currentDate;
 
   function onPress() {
+    analytics().logEvent("view_daily_details", {
+      date: item.date,
+      weather_code: item.weatherCode,
+    });
     const hourly = filterHourlyDataForDate(weather?.hourly, item.date);
     setSelectedDayData(item);
     setSelectedHourlyData(hourly);

@@ -6,6 +6,7 @@ import LocationSearchResults from "./LocationSearchResults";
 import { longToast } from "../../utils/debug";
 import { useLocationContext } from "../../context/LocationContext";
 import { useTranslation } from "react-i18next";
+import { getAnalytics } from "@react-native-firebase/analytics";
 
 type DebouncedSearchFunction = (query: string) => Promise<void> | void;
 
@@ -43,9 +44,11 @@ export const LocationSearch = () => {
           const locationResults = await searchLocation(query);
           setResults(locationResults);
           setShowResults(true);
+          getAnalytics().logEvent("search_location_success", { query_length: query.length });
         } catch (error) {
           console.error("Error searching for location:", error);
           longToast("Error searching for location: " + String(error));
+          getAnalytics().logEvent("search_location_failed", { query: query, error: error });
         } finally {
           setIsLoading(false);
         }
@@ -63,6 +66,10 @@ export const LocationSearch = () => {
   };
 
   const handleSelectLocation = (locationResult: LocationResult) => {
+    getAnalytics().logEvent("select_location_result", {
+      selected_display_name: locationResult.display_name,
+    });
+
     onLocationSelect(locationResult);
     setShowResults(false);
     setSearchQuery("");

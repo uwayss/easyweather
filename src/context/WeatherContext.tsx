@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect } from "react";
 import { fetchWeather } from "../api/weather";
 import { useLocationContext } from "./LocationContext";
 import { Weather } from "../types/weather";
+import analytics from "@react-native-firebase/analytics";
 
 interface WeatherContextProps {
   weather: Weather | null;
@@ -31,10 +32,17 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({ child
       const data = await fetchWeather(latitude, longitude);
       console.log("[WeatherContext] Setting the weather state with the fetched weather");
       setWeather(data);
+      analytics().logEvent("fetch_weather_success", {
+        location: location?.displayName || "Unknown",
+      });
       setLoading(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An unknown error occurred");
       console.error("Error fetching weather:", err);
+      analytics().logEvent("fetch_weather_failed", {
+        location: location?.displayName || "Unknown",
+        error: err,
+      });
+      setError(err instanceof Error ? err.message : "An unknown error occurred");
       setLoading(false);
     }
   };

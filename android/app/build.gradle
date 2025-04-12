@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply plugin: 'com.google.gms.google-services'
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
@@ -88,8 +89,8 @@ android {
         applicationId "com.uwayss.easyweather"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 9
-        versionName "1.2"
+        versionCode 10
+        versionName "1.0"
     }
     signingConfigs {
         debug {
@@ -102,7 +103,6 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
-            applicationIdSuffix ".debug"
             debuggable true
         }
         release {

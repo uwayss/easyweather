@@ -5,6 +5,7 @@ import { longToast } from "../utils/debug";
 import Geolocation from "react-native-geolocation-service";
 import { Platform, PermissionsAndroid } from "react-native";
 import { useTranslation } from "react-i18next";
+import analytics from "@react-native-firebase/analytics";
 
 const storage = new MMKV({ id: "location-storage" });
 
@@ -115,6 +116,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
         );
 
         if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          analytics().logEvent("request_gps_location_permission_denied");
           throw new Error("Location permission denied");
         }
       } else {
@@ -131,7 +133,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
           maximumAge: 10000,
         });
       });
-
+      analytics().logEvent("request_gps_location_success");
       updateLocation({
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
@@ -140,6 +142,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     } catch (error) {
       console.error("Geolocation error:", error);
       longToast(error instanceof Error ? error.message : "Failed to get location");
+      analytics().logEvent("request_gps_location_failed", { error: error });
       throw error;
     }
   };

@@ -25,14 +25,14 @@ function AboutSectionComponent() {
           title={t("about.data_source")}
           description={t("about.data_source_description")}
           left="database-search-outline"
-          onPress={() => openLink(DATA_SOURCE_URL)}
+          onPress={() => openLink(DATA_SOURCE_URL, "data_source")}
           right="open-in-new"
         />
         <Item
           title={t("about.developer")}
           description={t("about.developer_description")}
           left="xml"
-          onPress={() => openLink(DEVELOPER_URL)}
+          onPress={() => openLink(DEVELOPER_URL, "developer_github")}
           right="open-in-new"
         />
       </ListSection>
