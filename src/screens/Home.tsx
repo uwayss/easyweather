@@ -20,6 +20,7 @@ import MobileAds, {
   AdEventType,
   MaxAdContentRating,
 } from "react-native-google-mobile-ads";
+import analytics from "@react-native-firebase/analytics";
 
 // Set global ad content rating to family-friendly
 MobileAds().setRequestConfiguration({
@@ -106,6 +107,7 @@ export default function Home({ navigation }: HomeProps) {
       if (interstitialAd && adLoaded) {
         try {
           // Show the ad
+          analytics().logEvent("show_interstitial_ad_on_exit"); // Log attempt
           interstitialAd.show();
           return true; // Prevent default behavior
         } catch (error) {
@@ -125,6 +127,7 @@ export default function Home({ navigation }: HomeProps) {
   }, [interstitialAd, adLoaded]);
 
   const handleClosePress = useCallback(() => {
+    analytics().logEvent("close_daily_details");
     bottomSheetRef.current?.close();
   }, []);
 
@@ -137,6 +140,7 @@ export default function Home({ navigation }: HomeProps) {
       setRefreshing(true);
       console.log("Fetching weather data...");
       try {
+        analytics().logEvent("pull_to_refresh");
         await fetchWeatherData(location.latitude, location.longitude);
         console.log("Weather data fetched");
       } catch (e) {

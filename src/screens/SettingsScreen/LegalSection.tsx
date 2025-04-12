@@ -15,7 +15,7 @@ const LegalSectionComponent = () => {
         <Item
           title={t("legal.privacy_policy")}
           left="shield-lock-outline"
-          onPress={() => openLink(PRIVACY_POLICY_URL)}
+          onPress={() => openLink(PRIVACY_POLICY_URL, "privacy_policy")}
           right="chevron-right"
         />
       </ListSection>
