@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useTranslation } from "react-i18next";
-import analytics from "@react-native-firebase/analytics";
+import { getAnalytics } from "@react-native-firebase/analytics";
 
 export default function MetricSelector({
   currentMetric,
@@ -49,7 +49,7 @@ export default function MetricSelector({
     );
   }
   const handleMetricChange = (newMetric: MetricType) => {
-    analytics().logEvent("change_hourly_metric", {
+    getAnalytics().logEvent("change_hourly_metric", {
       metric: newMetric,
       // Add context if possible (e.g., screen: 'home' or 'details')
       screen_context: inSheet ? "details_sheet" : "home_screen",

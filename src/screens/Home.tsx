@@ -20,7 +20,7 @@ import MobileAds, {
   AdEventType,
   MaxAdContentRating,
 } from "react-native-google-mobile-ads";
-import analytics from "@react-native-firebase/analytics";
+import { getAnalytics } from "@react-native-firebase/analytics";
 
 // Set global ad content rating to family-friendly
 MobileAds().setRequestConfiguration({
@@ -103,31 +103,40 @@ export default function Home({ navigation }: HomeProps) {
   // Handle back button press
   useEffect(() => {
     const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
-      // Only on the home screen, we want to show an ad before exiting
-      if (interstitialAd && adLoaded) {
-        try {
-          // Show the ad
-          analytics().logEvent("show_interstitial_ad_on_exit"); // Log attempt
-          interstitialAd.show();
-          return true; // Prevent default behavior
-        } catch (error) {
-          console.warn("Error showing ad:", error);
-          // If showing ad fails, exit the app
+      // Check if we're on the home screen using navigation state
+      const currentRoute = navigation.getState().routes;
+      const isHomeScreen = currentRoute[currentRoute.length - 1].name === "Home";
+
+      if (isHomeScreen) {
+        // Only show ad when exiting from home screen
+        if (interstitialAd && adLoaded) {
+          try {
+            // Show the ad
+            getAnalytics().logEvent("show_interstitial_ad_on_exit"); // Log attempt
+            interstitialAd.show();
+            return true; // Prevent default behavior
+          } catch (error) {
+            console.warn("Error showing ad:", error);
+            // If showing ad fails, exit the app
+            BackHandler.exitApp();
+            return true;
+          }
+        } else {
+          // If ad is not loaded, just exit the app
           BackHandler.exitApp();
           return true;
         }
-      } else {
-        // If ad is not loaded, just exit the app
-        BackHandler.exitApp();
-        return true; // We're handling the back press ourselves
       }
+
+      // For other screens, just go back normally
+      return false;
     });
 
     return () => backHandler.remove();
   }, [interstitialAd, adLoaded]);
 
   const handleClosePress = useCallback(() => {
-    analytics().logEvent("close_daily_details");
+    getAnalytics().logEvent("close_daily_details");
     bottomSheetRef.current?.close();
   }, []);
 
@@ -140,7 +149,7 @@ export default function Home({ navigation }: HomeProps) {
       setRefreshing(true);
       console.log("Fetching weather data...");
       try {
-        analytics().logEvent("pull_to_refresh");
+        getAnalytics().logEvent("pull_to_refresh");
         await fetchWeatherData(location.latitude, location.longitude);
         console.log("Weather data fetched");
       } catch (e) {

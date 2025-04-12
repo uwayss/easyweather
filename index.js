@@ -11,7 +11,8 @@ import { SettingsProvider, useSettings } from "./src/context/SettingsContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 import "./services/i18next";
-import { firebase, getAnalytics } from "@react-native-firebase/analytics";
+import { getApp } from "@react-native-firebase/app";
+import { getAnalytics } from "@react-native-firebase/analytics";
 
 const AppThemeProvider = () => {
   const { activeTheme } = useSettings();
@@ -22,10 +23,11 @@ const AppThemeProvider = () => {
 
   const onReady = () => {
     routeNameRef.current = navigationRef.getCurrentRoute()?.name || null;
-    firebase.initializeApp();
+    // Use getApp() instead of firebase.initializeApp() as per migration guide
+    const app = getApp();
     console.log("[Analytics] Navigation Ready. Initial screen:", routeNameRef.current);
     if (routeNameRef.current) {
-      getAnalytics().logScreenView({
+      getAnalytics(app).logScreenView({
         screen_name: routeNameRef.current,
         screen_class: routeNameRef.current, // Can use the same for basic tracking
       });
