@@ -1,13 +1,13 @@
 import React, { useMemo, useState } from "react";
-import { Text, Card, Divider } from "react-native-paper";
+import { Text, Card, Divider, useTheme, MD3Theme } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
 import { HourWeather } from "../types/weather";
 import { useSettings } from "../context/SettingsContext";
-import Graph from "./Graph/Graph";
-import { getMetricDataForForecast, MetricType } from "../utils/metricData";
+import { getMetricDataForForecast, MetricType, GraphDataPoint } from "../utils/metricData";
 import MetricSelector from "./Graph/MetricSelector";
 import PlaceholderCard from "./PlaceholderCard";
 import { useTranslation } from "react-i18next";
+import HourlyChart from "../screens/DateScreen/HourlyChart";
 
 export default function HourlyConditions({
   selectedDateHourly,
@@ -17,38 +17,51 @@ export default function HourlyConditions({
   const [currentMetric, setCurrentMetric] = useState<MetricType>("temperature");
   const { settings } = useSettings();
   const { t } = useTranslation();
+  const theme = useTheme();
+  const styles = hourlyStyles(theme);
 
-  const graphData = useMemo(
+  const graphData: GraphDataPoint[] | undefined = useMemo(
     () => getMetricDataForForecast(currentMetric, selectedDateHourly, settings.useImperialUnits),
     [currentMetric, selectedDateHourly, settings.useImperialUnits],
   );
+
   return (
-    <Card style={styles.card}>
-      <Card.Content style={{ gap: 8 }}>
-        <View
-          style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}
-        >
-          <Text variant="titleMedium" style={{ textAlign: "center" }}>
-            {t("weather.hourly_title")}
-          </Text>
+    <Card style={styles.card} mode="contained">
+      <Card.Content style={styles.content}>
+        <View style={styles.header}>
+          <Text variant="titleMedium">{t("weather.hourly_title")}</Text>
         </View>
         <MetricSelector currentMetric={currentMetric} setCurrentMetric={setCurrentMetric} />
-        <Divider />
-        {graphData ? <Graph data={graphData} /> : <PlaceholderCard withoutContainer />}
-        <Text style={styles.scrollHint}>{t("weather.hourly_scroll_hint")}</Text>
+        <Divider style={styles.divider} />
+        {graphData ? (
+          <HourlyChart
+            data={graphData}
+            hourlySource={selectedDateHourly || []}
+            metric={currentMetric}
+          />
+        ) : (
+          <PlaceholderCard withoutContainer />
+        )}
       </Card.Content>
     </Card>
   );
 }
-const styles = StyleSheet.create({
-  card: {
-    marginBottom: 16,
-  },
-  scrollHint: {
-    textAlign: "right",
-    fontSize: 12,
-    color: "#666",
-    marginTop: 8,
-    fontStyle: "italic",
-  },
-});
+const hourlyStyles = (theme: MD3Theme) =>
+  StyleSheet.create({
+    card: {
+      marginBottom: 16,
+    },
+    content: {
+      gap: 12,
+      paddingBottom: 16,
+    },
+    header: {},
+    divider: {
+      marginVertical: 4,
+    },
+    noDataText: {
+      textAlign: "center",
+      paddingVertical: 20,
+      color: theme.colors.onSurfaceVariant,
+    },
+  });
