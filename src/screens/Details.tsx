@@ -1,61 +1,40 @@
-import React, { useEffect } from "react";
-import { StyleSheet, View, BackHandler } from "react-native";
+// FILE: src/screens/Details.tsx
+import React from "react";
+import { ScrollView, StyleSheet } from "react-native";
 import { formatForecastDate } from "../utils/timeUtils";
-import { useTheme, Title, IconButton } from "react-native-paper";
+import { useTheme, Appbar } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DailySummaryCard from "./DateScreen/DailySummaryCard";
 import HourlyForecastCard from "./DateScreen/HourlyForecastCard";
-import { DayWeather, HourWeather } from "../types/weather";
-import { BottomSheetScrollView, useBottomSheet } from "@gorhom/bottom-sheet";
+
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../App";
 import { useTranslation } from "react-i18next";
 
-type DetailsProps = {
-  selectedDay?: DayWeather;
-  selectedDateHourly?: HourWeather[];
-};
+type DetailsScreenProps = NativeStackScreenProps<RootStackParamList, "DayDetails">;
 
-export default function Details({ selectedDay, selectedDateHourly }: DetailsProps) {
+export default function DayDetailsScreen({ route, navigation }: DetailsScreenProps) {
+  const { dayData, hourlyData } = route.params;
   const theme = useTheme();
   const { t } = useTranslation();
 
-  const formattedTitle = formatForecastDate(selectedDay?.date);
-  const { close } = useBottomSheet();
-
-  // Add back button handler
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
-      // Close the sheet instead of exiting the app
-      close();
-      return true; // Prevent default behavior (app exit)
-    });
-
-    // Clean up the event listener when component unmounts
-    return () => backHandler.remove();
-  }, [close]);
+  const formattedTitle = formatForecastDate(dayData?.date);
 
   return (
     <SafeAreaView style={[styles.safeContainer, { backgroundColor: theme.colors.background }]}>
-      <View style={styles.titleContainer}>
-        <IconButton icon={"arrow-up"} onPress={() => close()} />
-        <Title style={styles.appBarTitle}>{formattedTitle || t("weather.hourly_forecast")}</Title>
-      </View>
-      <BottomSheetScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}
-      >
-        <DailySummaryCard dayData={selectedDay} />
-        {selectedDateHourly && <HourlyForecastCard inSheet hourlyData={selectedDateHourly} />}
-      </BottomSheetScrollView>
+      <Appbar.Header>
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
+        <Appbar.Content title={formattedTitle || t("weather.hourly_forecast")} />
+      </Appbar.Header>
+      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+        <DailySummaryCard dayData={dayData} />
+        {hourlyData && <HourlyForecastCard hourlyData={hourlyData} />}
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginHorizontal: 16,
-  },
   safeContainer: {
     flex: 1,
   },
@@ -64,19 +43,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     padding: 16,
-    paddingTop: 8,
     gap: 20,
-  },
-  centered: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 16,
-  },
-  appBarTitle: {
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "center",
-    width: "70%",
   },
 });

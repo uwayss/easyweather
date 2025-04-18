@@ -42,6 +42,7 @@ def generate_file_dump(project_root, output_file, exclude_dirs=None, exclude_fil
 
     # Ruby (often related to CocoaPods/vendor)
     'bundle', # Assuming inside 'vendor/' as per gitignore comment, this will catch it anywhere
+    'ios'
 }
     # Added common generated/binary/sensitive files found in Android projects
     exclude_files = {

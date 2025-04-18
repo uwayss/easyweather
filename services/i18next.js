@@ -5,11 +5,9 @@ import en from "../locales/en.json";
 import tr from "../locales/tr.json";
 import ar from "../locales/ar.json";
 
-// Access the storage to get saved settings
 const storage = new MMKV({ id: "app-settings-v2" });
 const SETTINGS_KEY = "userAppSettings";
 
-// Get the saved language from storage or default to English
 let savedLanguage = "en";
 try {
   const storedSettings = storage.getString(SETTINGS_KEY);
