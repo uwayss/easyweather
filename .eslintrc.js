@@ -4,7 +4,7 @@ module.exports = {
   plugins: ["prettier"],
   ignorePatterns: ["android/"],
   rules: {
-    "prettier/prettier": "error",
+    "prettier/prettier": "warn",
     "linebreak-style": ["error", "unix"],
     bracketSameLine: "off",
   },

@@ -17,10 +17,11 @@
     "arch-build": "cd android && gradlew.bat assembleRelease -PreactNativeArchitectures=armeabi-v7a",
     "arch-install": "adb install -f android/app/build/outputs/apk/release/app-release.apk",
     "arch": "npm run arch-build && npm run arch-install",
-    "build-both": "npm run arch && npm start"
+    "build-both": "npm run arch && npm start",
+    "types": "tsc --noEmit",
+    "checks": "npm run types && npm run lint && npm run format"
   },
   "dependencies": {
-    "@gorhom/bottom-sheet": "^5.1.2",
     "@react-native-firebase/analytics": "^21.13.0",
     "@react-native-firebase/app": "^21.13.0",
     "@react-native-picker/picker": "^2.11.0",

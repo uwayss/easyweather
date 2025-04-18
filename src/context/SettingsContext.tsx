@@ -49,7 +49,6 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
         const parsed = JSON.parse(storedSettings);
 
         const loadedSettings = { ...defaultSettings, ...parsed };
-        // Sync i18next language on initial load if necessary
         if (i18next.language !== loadedSettings.language) {
           console.log(
             `[SettingsContext] Initializing language from storage to: ${loadedSettings.language}`,
@@ -75,7 +74,6 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     storage.set(SETTINGS_KEY, JSON.stringify(settings));
     console.log("[SettingsContext] Settings saved:", settings);
 
-    // Also update i18next language if it changed in settings
     if (settings.language !== i18next.language) {
       console.log(
         `[SettingsContext] Language changed in settings, updating i18next to: ${settings.language}`,
@@ -90,18 +88,15 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
     });
   };
 
-  // Determine the active theme based on settings and system preference
   const activeTheme = useMemo((): "light" | "dark" => {
     const { theme } = settings;
     if (theme === "system") {
-      // Directly use the hook's value. Fallback to 'light' if null/undefined.
       const determinedTheme = systemColorScheme ?? "light";
       console.log(
         `[SettingsContext] System theme selected. Detected: ${systemColorScheme}. Using: ${determinedTheme}`,
       );
       return determinedTheme;
     } else {
-      // Use the manually selected theme
       console.log(`[SettingsContext] Manual theme selected: ${theme}`);
       return theme;
     }

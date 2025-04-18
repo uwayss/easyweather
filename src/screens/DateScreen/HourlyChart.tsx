@@ -1,3 +1,4 @@
+// FILE: src/screens/DateScreen/HourlyChart.tsx
 import { FlatList, StyleSheet, View, Image } from "react-native";
 import React from "react";
 import { MD3Theme, Text, useTheme } from "react-native-paper";
@@ -5,13 +6,11 @@ import { GraphDataPoint, MetricType } from "../../utils/metricData";
 import { HourWeather } from "../../types/weather";
 import weatherDescriptions from "../../utils/descriptions";
 import CustomVerticalProgressBar from "./CustomVerticalProgressBar";
-import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 
 interface HourlyChartProps {
   data: GraphDataPoint[];
   hourlySource: HourWeather[];
   metric: MetricType;
-  inSheet?: boolean;
 }
 
 const HourItem = React.memo(function HourItem({
@@ -47,30 +46,14 @@ const HourItem = React.memo(function HourItem({
   );
 });
 
-export default function HourlyChart({ data, hourlySource, inSheet }: HourlyChartProps) {
+export default function HourlyChart({ data, hourlySource }: HourlyChartProps) {
   const theme = useTheme();
   const styles = chartStyles(theme);
 
   if (data.length !== hourlySource.length) {
     return <Text style={styles.errorText}>Data mismatch</Text>;
   }
-  if (inSheet) {
-    return (
-      <BottomSheetFlatList
-        horizontal
-        data={data}
-        renderItem={({ item, index }) => (
-          <HourItem graphPoint={item} hourInfo={hourlySource[index]} />
-        )}
-        keyExtractor={item => item.time}
-        initialNumToRender={10}
-        maxToRenderPerBatch={10}
-        windowSize={10}
-        showsHorizontalScrollIndicator={false}
-        removeClippedSubviews={false}
-      />
-    );
-  }
+
   return (
     <FlatList
       horizontal

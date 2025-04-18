@@ -69,7 +69,6 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
   return (
     <Card mode="contained">
       <Card.Content style={styles.cardContent}>
-        {/* Top Section: Icon, Description, Temps */}
         <View style={styles.topSection}>
           <Image source={weatherInfo.image} style={styles.weatherIcon} resizeMode="contain" />
           <View style={styles.topTextContainer}>
@@ -89,7 +88,6 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
 
         <Divider />
 
-        {/* Bottom Section: Grid of Details */}
         <View style={styles.detailsGrid}>
           <DetailItem
             icon="weather-rainy"

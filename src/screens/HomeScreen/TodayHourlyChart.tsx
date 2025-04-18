@@ -100,9 +100,7 @@ const TodayHourlyChart: React.FC = () => {
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContent}
       >
-        {/* View to contain Chart + Custom Labels */}
         <View>
-          {/* --- BarChart --- */}
           <BarChart
             data={chartData}
             width={calculatedChartWidth}
@@ -120,7 +118,6 @@ const TodayHourlyChart: React.FC = () => {
             withCustomBarColorFromData={false}
             flatColor={true}
           />
-          {/* --- Custom X Axis Labels --- */}
           <View style={[styles.customLabelsContainer, { width: calculatedChartWidth }]}>
             {todaysHourlyData.map((hourData, index) =>
               index % 3 === 0 ? (

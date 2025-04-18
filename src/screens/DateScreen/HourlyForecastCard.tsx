@@ -1,3 +1,4 @@
+// FILE: src/screens/DateScreen/HourlyForecastCard.tsx
 import React, { useMemo, useState } from "react";
 import { Text, Card, Divider, useTheme, MD3Theme } from "react-native-paper";
 import { StyleSheet, View } from "react-native";
@@ -8,13 +9,7 @@ import MetricSelector from "../../components/Graph/MetricSelector";
 import HourlyChart from "./HourlyChart";
 import { useTranslation } from "react-i18next";
 
-export default function HourlyForecastCard({
-  hourlyData,
-  inSheet,
-}: {
-  hourlyData: HourWeather[];
-  inSheet?: boolean;
-}) {
+export default function HourlyForecastCard({ hourlyData }: { hourlyData: HourWeather[] }) {
   const [currentMetric, setCurrentMetric] = useState<MetricType>("temperature");
   const { settings } = useSettings();
   const theme = useTheme();
@@ -31,26 +26,18 @@ export default function HourlyForecastCard({
         <View style={styles.header}>
           <Text variant="titleMedium">{t("weather.hourly_forecast")}</Text>
         </View>
-        <MetricSelector
-          currentMetric={currentMetric}
-          setCurrentMetric={setCurrentMetric}
-          inSheet={inSheet}
-        />
+        <MetricSelector currentMetric={currentMetric} setCurrentMetric={setCurrentMetric} />
         <Divider style={styles.divider} />
         {graphData ? (
-          <HourlyChart
-            data={graphData}
-            hourlySource={hourlyData}
-            metric={currentMetric}
-            inSheet={inSheet}
-          />
+          <HourlyChart data={graphData} hourlySource={hourlyData} metric={currentMetric} />
         ) : (
-          <Text style={styles.noDataText}>Hourly data calculation failed.</Text>
+          <Text style={styles.noDataText}>{t("weather.hourly_data_error")}</Text>
         )}
       </Card.Content>
     </Card>
   );
 }
+
 const hourlyStyles = (theme: MD3Theme) =>
   StyleSheet.create({
     card: {},
