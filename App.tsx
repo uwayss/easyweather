@@ -28,7 +28,13 @@ export default function RootStack() {
           animation: "slide_from_left",
         }}
       />
-      <Stack.Screen name="DayDetails" component={DayDetailsScreen} />
+      <Stack.Screen
+        name="DayDetails"
+        component={DayDetailsScreen}
+        options={{
+          animation: "slide_from_bottom",
+        }}
+      />
     </Stack.Navigator>
   );
 }
