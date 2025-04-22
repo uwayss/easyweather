@@ -13,6 +13,17 @@ import WeatherCard from "./HomeScreen/WeatherCard";
 import SearchRow from "./HomeScreen/SearchRow";
 import { getAnalytics } from "@react-native-firebase/analytics";
 import { useMemo } from "react";
+import MobileAds, { MaxAdContentRating } from "react-native-google-mobile-ads";
+
+// Set global ad content rating to family-friendly
+MobileAds().setRequestConfiguration({
+  // Set max ad content rating to family-friendly (G rating)
+  maxAdContentRating: MaxAdContentRating.G,
+  // Enable Google's child-directed treatment
+  tagForChildDirectedTreatment: true,
+  // Enable Google's under-age-of-consent treatment
+  tagForUnderAgeOfConsent: true,
+});
 
 export type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 type HomeProps = NativeStackScreenProps<RootStackParamList, "Home">;

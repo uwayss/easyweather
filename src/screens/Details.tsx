@@ -5,7 +5,7 @@ import { formatForecastDate } from "../utils/timeUtils";
 import { useTheme, Appbar } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DailySummaryCard from "./DateScreen/DailySummaryCard";
-import HourlyForecastCard from "./DateScreen/HourlyForecastCard";
+import HourlyConditions from "../components/HourlyConditions";
 
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../App";
@@ -28,7 +28,7 @@ export default function DayDetailsScreen({ route, navigation }: DetailsScreenPro
       </Appbar.Header>
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         <DailySummaryCard dayData={dayData} />
-        {hourlyData && <HourlyForecastCard hourlyData={hourlyData} />}
+        {hourlyData && <HourlyConditions selectedDateHourly={hourlyData} />}
       </ScrollView>
     </SafeAreaView>
   );
