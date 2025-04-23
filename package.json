@@ -7,7 +7,7 @@
     "ios": "react-native run-ios",
     "lint": "eslint . --ignore-pattern 'android/'",
     "start": "react-native start",
-    "format": "prettier . --write",
+    "format": "prettier --loglevel silent . --write",
     "diff": "python scripts/diff.py",
     "dump": "python scripts/codebase_dumper.py",
     "dump_lite": "python scripts/codebase_dumper_lite.py",
@@ -19,7 +19,8 @@
     "arch": "npm run arch-build && npm run arch-install",
     "build-both": "npm run arch && npm start",
     "types": "tsc --noEmit",
-    "checks": "npm run types && npm run lint && npm run format"
+    "checks": "npm run types && npm run lint && npm run format && npm run test",
+    "test": "jest"
   },
   "dependencies": {
     "@react-native-firebase/analytics": "^21.13.0",
@@ -57,6 +58,8 @@
     "@react-native/eslint-config": "0.76.7",
     "@react-native/metro-config": "0.76.7",
     "@react-native/typescript-config": "0.76.7",
+    "@testing-library/react-native": "^13.2.0",
+    "@types/jest": "^29.5.14",
     "@types/react": "^18.2.6",
     "@types/react-native-vector-icons": "^6.4.18",
     "@types/react-test-renderer": "^18.0.0",
