@@ -1,0 +1,1 @@
+- Everytime you make a lot of changes in the codebase, you must run `npm run checks` and make sure there are no errors.
