@@ -12,22 +12,24 @@ import LineChart from "./Graph/LineChart";
 import { HourWeather } from "../types/weather";
 import { useWeatherDescriptions } from "../utils/descriptions";
 import FastImage from "react-native-fast-image";
+import HourlyConditionsSkeleton from "./HourlyConditionsSkeleton"; // Import skeleton
 
 // --- Configuration ---
-const POINT_ITEM_WIDTH = 65; // *** INCREASED width for better readability ***
-const CHART_HEIGHT = 65;
+const POINT_ITEM_WIDTH = 60; // Slightly reduced width for potentially more items visible
+const CHART_HEIGHT = 60; // Slightly reduced height
 const VALUES_ROW_HEIGHT = 28;
-const DETAILS_ROW_HEIGHT = 60;
-const CHART_INTERNAL_PADDING_HORIZONTAL = 15;
-const cardContentPaddingHorizontal = 16;
+const DETAILS_ROW_HEIGHT = 55; // Adjusted for smaller icon/label
+const cardContentPaddingHorizontal = 16; // Padding inside the card, outside the scroll area
 
 // --- Screen Width ---
 const screenWidth = Dimensions.get("window").width;
 
 export default function HourlyConditions({
   selectedDateHourly,
+  isLoading, // Add isLoading prop
 }: {
   selectedDateHourly: HourWeather[] | undefined;
+  isLoading?: boolean; // Make optional if used elsewhere without loading state
 }) {
   const [currentMetric, setCurrentMetric] = useState<MetricType>("temperature");
   const { settings } = useSettings();
@@ -43,16 +45,19 @@ export default function HourlyConditions({
 
   // --- Width Calculations ---
   const numDataPoints = graphData?.length || 0;
-  const minimumVisibleWidth = screenWidth - cardContentPaddingHorizontal * 2;
+  // The width available *inside* the card for the scrollable content
+  const availableScrollWidth = screenWidth - cardContentPaddingHorizontal * 2;
 
-  // Calculate the width needed *inside* the ScrollView for the combined rows + chart
+  // Calculate the total width needed for all the hourly items
   const internalContentWidth = useMemo(() => {
-    if (numDataPoints < 1) return minimumVisibleWidth;
+    if (numDataPoints < 1) return availableScrollWidth;
+    // Use precise calculation based on item width
     const calculatedWidth = numDataPoints * POINT_ITEM_WIDTH;
-    return Math.max(calculatedWidth, minimumVisibleWidth);
-  }, [numDataPoints, minimumVisibleWidth]);
+    // Ensure the content width is at least the screen width to avoid empty space if few items
+    return Math.max(calculatedWidth, availableScrollWidth);
+  }, [numDataPoints, availableScrollWidth]);
 
-  // Calculate the horizontal step between the *center* of each item column
+  // Horizontal distance between the center of each item column
   const xStep = POINT_ITEM_WIDTH;
   // --- End Width Calculations ---
 
@@ -61,11 +66,16 @@ export default function HourlyConditions({
     return typeof image === "number" ? image : undefined;
   };
 
-  // Total height for the chart section inside the card
-  const chartAreaMinHeight = VALUES_ROW_HEIGHT + CHART_HEIGHT + DETAILS_ROW_HEIGHT;
+  // Total minimum height for the chart section inside the card
+  const chartAreaMinHeight = VALUES_ROW_HEIGHT + CHART_HEIGHT + DETAILS_ROW_HEIGHT + 10; // Added some buffer
 
-  // Determine the color for the line and gradient based on the first data point
+  // Determine the color for the line and gradient based on the first data point or theme default
   const chartColor = graphData?.[0]?.color || theme.colors.primary;
+
+  // Render Skeleton if loading
+  if (isLoading) {
+    return <HourlyConditionsSkeleton />;
+  }
 
   return (
     <Card style={styles.card} mode="contained">
@@ -85,111 +95,85 @@ export default function HourlyConditions({
       {/* Chart Section */}
       <View style={[styles.chartOuterContainer, { minHeight: chartAreaMinHeight }]}>
         {graphData && numDataPoints > 0 ? (
-          <View
-            style={[
-              styles.chartScrollViewContainer,
-              { backgroundColor: theme.colors.surfaceVariant + "30" },
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.chartScrollView} // Style the ScrollView itself
+            contentContainerStyle={[
+              styles.chartScrollContent,
+              { width: internalContentWidth }, // Set the precise width for the scrollable content
+              // Center content horizontally *only* if it's narrower than the available space
+              internalContentWidth < availableScrollWidth
+                ? { paddingLeft: (availableScrollWidth - internalContentWidth) / 2 }
+                : {},
             ]}
+            // Optional: Snap scrolling (can feel abrupt sometimes)
+            // snapToInterval={xStep}
+            // decelerationRate="fast"
           >
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={[
-                styles.chartScrollContent,
-                // Add paddingRight to ensure the last item can be scrolled fully into view
-                { paddingRight: CHART_INTERNAL_PADDING_HORIZONTAL },
-                // Center content horizontally if it's narrower than the screen
-                internalContentWidth < minimumVisibleWidth
-                  ? { paddingHorizontal: (minimumVisibleWidth - internalContentWidth) / 2 }
-                  : {},
-              ]}
-              // Optional: Helps scrolling feel less abrupt
-              // snapToInterval={xStep} // Snap to each item center
-              // decelerationRate="fast"
-            >
-              {/* Container for all chart-related rows */}
-              <View style={{ width: internalContentWidth }}>
-                {/* === Values Row (Above Chart) === */}
-                <View
-                  style={[
-                    styles.valuesRow,
-                    // { paddingHorizontal: CHART_INTERNAL_PADDING_HORIZONTAL }, // REMOVED padding here
-                  ]}
-                >
-                  {graphData.map((pointData, index) => (
-                    // Use precise width for alignment
+            {/* Container for all chart-related rows, takes the full internalContentWidth */}
+            <View>
+              {/* === Values Row (Above Chart) === */}
+              <View style={styles.valuesRow}>
+                {graphData.map((pointData, index) => (
+                  <View
+                    key={`value-${index}`}
+                    style={[styles.hourItemContainer, { width: xStep }]} // Use precise width
+                  >
+                    <Text style={styles.valueText} variant="labelLarge" numberOfLines={1}>
+                      {pointData.value}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+
+              {/* === Line Chart === */}
+              <View style={styles.lineChartWrapper}>
+                <LineChart
+                  data={graphData}
+                  height={CHART_HEIGHT}
+                  width={internalContentWidth} // SVG takes full calculated width
+                  itemWidth={xStep} // Pass itemWidth for alignment
+                  showPoints={true}
+                  showGradient={true}
+                  paddingVertical={5} // Small vertical padding within SVG
+                  lineColor={chartColor}
+                  gradientColor={chartColor}
+                  pointRadius={4} // Adjusted point size
+                  lineWidth={2} // Adjusted line width
+                />
+              </View>
+
+              {/* === Icons and Labels Row (Below Chart) === */}
+              <View style={styles.detailsRow}>
+                {graphData.map((pointData, index) => {
+                  const hour = selectedDateHourly?.[index];
+                  const iconSource = hour ? getIconForHour(hour) : undefined;
+                  return (
                     <View
-                      key={`value-${index}`}
-                      style={[styles.hourItemContainer, { width: xStep }]}
+                      key={`detail-${index}`}
+                      style={[styles.hourItemContainer, { width: xStep }]} // Use precise width
                     >
-                      <Text style={styles.valueText} variant="labelLarge" numberOfLines={1}>
-                        {pointData.value}
+                      {iconSource ? (
+                        <FastImage
+                          source={iconSource}
+                          style={styles.weatherIcon}
+                          resizeMode={FastImage.resizeMode.contain}
+                        />
+                      ) : (
+                        <View style={styles.weatherIcon} /> // Placeholder if no icon
+                      )}
+                      <Text style={styles.labelText} variant="labelMedium" numberOfLines={1}>
+                        {pointData.label}
                       </Text>
                     </View>
-                  ))}
-                </View>
-
-                {/* === Line Chart === */}
-                <View style={styles.lineChartWrapper}>
-                  {numDataPoints >= 1 ? ( // Render chart even for 1 point if showPoints is true
-                    <LineChart
-                      data={graphData}
-                      height={CHART_HEIGHT}
-                      width={internalContentWidth} // SVG takes full calculated width
-                      itemWidth={xStep} // PASS itemWidth for alignment
-                      showPoints={true}
-                      showGradient={true}
-                      // paddingHorizontal={CHART_INTERNAL_PADDING_HORIZONTAL} // REMOVED prop
-                      paddingVertical={5}
-                      lineColor={chartColor}
-                      gradientColor={chartColor}
-                      pointRadius={4}
-                      lineWidth={2}
-                    />
-                  ) : (
-                    // Placeholder only if no data at all
-                    <View style={{ height: CHART_HEIGHT }} />
-                  )}
-                </View>
-
-                {/* === Icons and Labels Row (Below Chart) === */}
-                <View
-                  style={[
-                    styles.detailsRow,
-                    // { paddingHorizontal: CHART_INTERNAL_PADDING_HORIZONTAL }, // REMOVED padding here
-                  ]}
-                >
-                  {graphData.map((pointData, index) => {
-                    const hour = selectedDateHourly?.[index];
-                    const iconSource = hour ? getIconForHour(hour) : undefined;
-                    return (
-                      <View
-                        key={`detail-${index}`}
-                        style={[styles.hourItemContainer, { width: xStep }]}
-                      >
-                        {/* Icon */}
-                        {iconSource ? (
-                          <FastImage
-                            source={iconSource}
-                            style={styles.weatherIcon}
-                            resizeMode={FastImage.resizeMode.contain}
-                          />
-                        ) : (
-                          <View style={styles.weatherIcon} /> // Placeholder
-                        )}
-                        {/* Label */}
-                        <Text style={styles.labelText} variant="labelMedium" numberOfLines={1}>
-                          {pointData.label}
-                        </Text>
-                      </View>
-                    );
-                  })}
-                </View>
+                  );
+                })}
               </View>
-            </ScrollView>
-          </View>
+            </View>
+          </ScrollView>
         ) : (
-          // Placeholder when no data
+          // Placeholder when no data AND not loading
           <View style={[styles.placeholderWrapper, { minHeight: chartAreaMinHeight }]}>
             <PlaceholderCard withoutContainer />
           </View>
@@ -216,29 +200,33 @@ const hourlyStyles = (theme: MD3Theme) =>
       marginHorizontal: cardContentPaddingHorizontal,
     },
     chartOuterContainer: {
-      marginTop: 4, // Reduced space above chart area
+      marginTop: 4,
       marginBottom: 8,
+      // This container takes padding into account
+      paddingHorizontal: cardContentPaddingHorizontal,
     },
-    chartScrollViewContainer: {
-      // marginHorizontal: cardContentPaddingHorizontal,
+    chartScrollView: {
+      // ScrollView itself fills the outer container's width
+      backgroundColor: theme.colors.surfaceVariant + "30", // Apply background to scroll view
       borderRadius: 8,
-      overflow: "hidden",
+      overflow: "hidden", // Clip the background
     },
     chartScrollContent: {
-      // paddingVertical: 4, // Reduced vertical padding in scroll area
-      // Removed paddingRight from here, moved to inline style above
+      // This is the content *inside* the scroll view
+      // Width is set dynamically
+      paddingVertical: 4, // Add some vertical padding inside scroll
     },
     lineChartWrapper: {
-      // Added wrapper for potential vertical centering if needed later
       height: CHART_HEIGHT,
-      // marginLeft: 20, // REMOVED this line to fix alignment
+      // No margin needed here, alignment handled by itemWidth
       // backgroundColor: 'rgba(0, 255, 0, 0.1)', // DEBUG
     },
-    // --- Row Styles ---
+    // --- Row Styles (Values and Details) ---
     valuesRow: {
       flexDirection: "row",
       height: VALUES_ROW_HEIGHT,
-      alignItems: "center", // Center values vertically in their row
+      alignItems: "flex-end", // Align values to the bottom of their space
+      paddingBottom: 4, // Small space below value
       // backgroundColor: 'rgba(0,255,0,0.1)', // DEBUG
     },
     detailsRow: {
@@ -250,30 +238,31 @@ const hourlyStyles = (theme: MD3Theme) =>
     // --- Item Container (Used by Values and Details rows) ---
     hourItemContainer: {
       // Width is set dynamically to xStep
-      height: "100%",
+      height: "100%", // Takes full height of its parent row
       alignItems: "center", // Center content horizontally within the xStep width
       justifyContent: "center", // Center content vertically
-      // backgroundColor: 'rgba(255,0,0,0.1)', // DEBUG
+      // backgroundColor: 'rgba(255,0,0,0.1)', // DEBUG: Helps visualize item bounds
+      // paddingHorizontal: 2, // Add tiny horizontal padding if needed
     },
     // --- Element Styles ---
     valueText: {
       fontWeight: "600",
-      fontSize: 14, // Kept original size for now, can adjust if needed
+      fontSize: 13, // Slightly smaller value font
       color: theme.colors.onSurface,
       textAlign: "center",
     },
     weatherIcon: {
-      width: 26, // *** DECREASED ICON SIZE ***
-      height: 26, // *** DECREASED ICON SIZE ***
-      marginBottom: 2, // Added small margin below icon
+      width: 24, // *** DECREASED ICON SIZE ***
+      height: 24, // *** DECREASED ICON SIZE ***
+      marginBottom: 3, // Adjusted margin
     },
     labelText: {
       color: theme.colors.onSurfaceVariant,
-      fontSize: 11, // *** DECREASED FONT SIZE ***
+      fontSize: 11, // Kept small label font
       textAlign: "center",
     },
     placeholderWrapper: {
-      paddingHorizontal: cardContentPaddingHorizontal,
+      // No horizontal padding needed here, handled by outer container
       justifyContent: "center",
       alignItems: "center",
     },
