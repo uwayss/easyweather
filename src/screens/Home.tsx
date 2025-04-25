@@ -1,6 +1,7 @@
+// FILE: src\screens\Home.tsx
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useState } from "react";
-import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
+import React, { useState, useMemo, useCallback } from "react";
+import { RefreshControl, ScrollView, StyleSheet } from "react-native";
 import { useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "../../App";
@@ -12,16 +13,11 @@ import ForecastList from "./HomeScreen/ForecastList";
 import WeatherCard from "./HomeScreen/WeatherCard";
 import SearchRow from "./HomeScreen/SearchRow";
 import { getAnalytics } from "@react-native-firebase/analytics";
-import { useMemo } from "react";
 import MobileAds, { MaxAdContentRating } from "react-native-google-mobile-ads";
 
-// Set global ad content rating to family-friendly
 MobileAds().setRequestConfiguration({
-  // Set max ad content rating to family-friendly (G rating)
   maxAdContentRating: MaxAdContentRating.G,
-  // Enable Google's child-directed treatment
   tagForChildDirectedTreatment: true,
-  // Enable Google's under-age-of-consent treatment
   tagForUnderAgeOfConsent: true,
 });
 
@@ -30,29 +26,29 @@ type HomeProps = NativeStackScreenProps<RootStackParamList, "Home">;
 
 export default function Home({ navigation }: HomeProps) {
   const theme = useTheme();
-  const { weather, fetchWeatherData } = useWeather();
+  const { weather, loading: weatherLoading, fetchWeatherData } = useWeather();
+  const { location, loading: locationLoading } = useLocationContext();
   const [refreshing, setRefreshing] = useState(false);
-  const { location } = useLocationContext();
 
-  const onRefresh = async () => {
-    console.log("Pull to refresh triggered");
-    if (location) {
-      setRefreshing(true);
-      console.log("Fetching weather data...");
-      try {
-        getAnalytics().logEvent("pull_to_refresh");
-        await fetchWeatherData(location.latitude, location.longitude);
-        console.log("Weather data fetched");
-      } catch (e) {
-        console.error("Fetch error:", e);
-      } finally {
-        setRefreshing(false);
-      }
-    } else {
-      console.error("Cannot refresh - location is not available");
+  // Combined loading state for skeletons
+  const isLoading = locationLoading || weatherLoading;
+
+  const onRefresh = useCallback(async () => {
+    if (!location) {
+      setRefreshing(false);
+      return;
+    }
+    setRefreshing(true);
+    try {
+      getAnalytics().logEvent("pull_to_refresh");
+      await fetchWeatherData(location.latitude, location.longitude);
+    } catch (e) {
+      console.error("Refresh error:", e);
+      // Error is handled by Snackbar via context
+    } finally {
       setRefreshing(false);
     }
-  };
+  }, [location, fetchWeatherData]); // Added dependencies
 
   const todaysHourlyData = useMemo(
     () => filterHourlyWeatherForNext24HoursIncludingNow(weather?.hourly),
@@ -72,15 +68,22 @@ export default function Home({ navigation }: HomeProps) {
             onRefresh={onRefresh}
             colors={[theme.colors.primary]}
             tintColor={theme.colors.primary}
+            // Disable refresh control while initial loading to avoid conflicts
+            enabled={!isLoading}
           />
         }
       >
+        {/* SearchRow is always visible */}
         <SearchRow textColor={theme.colors.onSurface} navigation={navigation} />
+
+        {/* WeatherCard now handles its own skeleton */}
         <WeatherCard />
-        <View>
-          <HourlyConditions selectedDateHourly={todaysHourlyData} />
-        </View>
-        <ForecastList />
+
+        {/* Pass isLoading prop to HourlyConditions */}
+        <HourlyConditions selectedDateHourly={todaysHourlyData} isLoading={isLoading} />
+
+        {/* Pass isLoading prop to ForecastList */}
+        <ForecastList isLoading={isLoading} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -95,8 +98,9 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingHorizontal: 16,
-    paddingBottom: 16,
+    paddingBottom: 16, // Ensure space for banner ad
     paddingTop: 10,
     gap: 20,
   },
+  // loadingContainer style is no longer needed here
 });

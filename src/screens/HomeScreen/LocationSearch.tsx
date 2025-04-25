@@ -1,9 +1,9 @@
+// FILE: src\screens\HomeScreen\LocationSearch.tsx
 import React, { useState, useCallback } from "react";
 import { StyleSheet, View } from "react-native";
 import { Searchbar, useTheme } from "react-native-paper";
 import { searchLocation, LocationResult } from "../../api/location";
 import LocationSearchResults from "./LocationSearchResults";
-import { longToast } from "../../utils/debug";
 import { useLocationContext } from "../../context/LocationContext";
 import { useTranslation } from "react-i18next";
 import { getAnalytics } from "@react-native-firebase/analytics";
@@ -20,7 +20,7 @@ function debounce(func: DebouncedSearchFunction, wait: number): DebouncedSearchF
 
 export const LocationSearch = () => {
   const theme = useTheme();
-  const { updateLocation } = useLocationContext();
+  const { updateLocation, getCurrentLocation, setError } = useLocationContext();
   const { t } = useTranslation();
 
   const onLocationSelect = (selectedLocation: LocationResult) => {
@@ -46,9 +46,9 @@ export const LocationSearch = () => {
           setShowResults(true);
           getAnalytics().logEvent("search_location_success", { query_length: query.length });
         } catch (error) {
-          console.error("Error searching for location:", error);
-          longToast("Error searching for location: " + String(error));
-          getAnalytics().logEvent("search_location_failed", { query: query, error: error });
+          const msg = `Error searching location: ${String(error)}`;
+          setError(msg);
+          getAnalytics().logEvent("search_location_failed", { query: query, error: String(error) });
         } finally {
           setIsLoading(false);
         }
@@ -57,7 +57,7 @@ export const LocationSearch = () => {
         setShowResults(false);
       }
     }, 500),
-    [],
+    [setError],
   );
 
   const handleSearchChange = (query: string) => {
@@ -74,7 +74,6 @@ export const LocationSearch = () => {
     setShowResults(false);
     setSearchQuery("");
   };
-  const { getCurrentLocation } = useLocationContext();
 
   const handleGeolocationPress = async () => {
     try {
@@ -82,7 +81,7 @@ export const LocationSearch = () => {
       setSearchQuery("");
       setShowResults(false);
     } catch (error) {
-      console.error("Geolocation error:", error);
+      console.error("Geolocation button error:", error);
     }
   };
 
@@ -113,11 +112,13 @@ export const LocationSearch = () => {
         onIconPress={handleGeolocationPress}
         icon={"crosshairs-gps"}
       />
-      <LocationSearchResults
-        results={results}
-        onSelectLocation={handleSelectLocation}
-        visible={showResults}
-      />
+      <View style={styles.resultsContainer}>
+        <LocationSearchResults
+          results={results}
+          onSelectLocation={handleSelectLocation}
+          visible={showResults}
+        />
+      </View>
     </View>
   );
 };
