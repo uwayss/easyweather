@@ -1,7 +1,7 @@
+// FILE: src\context\LocationContext.tsx
 import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
 import { MMKV } from "react-native-mmkv";
 import { fetchCurrentLocation } from "../api/geolocation";
-import { longToast } from "../utils/debug";
 import Geolocation from "react-native-geolocation-service";
 import { Platform, PermissionsAndroid } from "react-native";
 import { useTranslation } from "react-i18next";
@@ -26,6 +26,8 @@ interface LocationContextProps {
   updateLocation: (newLocation: Location) => void;
   fetchInitialLocation: () => Promise<void>;
   getCurrentLocation: () => Promise<void>;
+  clearError: () => void;
+  setError: (message: string | null) => void;
 }
 
 const LocationContext = createContext<LocationContextProps | undefined>(undefined);
@@ -37,25 +39,21 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     if (storedLocation) {
       try {
         const parsedLocation = JSON.parse(storedLocation) as Location;
-        console.log("[LocationContext] Loaded stored location:", parsedLocation.displayName);
         return parsedLocation;
-      } catch (e) {
-        console.error("[LocationContext] Failed to parse stored location: ", e);
-        longToast("[LocationContext] Failed to parse stored location: " + e);
+      } catch {
+        // Error parsing, delete the invalid key
         storage.delete(STORAGE_KEYS.LOCATION);
       }
     }
-    console.log("[LocationContext] No valid stored location found.");
     return null;
   });
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  const clearError = () => setError(null);
+
   const updateLocation = (newLocation: Location) => {
-    console.log(
-      `[LocationContext] Updating location to: ${newLocation.displayName} (${newLocation.latitude}, ${newLocation.longitude})`,
-    );
     setLocation(newLocation);
     storage.set(STORAGE_KEYS.LOCATION, JSON.stringify(newLocation));
     setError(null);
@@ -63,11 +61,9 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   const fetchInitialLocation = async () => {
     if (location !== null) {
-      console.log("[LocationContext] Skipping IP fetch, location already exists.");
       return;
     }
 
-    console.log("[LocationContext] Attempting to get location from IP");
     setLoading(true);
     setError(null);
     try {
@@ -80,28 +76,22 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
         };
         updateLocation(newLocation);
       } else {
-        console.log("[LocationContext] Geolocation data missing lat/lon");
-        longToast("[LocationContext] Geolocation data missing lat/lon");
         setError("Failed to retrieve coordinates from IP.");
       }
     } catch (err) {
-      console.error("[LocationContext] Error getting location from IP: ", err);
-      longToast(
-        "[LocationContext] Error getting location from IP: " +
-          (err instanceof Error ? err.message : String(err)),
-      );
       setError(err instanceof Error ? err.message : "Failed to get location from IP");
     } finally {
       setLoading(false);
-      console.log("[LocationContext] Finished initial location fetch attempt");
     }
   };
 
   useEffect(() => {
     fetchInitialLocation();
-  }, []);
+  }, []); // fetchInitialLocation should only run once on mount
 
   const getCurrentLocation = async () => {
+    setLoading(true);
+    setError(null);
     try {
       if (Platform.OS === "android") {
         const granted = await PermissionsAndroid.request(
@@ -139,11 +129,12 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
         longitude: position.coords.longitude,
         displayName: t("weather.current_location"),
       });
-    } catch (error) {
-      console.error("Geolocation error:", error);
-      longToast(error instanceof Error ? error.message : "Failed to get location");
-      getAnalytics().logEvent("request_gps_location_failed", { error: error });
-      throw error;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Failed to get current location";
+      setError(msg);
+      getAnalytics().logEvent("request_gps_location_failed", { error: String(err) });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -154,6 +145,8 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     updateLocation,
     fetchInitialLocation,
     getCurrentLocation,
+    clearError,
+    setError,
   };
 
   return <LocationContext.Provider value={value}>{children}</LocationContext.Provider>;

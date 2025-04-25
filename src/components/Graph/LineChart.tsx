@@ -51,10 +51,9 @@ const LineChart: React.FC<LineChartProps> = ({
     );
   }
   if (data.length < 2 && showPoints) {
-     // Handle case with only one data point - render just the point
-     // (or decide if you want to render nothing/placeholder)
+    // Handle case with only one data point - render just the point
+    // (or decide if you want to render nothing/placeholder)
   }
-
 
   // Use the provided padding directly for vertical calculations
   const chartHeight = height - paddingVertical * 2;
@@ -72,59 +71,60 @@ const LineChart: React.FC<LineChartProps> = ({
     fill: point.color || theme.colors.primary, // Use point's color or default
   }));
 
-
   // --- Path Calculations (Using new point coordinates) ---
   let linePath = "";
   if (points.length >= 2) {
-      linePath = `M ${points[0].x} ${points[0].y}`;
-      points.forEach((p, index: number) => {
-        if (index > 0) {
-          linePath += ` L ${p.x} ${p.y}`;
-        }
-      });
+    linePath = `M ${points[0].x} ${points[0].y}`;
+    points.forEach((p, index: number) => {
+      if (index > 0) {
+        linePath += ` L ${p.x} ${p.y}`;
+      }
+    });
   }
 
-
   let gradientPath = "";
-  if (showGradient && points.length >= 1) { // Allow gradient even for 1 point (though it might look odd)
+  if (showGradient && points.length >= 1) {
+    // Allow gradient even for 1 point (though it might look odd)
     const firstX = points[0].x;
     const lastX = points[points.length - 1].x;
     const bottomY = paddingVertical + chartHeight;
 
     if (points.length >= 2) {
-        // Start path from first point, go along line, then down to bottom corners
-        gradientPath = linePath + ` L ${lastX} ${bottomY} L ${firstX} ${bottomY} Z`;
+      // Start path from first point, go along line, then down to bottom corners
+      gradientPath = linePath + ` L ${lastX} ${bottomY} L ${firstX} ${bottomY} Z`;
     } else {
-        // Handle gradient for a single point (e.g., a small vertical line/area)
-        const pointY = points[0].y;
-        // Create a small base for the gradient centered under the point
-        const gradientBaseWidth = Math.min(itemWidth / 2, 10); // Adjust width as needed
-        gradientPath = `M ${firstX - gradientBaseWidth / 2} ${bottomY} L ${firstX + gradientBaseWidth / 2} ${bottomY} L ${firstX} ${pointY} Z`;
+      // Handle gradient for a single point (e.g., a small vertical line/area)
+      const pointY = points[0].y;
+      // Create a small base for the gradient centered under the point
+      const gradientBaseWidth = Math.min(itemWidth / 2, 10); // Adjust width as needed
+      gradientPath = `M ${firstX - gradientBaseWidth / 2} ${bottomY} L ${
+        firstX + gradientBaseWidth / 2
+      } ${bottomY} L ${firstX} ${pointY} Z`;
     }
   }
-
 
   // --- Render ---
   return (
     <Svg height={height} width={width}>
-      {showGradient && gradientPath && ( // Check if gradientPath is generated
-        <Defs>
-          <LinearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor={gradientColor} stopOpacity="0.3" />
-            <Stop offset="1" stopColor={gradientColor} stopOpacity="0" />
-          </LinearGradient>
-        </Defs>
-      )}
+      {showGradient &&
+        gradientPath && ( // Check if gradientPath is generated
+          <Defs>
+            <LinearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+              <Stop offset="0" stopColor={gradientColor} stopOpacity="0.3" />
+              <Stop offset="1" stopColor={gradientColor} stopOpacity="0" />
+            </LinearGradient>
+          </Defs>
+        )}
       {showGradient && gradientPath && <Path d={gradientPath} fill="url(#grad)" />}
       {linePath && ( // Check if linePath is generated (>= 2 points)
-          <Path
-            d={linePath}
-            stroke={lineColor}
-            strokeWidth={lineWidth}
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+        <Path
+          d={linePath}
+          stroke={lineColor}
+          strokeWidth={lineWidth}
+          fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       )}
       {showPoints &&
         points.map((p, index: number) => (

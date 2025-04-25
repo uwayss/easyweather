@@ -1,12 +1,13 @@
-import React, { useRef } from "react";
+// FILE: index.js
+import React, { useRef, useEffect, useState } from "react";
 import { AppRegistry } from "react-native";
 import App from "./App";
 import { NavigationContainer, useNavigationContainerRef } from "@react-navigation/native";
 import { name as appName } from "./app.json";
-import { PaperProvider } from "react-native-paper";
+import { PaperProvider, Snackbar } from "react-native-paper";
 import { darkTheme, lightTheme } from "./src/theme";
-import { WeatherProvider } from "./src/context/WeatherContext";
-import { LocationProvider } from "./src/context/LocationContext";
+import { WeatherProvider, useWeather } from "./src/context/WeatherContext";
+import { LocationProvider, useLocationContext } from "./src/context/LocationContext";
 import { SettingsProvider, useSettings } from "./src/context/SettingsContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
@@ -14,23 +15,45 @@ import "./services/i18next";
 import { getApp } from "@react-native-firebase/app";
 import { getAnalytics } from "@react-native-firebase/analytics";
 
-const AppThemeProvider = () => {
+const ThemedAppWithProviders = () => {
   const { activeTheme } = useSettings();
   const themeToApply = activeTheme === "dark" ? darkTheme : lightTheme;
-  // --- Add Analytics Screen Tracking ---
-  const navigationRef = useNavigationContainerRef(); // Use hook to get ref
-  const routeNameRef = useRef(null); // Ref to store current route name
+  const navigationRef = useNavigationContainerRef();
+  const routeNameRef = useRef(null);
+
+  const [snackbarVisible, setSnackbarVisible] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState(null);
+
+  const { error: weatherError, clearError: clearWeatherError } = useWeather();
+  const { error: locationError, clearError: clearLocationError } = useLocationContext();
+
+  useEffect(() => {
+    const errorMessage = locationError || weatherError;
+    if (errorMessage) {
+      setSnackbarMessage(errorMessage);
+      setSnackbarVisible(true);
+    }
+  }, [weatherError, locationError]);
+
+  const onDismissSnackbar = () => {
+    setSnackbarVisible(false);
+    if (locationError) clearLocationError();
+    if (weatherError) clearWeatherError();
+  };
 
   const onReady = () => {
-    routeNameRef.current = navigationRef.getCurrentRoute()?.name || null;
-    // Use getApp() instead of firebase.initializeApp() as per migration guide
-    const app = getApp();
-    console.log("[Analytics] Navigation Ready. Initial screen:", routeNameRef.current);
-    if (routeNameRef.current) {
-      getAnalytics(app).logScreenView({
-        screen_name: routeNameRef.current,
-        screen_class: routeNameRef.current, // Can use the same for basic tracking
-      });
+    const currentRoute = navigationRef.getCurrentRoute();
+    routeNameRef.current = currentRoute?.name || null;
+    try {
+      const app = getApp();
+      if (routeNameRef.current) {
+        getAnalytics(app).logScreenView({
+          screen_name: routeNameRef.current,
+          screen_class: routeNameRef.current,
+        });
+      }
+    } catch (error) {
+      console.error("[Analytics] Firebase not configured?", error);
     }
   };
 
@@ -39,30 +62,49 @@ const AppThemeProvider = () => {
     const currentRouteName = navigationRef.getCurrentRoute()?.name;
 
     if (previousRouteName !== currentRouteName && currentRouteName) {
-      console.log("[Analytics] Logging screen view:", currentRouteName);
-      await getAnalytics().logScreenView({
-        screen_name: currentRouteName,
-        screen_class: currentRouteName,
-      });
+      try {
+        const app = getApp();
+        await getAnalytics(app).logScreenView({
+          screen_name: currentRouteName,
+          screen_class: currentRouteName,
+        });
+      } catch (error) {
+        console.error("[Analytics] Error logging screen view:", error);
+      }
     }
-    // Save the current route name for next state change
     routeNameRef.current = currentRouteName || null;
   };
-  // --- End Analytics Screen Tracking ---
 
-  console.log(`Applying theme: ${activeTheme}`);
   const bannerID = "ca-app-pub-2933834243243547/5697502047";
+
   return (
     <PaperProvider theme={themeToApply}>
       <NavigationContainer ref={navigationRef} onReady={onReady} onStateChange={onStateChange}>
-        <LocationProvider>
-          <WeatherProvider>
-            <App />
-            <BannerAd unitId={bannerID} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
-          </WeatherProvider>
-        </LocationProvider>
+        <App />
+        <BannerAd unitId={bannerID} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
+        <Snackbar
+          visible={snackbarVisible}
+          onDismiss={onDismissSnackbar}
+          action={{
+            label: "Dismiss",
+            onPress: onDismissSnackbar,
+          }}
+          duration={Snackbar.DURATION_LONG}
+        >
+          {snackbarMessage || ""}
+        </Snackbar>
       </NavigationContainer>
     </PaperProvider>
+  );
+};
+
+const AppWithProviders = () => {
+  return (
+    <LocationProvider>
+      <WeatherProvider>
+        <ThemedAppWithProviders />
+      </WeatherProvider>
+    </LocationProvider>
   );
 };
 
@@ -70,7 +112,7 @@ function AppRoot() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SettingsProvider>
-        <AppThemeProvider />
+        <AppWithProviders />
       </SettingsProvider>
     </GestureHandlerRootView>
   );

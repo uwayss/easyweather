@@ -89,7 +89,7 @@ android {
         applicationId "com.uwayss.easyweather"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 10
+        versionCode 13
         versionName "1.0"
     }
     signingConfigs {
