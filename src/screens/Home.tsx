@@ -98,9 +98,8 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingHorizontal: 16,
-    paddingBottom: 16, // Ensure space for banner ad
+    paddingBottom: 16,
     paddingTop: 10,
     gap: 20,
   },
-  // loadingContainer style is no longer needed here
 });

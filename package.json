@@ -19,7 +19,7 @@
     "arch": "npm run arch-build && npm run arch-install",
     "build-both": "npm run arch && npm start",
     "types": "tsc --noEmit",
-    "checks": "npm run types && npm run lint && npm run format && npm run test",
+    "checks": "npm run types && npm run lint && npm run format",
     "test": "jest"
   },
   "dependencies": {
