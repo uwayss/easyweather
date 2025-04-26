@@ -48,7 +48,7 @@ export default function Home({ navigation }: HomeProps) {
     } finally {
       setRefreshing(false);
     }
-  }, [location, fetchWeatherData]); // Added dependencies
+  }, [location, fetchWeatherData]);
 
   const todaysHourlyData = useMemo(
     () => filterHourlyWeatherForNext24HoursIncludingNow(weather?.hourly),
@@ -80,10 +80,10 @@ export default function Home({ navigation }: HomeProps) {
         <WeatherCard />
 
         {/* Pass isLoading prop to HourlyConditions */}
-        <HourlyConditions selectedDateHourly={todaysHourlyData} isLoading={isLoading} />
+        <HourlyConditions selectedDateHourly={todaysHourlyData} />
 
         {/* Pass isLoading prop to ForecastList */}
-        <ForecastList isLoading={isLoading} />
+        <ForecastList />
       </ScrollView>
     </SafeAreaView>
   );

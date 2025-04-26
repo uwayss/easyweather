@@ -1,3 +1,4 @@
+// FILE: src/screens/HomeScreen/WeatherCard.tsx
 import { StyleSheet } from "react-native";
 import { Card } from "react-native-paper";
 import React from "react";
@@ -9,33 +10,30 @@ import { useLocationContext } from "../../context/LocationContext";
 import { useTranslation } from "react-i18next";
 
 export default function WeatherCard() {
-  const { location, loading: locationLoading, error: locationError } = useLocationContext();
-  const { weather, loading } = useWeather();
+  const { location, loading: locationLoading } = useLocationContext(); // Removed unused error
+  const { weather } = useWeather(); // Renamed loading
   const { t } = useTranslation();
-  // TODO: You might want to show locationLoading or locationError here
-  if (locationLoading) {
-    // Optional: Render a loading state specifically for location
-  }
-  if (locationError) {
-    // Optional: Render an error state specifically for location
-  }
 
-  console.log(
-    `[WeatherCard] Re-rendering. Loading: ${loading}, Location: ${location?.displayName}, Weather Temp: ${weather?.current?.temperature}`,
-  );
+  // If you decide to use the skeleton again, uncomment this:
+  // if (isLoading) {
+  //   return <WeatherCardSkeleton />;
+  // }
+
   const displayName = location
     ? location.displayName
-    : locationLoading
+    : locationLoading // Check locationLoading specifically for the text
     ? t("weather.loading_location")
     : t("weather.unknown_location");
 
   return (
     <Card style={styles.card}>
       <ConditionalBackground current={weather?.current}>
-        <Card.Content style={styles.content}>
-          <MainInfo current={weather?.current} name={displayName} />
-          <Details current={weather?.current} />
-        </Card.Content>
+        {/* Card.Content provides padding and layout context if needed, but we can remove it
+            if ConditionalBackground handles layout fully */}
+        {/* <Card.Content style={styles.content}> */}
+        <MainInfo current={weather?.current} name={displayName} />
+        <Details current={weather?.current} />
+        {/* </Card.Content> */}
       </ConditionalBackground>
     </Card>
   );
@@ -43,14 +41,16 @@ export default function WeatherCard() {
 
 const styles = StyleSheet.create({
   card: {
-    marginVertical: 8,
+    marginVertical: 8, // Keep vertical margin
     overflow: "hidden",
-    borderRadius: 16,
+    borderRadius: 16, // Keep rounded corners
+    height: 360, // Keep fixed height
   },
-  content: {
-    flex: 1,
-    padding: 16,
-    // backgroundColor: "rgba(0,0,0,0.25)",
-    justifyContent: "space-around",
-  },
+  // content style might not be needed if ConditionalBackground handles layout
+  // content: {
+  //   flex: 1, // Ensure content fills the background
+  //   justifyContent: 'space-between', // Position MainInfo top, Details bottom
+  //   alignItems: 'center', // Center items horizontally
+  //   padding: 0, // Remove padding if handled by children/background
+  // },
 });
