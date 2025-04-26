@@ -1,11 +1,26 @@
+// FILE: src/utils/metricData.ts
 import { HourWeather } from "../types/weather";
-import { DEFAULT_TEMP_COLOR_STOPS, getTemperatureGradientColor } from "./colorUtils";
+import { getTemperatureGradientColor } from "./colorUtils";
 import {
   convertTemperature,
   convertWindSpeed,
   formatTemperature,
   formatWindSpeed,
 } from "./unitConversion";
+import {
+  HUMIDITY_COLOR_HIGH,
+  HUMIDITY_COLOR_LOW,
+  HUMIDITY_COLOR_MEDIUM,
+  PRECIPITATION_COLOR_HIGH,
+  PRECIPITATION_COLOR_LOW,
+  PRECIPITATION_COLOR_MEDIUM,
+  TEMP_COLOR_STOPS_CELSIUS,
+  WIND_COLOR_HIGH,
+  WIND_COLOR_LOW,
+  WIND_COLOR_MEDIUM,
+  WIND_COLOR_SEVERE,
+} from "../constants/colors";
+
 export type MetricType = "temperature" | "precipitation" | "humidity" | "wind";
 
 export interface GraphDataPoint {
@@ -26,21 +41,18 @@ const getTemperatureDataForHour = (
   const tempCelsius: number = item.temp;
   const temp = convertTemperature(tempCelsius, useImperialUnits);
 
-  // Adjust min/max temp range based on unit system FOR DISPLAY/PROGRESS
-  // Note: min/max passed to getTemperatureGradientColor might need different units
-  const minTempDisplay = useImperialUnits ? 14 : -10;
+  const minTempDisplay = useImperialUnits ? 14 : -10; // Adjusted range for display
   const maxTempDisplay = useImperialUnits ? 104 : 40;
   const tempProgress = Math.max(
     0,
     Math.min(1, (temp - minTempDisplay) / (maxTempDisplay - minTempDisplay)),
   );
 
-  // Define min/max for color gradient (ensure these units match what getTemperatureGradientColor expects!)
-  // For simplicity here, let's assume it always works with Celsius ranges for color.
-  const minTempColor = -10; // Celsius
-  const maxTempColor = 40; // Celsius
-  const colorStops = DEFAULT_TEMP_COLOR_STOPS;
-  const color = getTemperatureGradientColor(tempCelsius, minTempColor, maxTempColor, colorStops);
+  // Min/max for color gradient is based on Celsius range defined in constants
+  const minTempColor = TEMP_COLOR_STOPS_CELSIUS[0][0];
+  const maxTempColor = TEMP_COLOR_STOPS_CELSIUS[TEMP_COLOR_STOPS_CELSIUS.length - 1][0];
+  const color = getTemperatureGradientColor(tempCelsius, minTempColor, maxTempColor);
+
   const hourTime = new Date(item.time).getHours();
   const formattedHour =
     hourTime === 0
@@ -63,9 +75,10 @@ const getTemperatureDataForHour = (
 // Precipitation specific calculations for a single hour
 const getPrecipitationDataForHour = (item: HourWeather): GraphDataPoint => {
   const rainProb = item.rainProb;
-  let color = "#90be6d"; // Green
-  if (rainProb > 30) color = "#f9c74f"; // Yellow
-  if (rainProb > 60) color = "#f94144"; // Red
+  let color = PRECIPITATION_COLOR_LOW;
+  if (rainProb > 30) color = PRECIPITATION_COLOR_MEDIUM;
+  if (rainProb > 60) color = PRECIPITATION_COLOR_HIGH;
+
   const hourTime = new Date(item.time).getHours();
   const formattedHour =
     hourTime === 0
@@ -75,10 +88,11 @@ const getPrecipitationDataForHour = (item: HourWeather): GraphDataPoint => {
       : hourTime > 12
       ? `${hourTime - 12} PM`
       : `${hourTime} AM`;
+
   return {
     progress: rainProb / 100,
     color,
-    value: Math.round(rainProb) + "%", // Round probability for display
+    value: Math.round(rainProb) + "%",
     time: item.time,
     label: formattedHour,
   };
@@ -87,9 +101,10 @@ const getPrecipitationDataForHour = (item: HourWeather): GraphDataPoint => {
 // Humidity specific calculations for a single hour
 const getHumidityDataForHour = (item: HourWeather): GraphDataPoint => {
   const humidity = item.humidity;
-  let color = "#ffd166"; // Light Orange/Yellow
-  if (humidity > 30) color = "#06d6a0"; // Teal
-  if (humidity > 60) color = "#118ab2"; // Blue
+  let color = HUMIDITY_COLOR_LOW;
+  if (humidity > 30) color = HUMIDITY_COLOR_MEDIUM;
+  if (humidity > 60) color = HUMIDITY_COLOR_HIGH;
+
   const hourTime = new Date(item.time).getHours();
   const formattedHour =
     hourTime === 0
@@ -103,7 +118,7 @@ const getHumidityDataForHour = (item: HourWeather): GraphDataPoint => {
   return {
     progress: humidity / 100,
     color,
-    value: Math.round(humidity) + "%", // Round humidity for display
+    value: Math.round(humidity) + "%",
     time: item.time,
     label: formattedHour,
   };
@@ -112,26 +127,24 @@ const getHumidityDataForHour = (item: HourWeather): GraphDataPoint => {
 // Wind speed specific calculations for a single hour
 const getWindSpeedDataForHour = (item: HourWeather, useImperialUnits: boolean): GraphDataPoint => {
   const windSpeed = item.windSpeed || 0;
-  // Convert wind speed based on user preference
   const convertedWindSpeed = convertWindSpeed(windSpeed, useImperialUnits);
 
-  // Adjust color thresholds based on unit system
-  let color = "#90be6d"; // Green
-  if (useImperialUnits) {
-    // Thresholds in mph
-    if (convertedWindSpeed >= 3) color = "#f9c74f"; // Yellow
-    if (convertedWindSpeed >= 12) color = "#f8961e"; // Orange
-    if (convertedWindSpeed >= 25) color = "#f94144"; // Red
-  } else {
-    // Thresholds in km/h (assuming base unit is km/h)
-    if (convertedWindSpeed >= 5) color = "#f9c74f"; // Yellow
-    if (convertedWindSpeed >= 20) color = "#f8961e"; // Orange
-    if (convertedWindSpeed >= 40) color = "#f94144"; // Red
-  }
+  // Constants for thresholds
+  const WIND_THRESHOLDS_MPH = { yellow: 3, orange: 12, red: 25 };
+  const WIND_THRESHOLDS_KMH = { yellow: 5, orange: 20, red: 40 };
+  const MAX_WIND_SPEED_MPH = 37;
+  const MAX_WIND_SPEED_KMH = 60;
 
-  // Adjust max wind speed for progress calculation based on unit system
-  const maxWindSpeed = useImperialUnits ? 37 : 60; // Approx: 60 km/h ≈ 37 mph
-  const progress = Math.min(1, Math.max(0, convertedWindSpeed / maxWindSpeed)); // Ensure progress is 0-1
+  let color = WIND_COLOR_LOW;
+  const thresholds = useImperialUnits ? WIND_THRESHOLDS_MPH : WIND_THRESHOLDS_KMH;
+
+  if (convertedWindSpeed >= thresholds.red) color = WIND_COLOR_SEVERE;
+  else if (convertedWindSpeed >= thresholds.orange) color = WIND_COLOR_HIGH;
+  else if (convertedWindSpeed >= thresholds.yellow) color = WIND_COLOR_MEDIUM;
+
+  const maxWindSpeed = useImperialUnits ? MAX_WIND_SPEED_MPH : MAX_WIND_SPEED_KMH;
+  const progress = Math.min(1, Math.max(0, convertedWindSpeed / maxWindSpeed));
+
   const hourTime = new Date(item.time).getHours();
   const formattedHour =
     hourTime === 0
@@ -141,6 +154,7 @@ const getWindSpeedDataForHour = (item: HourWeather, useImperialUnits: boolean): 
       : hourTime > 12
       ? `${hourTime - 12} PM`
       : `${hourTime} AM`;
+
   return {
     progress,
     color,
@@ -152,19 +166,11 @@ const getWindSpeedDataForHour = (item: HourWeather, useImperialUnits: boolean): 
 
 // --- Main Function ---
 
-/**
- * Processes an array of forecast hours to extract metric-specific data points.
- * @param metricType The type of metric to calculate ("temperature", "precipitation", "humidity", "wind").
- * @param forecastHours An array of ForecastHour objects.
- * @param settings User settings, including unit preference.
- * @returns An array of GraphDataPoint objects corresponding to each forecast hour.
- */
 export const getMetricDataForForecast = (
   metricType: MetricType,
   forecastHours: HourWeather[] | undefined,
   useImperialUnits: boolean,
 ): GraphDataPoint[] | undefined => {
-  // Map each hour to its corresponding metric data point
   const metricDataArray = forecastHours?.map((hour): GraphDataPoint => {
     switch (metricType) {
       case "temperature":
@@ -176,19 +182,14 @@ export const getMetricDataForForecast = (
       case "wind":
         return getWindSpeedDataForHour(hour, useImperialUnits);
       default:
-        // Handle unexpected metricType. Throwing an error is often better
-        // than returning potentially misleading default data in an array context.
-        // You could also return a default/error GraphDataPoint if preferred.
         console.error(`Unknown metricType encountered: ${metricType}`);
-        // Return a default/error state or throw
         return {
           progress: 0,
           color: "#cccccc",
           value: "N/A",
-          time: "",
-          label: "",
+          time: hour.time, // Use hour's time if available
+          label: "??", // Placeholder label
         };
-      // throw new Error(`Unsupported metricType: ${metricType}`);
     }
   });
 

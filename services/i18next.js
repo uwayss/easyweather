@@ -1,24 +1,28 @@
+// FILE: services/i18next.js
 import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
 import { MMKV } from "react-native-mmkv";
 import en from "../locales/en.json";
 import tr from "../locales/tr.json";
 import ar from "../locales/ar.json";
+import { MMKV_SETTINGS_INSTANCE_ID, STORAGE_KEY_APP_SETTINGS } from "../src/constants/storage";
+import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from "../src/constants/settings";
 
-const storage = new MMKV({ id: "app-settings-v2" });
-const SETTINGS_KEY = "userAppSettings";
+const storage = new MMKV({ id: MMKV_SETTINGS_INSTANCE_ID });
 
-let savedLanguage = "en";
+let savedLanguage = DEFAULT_LANGUAGE;
 try {
-  const storedSettings = storage.getString(SETTINGS_KEY);
+  const storedSettings = storage.getString(STORAGE_KEY_APP_SETTINGS);
   if (storedSettings) {
     const settings = JSON.parse(storedSettings);
-    if (settings.language) {
+    // Validate if the saved language is still supported
+    if (settings.language && SUPPORTED_LANGUAGES.some(lang => lang.value === settings.language)) {
       savedLanguage = settings.language;
     }
   }
 } catch (error) {
   console.error("Failed to load language setting:", error);
+  storage.delete(STORAGE_KEY_APP_SETTINGS); // Clear potentially corrupted settings
 }
 
 const languageResources = {
@@ -30,7 +34,7 @@ const languageResources = {
 i18next.use(initReactI18next).init({
   compatibilityJSON: "v3",
   lng: savedLanguage,
-  fallbackLng: "en",
+  fallbackLng: DEFAULT_LANGUAGE,
   resources: languageResources,
 });
 

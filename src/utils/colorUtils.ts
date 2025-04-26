@@ -1,3 +1,6 @@
+// FILE: src/utils/colorUtils.ts
+import { TEMP_COLOR_STOPS_CELSIUS } from "../constants/colors"; // Import the constant
+
 /**
  * Color utility functions for the weather app
  */
@@ -65,35 +68,17 @@ export function interpolateColor(color1: string, color2: string, progress: numbe
 
 /**
  * Gets a color from a gradient based on temperature value
- * @param temperature - The temperature value
- * @param minTemp - Minimum temperature in the range
- * @param maxTemp - Maximum temperature in the range
- * @param colorStops - Array of [temperature, color] pairs defining the gradient
+ * @param temperature - The temperature value (assumed to be in Celsius for this default gradient)
+ * @param minTemp - Minimum temperature in the range (Celsius)
+ * @param maxTemp - Maximum temperature in the range (Celsius)
+ * @param colorStops - Array of [temperature, color] pairs defining the gradient (Celsius)
  * @returns Hex color string
  */
-export const DEFAULT_TEMP_COLOR_STOPS: [number, string][] = [
-  [-30, "#e0f7fa"],
-  [-25, "#b0f4e5"],
-  [-20, "#81d4fa"],
-  [-15, "#4fc3f7"],
-  [-10, "#29b6f6"],
-  [-5, "#03a9f4"],
-  [0, "#fffde7"],
-  [5, "#fff59d"],
-  [10, "#ffecb3"],
-  [15, "#ffe082"],
-  [20, "#ffd54f"],
-  [25, "#ffab91"],
-  [30, "#ff8a65"],
-  [35, "#ff7043"],
-  [40, "#ff5722"],
-];
-
 export function getTemperatureGradientColor(
   temperature: number,
   minTemp: number,
   maxTemp: number,
-  colorStops: [number, string][] = DEFAULT_TEMP_COLOR_STOPS,
+  colorStops: [number, string][] = TEMP_COLOR_STOPS_CELSIUS, // Use the constant
 ): string {
   // Ensure colorStops is sorted by temperature
   const sortedStops = [...colorStops].sort((a, b) => a[0] - b[0]);

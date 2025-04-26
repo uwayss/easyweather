@@ -1,14 +1,11 @@
+// FILE: src/screens/SettingsScreen/AboutSection.tsx
 import React from "react";
 import { View } from "react-native";
 import { Divider } from "react-native-paper";
 import { Item, ListSection } from "./Common";
 import { openLink } from "./Common";
 import { useTranslation } from "react-i18next";
-
-const DATA_SOURCE_URL = "https://open-meteo.com/";
-const DEVELOPER_URL = "https://www.github.com/uwayss";
-
-const appVersion = "1.0.0";
+import { APP_VERSION, DATA_SOURCE_URL, DEVELOPER_URL } from "../../constants/config";
 
 function AboutSectionComponent() {
   const { t } = useTranslation();
@@ -18,7 +15,7 @@ function AboutSectionComponent() {
       <ListSection title={t("about.title")}>
         <Item
           title={t("about.app_version")}
-          description={`v${appVersion}`}
+          description={`v${APP_VERSION}`}
           left="information-outline"
         />
         <Item
