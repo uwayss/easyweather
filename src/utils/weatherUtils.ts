@@ -60,11 +60,6 @@ export const filterHourlyDataForDate = (
   return hourlyData.filter((hourData: HourWeather) => hourData.time.startsWith(date));
 };
 
-export function filterHourlyWeatherForToday(hourlyData?: HourWeather[]): HourWeather[] | undefined {
-  if (!hourlyData) return undefined;
-  const todayDateString = new Date().toISOString().split("T")[0];
-  return hourlyData.filter((hourData: HourWeather) => hourData.time.startsWith(todayDateString));
-}
 export function filterHourlyWeatherForNext24HoursIncludingNow(
   hourlyData?: HourWeather[],
 ): HourWeather[] | undefined {
