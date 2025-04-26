@@ -14,6 +14,8 @@ import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 import "./services/i18next";
 import { getApp } from "@react-native-firebase/app";
 import { getAnalytics } from "@react-native-firebase/analytics";
+import { BANNER_AD_UNIT_ID } from "./src/constants/config";
+import { SNACKBAR_DURATION_LONG } from "./src/constants/ui";
 
 const ThemedAppWithProviders = () => {
   const { activeTheme } = useSettings();
@@ -75,13 +77,11 @@ const ThemedAppWithProviders = () => {
     routeNameRef.current = currentRouteName || null;
   };
 
-  const bannerID = "ca-app-pub-2933834243243547/5697502047";
-
   return (
     <PaperProvider theme={themeToApply}>
       <NavigationContainer ref={navigationRef} onReady={onReady} onStateChange={onStateChange}>
         <App />
-        <BannerAd unitId={bannerID} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
+        <BannerAd unitId={BANNER_AD_UNIT_ID} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
         <Snackbar
           visible={snackbarVisible}
           onDismiss={onDismissSnackbar}
@@ -89,7 +89,7 @@ const ThemedAppWithProviders = () => {
             label: "Dismiss",
             onPress: onDismissSnackbar,
           }}
-          duration={Snackbar.DURATION_LONG}
+          duration={SNACKBAR_DURATION_LONG}
         >
           {snackbarMessage || ""}
         </Snackbar>

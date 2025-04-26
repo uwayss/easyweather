@@ -1,7 +1,10 @@
+// FILE: src/context/SettingsContext.tsx
 import React, { createContext, useState, useContext, ReactNode, useEffect, useMemo } from "react";
 import { MMKV } from "react-native-mmkv";
 import { useColorScheme } from "react-native";
 import i18next from "i18next";
+import { MMKV_SETTINGS_INSTANCE_ID, STORAGE_KEY_APP_SETTINGS } from "../constants/storage";
+import { DEFAULT_LANGUAGE, DEFAULT_SETTINGS, SUPPORTED_LANGUAGES } from "../constants/settings";
 
 export type ThemePreference = "system" | "light" | "dark";
 
@@ -17,24 +20,21 @@ interface SettingsContextProps {
   activeTheme: "light" | "dark";
 }
 
-const storage = new MMKV({ id: "app-settings-v2" });
-const SETTINGS_KEY = "userAppSettings";
+const storage = new MMKV({ id: MMKV_SETTINGS_INSTANCE_ID });
+
 const getInitialLanguage = () => {
-  const storedSettings = storage.getString(SETTINGS_KEY);
+  const storedSettings = storage.getString(STORAGE_KEY_APP_SETTINGS);
   if (storedSettings) {
     try {
       const parsed = JSON.parse(storedSettings);
-      return parsed.language || "en";
+      if (parsed.language && SUPPORTED_LANGUAGES.some(lang => lang.value === parsed.language)) {
+        return parsed.language;
+      }
     } catch (e) {
       console.error("Failed to parse stored settings for language:", e);
     }
   }
-  return "en";
-};
-const defaultSettings: AppSettings = {
-  theme: "system",
-  useImperialUnits: false,
-  language: getInitialLanguage(),
+  return DEFAULT_LANGUAGE;
 };
 
 const SettingsContext = createContext<SettingsContextProps | undefined>(undefined);
@@ -43,35 +43,32 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
   const systemColorScheme = useColorScheme();
 
   const [settings, setSettings] = useState<AppSettings>(() => {
-    const storedSettings = storage.getString(SETTINGS_KEY);
+    const storedSettings = storage.getString(STORAGE_KEY_APP_SETTINGS);
+    const initialLanguage = getInitialLanguage(); // Get validated initial language
+    let loadedSettings = { ...DEFAULT_SETTINGS, language: initialLanguage }; // Start with defaults + validated lang
+
     if (storedSettings) {
       try {
         const parsed = JSON.parse(storedSettings);
-
-        const loadedSettings = { ...defaultSettings, ...parsed };
-        if (i18next.language !== loadedSettings.language) {
-          console.log(
-            `[SettingsContext] Initializing language from storage to: ${loadedSettings.language}`,
-          );
-          i18next.changeLanguage(loadedSettings.language);
-        }
-        return loadedSettings;
+        // Merge stored settings, but keep the validated initial language
+        loadedSettings = { ...loadedSettings, ...parsed, language: initialLanguage };
       } catch (e) {
         console.error("Failed to parse stored settings:", e);
-        storage.delete(SETTINGS_KEY);
+        storage.delete(STORAGE_KEY_APP_SETTINGS);
       }
     }
-    if (i18next.language !== defaultSettings.language) {
-      console.log(
-        `[SettingsContext] Initializing language to default: ${defaultSettings.language}`,
-      );
-      i18next.changeLanguage(defaultSettings.language);
+
+    // Ensure i18next is synced with the final initial language
+    if (i18next.language !== loadedSettings.language) {
+      console.log(`[SettingsContext] Initializing language to: ${loadedSettings.language}`);
+      i18next.changeLanguage(loadedSettings.language);
     }
-    return defaultSettings;
+
+    return loadedSettings;
   });
 
   useEffect(() => {
-    storage.set(SETTINGS_KEY, JSON.stringify(settings));
+    storage.set(STORAGE_KEY_APP_SETTINGS, JSON.stringify(settings));
     console.log("[SettingsContext] Settings saved:", settings);
 
     if (settings.language !== i18next.language) {
@@ -81,6 +78,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
       i18next.changeLanguage(settings.language);
     }
   }, [settings]);
+
   const updateSetting = <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => {
     setSettings(prevSettings => {
       console.log(`[SettingsContext] Updating setting ${key} to ${value}`);

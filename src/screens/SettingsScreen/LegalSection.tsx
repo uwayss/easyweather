@@ -1,10 +1,10 @@
+// FILE: src/screens/SettingsScreen/LegalSection.tsx
 import React from "react";
 import { Divider } from "react-native-paper";
 import { Item, ListSection } from "./Common";
 import { openLink } from "./Common";
 import { useTranslation } from "react-i18next";
-
-const PRIVACY_POLICY_URL = "https://uwayss.github.io/weather-app-privacy-statement/";
+import { PRIVACY_POLICY_URL } from "../../constants/config";
 
 const LegalSectionComponent = () => {
   const { t } = useTranslation();

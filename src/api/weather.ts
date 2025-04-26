@@ -1,23 +1,26 @@
+// FILE: src/api/weather.ts
 import { Weather, WeatherResponseAPI } from "../types/weather";
 import { processWeatherData } from "../utils/weatherUtils";
-
-const BASE_URL = "https://api.open-meteo.com/v1";
+import {
+  WEATHER_API_BASE_URL,
+  WEATHER_API_CURRENT_PARAMS,
+  WEATHER_API_DAILY_PARAMS,
+  WEATHER_API_DEFAULT_FORECAST_DAYS,
+  WEATHER_API_HOURLY_PARAMS,
+} from "../constants/api";
 
 export async function fetchWeather(latitude: number, longitude: number): Promise<Weather> {
   const params = new URLSearchParams({
     latitude: latitude.toString(),
     longitude: longitude.toString(),
-    current:
-      "temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m",
-    hourly:
-      "temperature_2m,relative_humidity_2m,precipitation_probability,weather_code,is_day,wind_speed_10m",
-    daily:
-      "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunset,sunrise,wind_speed_10m_max",
+    current: WEATHER_API_CURRENT_PARAMS,
+    hourly: WEATHER_API_HOURLY_PARAMS,
+    daily: WEATHER_API_DAILY_PARAMS,
     timezone: "auto",
-    forecast_days: "16",
+    forecast_days: WEATHER_API_DEFAULT_FORECAST_DAYS,
   });
 
-  const response = await fetch(`${BASE_URL}/forecast?${params}`);
+  const response = await fetch(`${WEATHER_API_BASE_URL}?${params}`);
 
   if (!response.ok) {
     throw new Error("Failed to fetch weather data");

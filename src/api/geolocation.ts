@@ -1,4 +1,6 @@
+// FILE: src/api/geolocation.ts
 import { longToast } from "../utils/debug";
+import { GEOLOCATION_API_URL, GEOLOCATION_API_FIELDS, IP_FETCH_API_URL } from "../constants/api";
 
 /**
  * Geolocation API module
@@ -31,7 +33,7 @@ interface IPResponse {
  */
 export async function fetchIPAddress(): Promise<string> {
   console.log("Fetching IP address from ipify API");
-  const response = await fetch("https://api.ipify.org?format=json");
+  const response = await fetch(IP_FETCH_API_URL);
 
   if (!response.ok) {
     console.error(`Failed to fetch IP address: ${response.status} ${response.statusText}`);
@@ -51,7 +53,8 @@ export async function fetchIPAddress(): Promise<string> {
  */
 export async function fetchGeolocationFromIP(ipAddress: string): Promise<GeolocationResponse> {
   console.log(`Fetching geolocation data for IP: ${ipAddress}`);
-  const response = await fetch(`http://ip-api.com/json/${ipAddress}?fields=61433`);
+  const url = `${GEOLOCATION_API_URL}${ipAddress}${GEOLOCATION_API_FIELDS}`;
+  const response = await fetch(url);
 
   if (!response.ok) {
     console.error(`Failed to fetch geolocation data: ${response.status} ${response.statusText}`);

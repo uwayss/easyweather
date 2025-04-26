@@ -1,4 +1,4 @@
-// FILE: src\context\LocationContext.tsx
+// FILE: src/context/LocationContext.tsx
 import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
 import { MMKV } from "react-native-mmkv";
 import { fetchCurrentLocation } from "../api/geolocation";
@@ -6,18 +6,15 @@ import Geolocation from "react-native-geolocation-service";
 import { Platform, PermissionsAndroid } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getAnalytics } from "@react-native-firebase/analytics";
+import { MMKV_LOCATION_INSTANCE_ID, STORAGE_KEY_LOCATION } from "../constants/storage";
 
-const storage = new MMKV({ id: "location-storage" });
+const storage = new MMKV({ id: MMKV_LOCATION_INSTANCE_ID });
 
 export interface Location {
   latitude: number;
   longitude: number;
   displayName: string;
 }
-
-const STORAGE_KEYS = {
-  LOCATION: "user-location",
-};
 
 interface LocationContextProps {
   location: Location | null;
@@ -35,14 +32,13 @@ const LocationContext = createContext<LocationContextProps | undefined>(undefine
 export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { t } = useTranslation();
   const [location, setLocation] = useState<Location | null>(() => {
-    const storedLocation = storage.getString(STORAGE_KEYS.LOCATION);
+    const storedLocation = storage.getString(STORAGE_KEY_LOCATION);
     if (storedLocation) {
       try {
         const parsedLocation = JSON.parse(storedLocation) as Location;
         return parsedLocation;
       } catch {
-        // Error parsing, delete the invalid key
-        storage.delete(STORAGE_KEYS.LOCATION);
+        storage.delete(STORAGE_KEY_LOCATION);
       }
     }
     return null;
@@ -55,7 +51,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   const updateLocation = (newLocation: Location) => {
     setLocation(newLocation);
-    storage.set(STORAGE_KEYS.LOCATION, JSON.stringify(newLocation));
+    storage.set(STORAGE_KEY_LOCATION, JSON.stringify(newLocation));
     setError(null);
   };
 
@@ -87,7 +83,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   useEffect(() => {
     fetchInitialLocation();
-  }, []); // fetchInitialLocation should only run once on mount
+  }, []);
 
   const getCurrentLocation = async () => {
     setLoading(true);

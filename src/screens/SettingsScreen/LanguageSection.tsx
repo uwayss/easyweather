@@ -1,3 +1,4 @@
+// FILE: src/screens/SettingsScreen/LanguageSection.tsx
 import React, { useCallback, memo } from "react";
 import { View, StyleSheet } from "react-native";
 import { useTheme } from "react-native-paper";
@@ -6,13 +7,7 @@ import { ListSection } from "./Common";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import { Picker } from "@react-native-picker/picker";
-
-// Memoize language options to prevent unnecessary re-renders
-const languages = [
-  { value: "en", label: "English" },
-  { value: "ar", label: "العربية" },
-  { value: "tr", label: "Türkçe" },
-];
+import { SUPPORTED_LANGUAGES } from "../../constants/settings"; // Import languages constant
 
 function LanguageSection() {
   const { updateSetting } = useSettings();
@@ -36,7 +31,7 @@ function LanguageSection() {
           dropdownIconColor={theme.colors.onSurface}
           style={{ color: theme.colors.onSurface }}
         >
-          {languages.map(lang => (
+          {SUPPORTED_LANGUAGES.map(lang => (
             <Picker.Item
               key={lang.value}
               label={lang.label}
@@ -58,5 +53,4 @@ const styles = StyleSheet.create({
   },
 });
 
-// Use memo to prevent unnecessary re-renders
 export default memo(LanguageSection);
