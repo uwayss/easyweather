@@ -5,16 +5,14 @@ import { useTheme, Card } from "react-native-paper";
 
 const WeatherCardSkeleton = () => {
   const theme = useTheme();
-  // Use a slightly more opaque version of surfaceVariant for placeholders
-  const placeholderBg = theme.colors.onSurface + "1A"; // Example: surfaceVariant with alpha
+  const placeholderBg = theme.colors.onSurface + "1A"; // Base placeholder color
+  const surfaceBg = theme.colors.inverseSurface + "99"; // Mimic surface background with opacity
 
   return (
-    // Apply a faint background to the card itself to contain the skeleton visually
     <Card style={[styles.card, { backgroundColor: theme.colors.surfaceVariant + "40" }]}>
       <View style={styles.cardContent}>
-        {/* Main Info Skeleton */}
-        {/* Removed the extra background container for main info */}
-        <View style={styles.mainInfo}>
+        {/* Main Info Skeleton Surface */}
+        <View style={[styles.mainInfoSurface, { backgroundColor: surfaceBg }]}>
           <View
             style={[
               styles.placeholder,
@@ -41,11 +39,8 @@ const WeatherCardSkeleton = () => {
           />
         </View>
 
-        {/* Details Skeleton */}
-        {/* Use a slightly different background for the details container */}
-        <View
-          style={[styles.detailsContainer, { backgroundColor: theme.colors.surfaceVariant + "60" }]}
-        >
+        {/* Details Skeleton Surface */}
+        <View style={[styles.detailsSurface, { backgroundColor: surfaceBg }]}>
           <View
             style={[
               styles.placeholder,
@@ -53,7 +48,6 @@ const WeatherCardSkeleton = () => {
               { backgroundColor: placeholderBg },
             ]}
           />
-          {/* Separator is now just space */}
           <View
             style={[
               styles.placeholder,
@@ -70,64 +64,61 @@ const WeatherCardSkeleton = () => {
 const styles = StyleSheet.create({
   card: {
     marginVertical: 8,
-    height: 360, // Keep matching original card height
+    height: 360,
     borderRadius: 16,
     overflow: "hidden",
-    // backgroundColor is now set dynamically
   },
   cardContent: {
     flex: 1,
     padding: 16,
-    // Adjusted justification to push details down
-    justifyContent: "space-between",
-    paddingBottom: 24, // Add padding at the bottom
+    justifyContent: "space-between", // Push details down
+    alignItems: "center", // Center skeleton surfaces horizontally
   },
   placeholder: {
     borderRadius: 4,
   },
-  mainInfo: {
+  // --- Skeleton Surface Styles (Mirroring actual components) ---
+  mainInfoSurface: {
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    width: "85%", // Match actual component
     alignItems: "center",
-    // Removed padding and margin, rely on cardContent padding
-    marginTop: 20, // Add some top margin
-    gap: 12, // Add gap between main info elements
+    marginTop: 20, // Approximate top margin
+    gap: 12, // Match gap
   },
-  locationPlaceholder: {
-    width: "70%", // Slightly wider
-    height: 24,
-    // Removed margin bottom
-  },
-  tempPlaceholder: {
-    width: "45%", // Slightly wider
-    height: 52, // Taller
-    // Removed margin bottom
-  },
-  descriptionPlaceholder: {
-    width: "80%", // Wider
-    height: 18, // Slightly shorter
-    // Removed margin bottom
-  },
-  feelsLikePlaceholder: {
-    width: "55%", // Slightly wider
-    height: 18, // Slightly shorter
-  },
-  detailsContainer: {
+  detailsSurface: {
     flexDirection: "row",
-    // Changed justify content
     justifyContent: "space-around",
     alignItems: "center",
-    paddingVertical: 16, // Only vertical padding
-    paddingHorizontal: 8, // Less horizontal padding
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     borderRadius: 12,
-    // Removed fixed height, let content determine it
-    // Align self to bottom? - No, handled by cardContent justify
-    width: "95%", // Make slightly less wide than card
-    alignSelf: "center", // Center it
+    width: "85%", // Match actual component
+    height: 55, // Approximate height of details row
+    marginBottom: 10, // Approximate bottom margin
   },
-  // Removed separator style
+  // --- Placeholder Element Styles ---
+  locationPlaceholder: {
+    width: "70%",
+    height: 18, // Adjusted height
+  },
+  tempPlaceholder: {
+    width: "45%",
+    height: 60, // Adjusted height
+  },
+  descriptionPlaceholder: {
+    width: "80%",
+    height: 18,
+  },
+  feelsLikePlaceholder: {
+    width: "55%",
+    height: 16, // Adjusted height
+  },
   detailItemPlaceholder: {
-    // Adjust width to account for space-around
-    width: "40%",
-    height: 35, // Slightly taller
+    // Simulate icon + text block
+    width: "40%", // Takes roughly 40% of the details surface width
+    height: 30, // Adjusted height
   },
 });
 

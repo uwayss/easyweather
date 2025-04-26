@@ -1,42 +1,14 @@
 // FILE: src/screens/HomeScreen/ForecastList.tsx
 import React from "react";
-import { View, StyleSheet, FlatList, ScrollView } from "react-native"; // Added ScrollView
+import { View, StyleSheet, FlatList } from "react-native";
 import { DayWeather } from "../../types/weather";
 import { useWeather } from "../../context/WeatherContext";
 import ForecastItem from "./ForecastItem";
-import ForecastItemSkeleton from "./ForecastItemSkeleton"; // Import skeleton
 
-interface ForecastListProps {
-  isLoading: boolean; // Add isLoading prop
-}
-
-export default function ForecastList({ isLoading }: ForecastListProps) {
+export default function ForecastList() {
   // Destructure isLoading
   const { weather } = useWeather();
   const forecast = weather?.daily;
-
-  // Show skeleton only if loading AND forecast data isn't available yet
-  const showSkeleton = isLoading && !forecast;
-
-  if (showSkeleton) {
-    // Render a horizontal list of skeletons
-    return (
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.skeletonContainer} // Use skeleton container style
-      >
-        {Array.from({ length: 5 }).map(
-          (
-            _,
-            index, // Show 5 skeletons
-          ) => (
-            <ForecastItemSkeleton key={`skeleton-${index}`} />
-          ),
-        )}
-      </ScrollView>
-    );
-  }
 
   // Render empty view or message if not loading but no forecast data
   if (!forecast || forecast.length === 0) {

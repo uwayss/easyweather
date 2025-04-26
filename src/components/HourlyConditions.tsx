@@ -12,7 +12,6 @@ import LineChart from "./Graph/LineChart";
 import { HourWeather } from "../types/weather";
 import { useWeatherDescriptions } from "../utils/descriptions";
 import FastImage from "react-native-fast-image";
-import HourlyConditionsSkeleton from "./HourlyConditionsSkeleton"; // Import skeleton
 
 // --- Configuration ---
 const POINT_ITEM_WIDTH = 60; // Slightly reduced width for potentially more items visible
@@ -26,10 +25,8 @@ const screenWidth = Dimensions.get("window").width;
 
 export default function HourlyConditions({
   selectedDateHourly,
-  isLoading, // Add isLoading prop
 }: {
   selectedDateHourly: HourWeather[] | undefined;
-  isLoading?: boolean; // Make optional if used elsewhere without loading state
 }) {
   const [currentMetric, setCurrentMetric] = useState<MetricType>("temperature");
   const { settings } = useSettings();
@@ -67,15 +64,10 @@ export default function HourlyConditions({
   };
 
   // Total minimum height for the chart section inside the card
-  const chartAreaMinHeight = VALUES_ROW_HEIGHT + CHART_HEIGHT + DETAILS_ROW_HEIGHT + 10; // Added some buffer
+  const chartAreaMinHeight = VALUES_ROW_HEIGHT + CHART_HEIGHT + DETAILS_ROW_HEIGHT + 10;
 
   // Determine the color for the line and gradient based on the first data point or theme default
   const chartColor = graphData?.[0]?.color || theme.colors.primary;
-
-  // Render Skeleton if loading
-  if (isLoading) {
-    return <HourlyConditionsSkeleton />;
-  }
 
   return (
     <Card style={styles.card} mode="contained">

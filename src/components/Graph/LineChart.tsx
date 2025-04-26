@@ -9,7 +9,7 @@ interface LineChartProps {
   data: GraphDataPoint[];
   height: number;
   width: number;
-  itemWidth: number; // ADDED: Width of each item column for alignment
+  itemWidth: number;
   lineColor?: string;
   lineWidth?: number;
   showPoints?: boolean;
@@ -24,7 +24,7 @@ const LineChart: React.FC<LineChartProps> = ({
   data,
   height,
   width,
-  itemWidth, // ADDED
+  itemWidth,
   lineColor: propLineColor,
   lineWidth = 1.5,
   showPoints = true,

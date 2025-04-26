@@ -1,6 +1,7 @@
+// FILE: src/screens/HomeScreen/WeatherCard/Details.tsx
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import { Surface, Text } from "react-native-paper";
+import { StyleSheet, View, Platform } from "react-native";
+import { Text, useTheme, Icon } from "react-native-paper";
 import { CurrentWeather } from "../../../types/weather";
 import { useSettings } from "../../../context/SettingsContext";
 import { convertWindSpeed, formatWindSpeed } from "../../../utils/unitConversion";
@@ -13,26 +14,51 @@ interface DetailsProps {
 export function Details({ current }: DetailsProps) {
   const { settings } = useSettings();
   const { t } = useTranslation();
+  const theme = useTheme();
+
+  const textColor = theme.colors.surface;
+  const iconColor = theme.colors.surface;
+
+  const textShadowStyle = Platform.select({
+    ios: {
+      textShadowColor: "rgba(0, 0, 0, 0.5)",
+      textShadowOffset: { width: 0, height: 1 },
+      textShadowRadius: 2,
+    },
+    android: {},
+  });
+
+  const formattedWind = current
+    ? formatWindSpeed(
+        convertWindSpeed(current.windSpeed, settings.useImperialUnits),
+        settings.useImperialUnits,
+      )
+    : null;
+  if (!current) return null;
   return (
-    <View>
-      <Surface style={styles.detailsContainer} elevation={5}>
-        <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>{t("weather.humidity")}</Text>
-          <Text style={styles.detailValue}>{current?.humidity ? current?.humidity + "%" : ""}</Text>
-        </View>
-        <View style={styles.separator} />
-        <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>{t("weather.wind_speed")}</Text>
-          <Text style={styles.detailValue}>
-            {current
-              ? formatWindSpeed(
-                  convertWindSpeed(current.windSpeed, settings.useImperialUnits),
-                  settings.useImperialUnits,
-                )
-              : ""}
+    <View style={styles.detailsContainer}>
+      <View style={styles.detailItem}>
+        <Icon source="water-percent" size={22} color={iconColor} />
+        <View style={styles.detailTextContainer}>
+          <Text style={[styles.detailValue, { color: textColor }, textShadowStyle]}>
+            {current?.humidity ? `${current.humidity}%` : "--"}
+          </Text>
+          <Text style={[styles.detailLabel, { color: textColor, opacity: 0.85 }, textShadowStyle]}>
+            {t("weather.humidity")}
           </Text>
         </View>
-      </Surface>
+      </View>
+      <View style={styles.detailItem}>
+        <Icon source="weather-windy" size={22} color={iconColor} />
+        <View style={styles.detailTextContainer}>
+          <Text style={[styles.detailValue, { color: textColor }, textShadowStyle]}>
+            {formattedWind}
+          </Text>
+          <Text style={[styles.detailLabel, { color: textColor, opacity: 0.85 }, textShadowStyle]}>
+            {t("weather.wind_speed")}
+          </Text>
+        </View>
+      </View>
     </View>
   );
 }
@@ -40,31 +66,31 @@ export function Details({ current }: DetailsProps) {
 const styles = StyleSheet.create({
   detailsContainer: {
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-around",
     alignItems: "center",
-    marginTop: 20,
+    width: "90%",
+    alignSelf: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     borderRadius: 12,
-    padding: 16,
-    width: "100%",
-    opacity: 0.8,
+    marginBottom: 10,
+    backgroundColor: "rgba(255,255,255,.1)",
   },
   detailItem: {
-    flex: 1,
+    flexDirection: "row",
     alignItems: "center",
+    gap: 8,
   },
-  separator: {
-    width: 1,
-    height: "100%",
-    backgroundColor: "rgba(255,255,255,0.3)",
-    marginHorizontal: 16,
-  },
-  detailLabel: {
-    opacity: 0.8,
-    fontSize: 14,
-    marginBottom: 4,
+  detailTextContainer: {
+    alignItems: "flex-start",
   },
   detailValue: {
     fontSize: 16,
     fontWeight: "600",
+  },
+  detailLabel: {
+    fontSize: 12,
+
+    marginTop: 1,
   },
 });
