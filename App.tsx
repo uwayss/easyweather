@@ -14,7 +14,7 @@ export type RootStackParamList = {
     hourlyData: HourWeather[] | undefined;
   };
 };
-// Hi my name is Zain
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootStack() {
