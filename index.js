@@ -10,12 +10,20 @@ import { WeatherProvider, useWeather } from "./src/context/WeatherContext";
 import { LocationProvider, useLocationContext } from "./src/context/LocationContext";
 import { SettingsProvider, useSettings } from "./src/context/SettingsContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
+import { BannerAd, BannerAdSize, TestIds } from "react-native-google-mobile-ads";
 import "./services/i18next";
 import { getApp } from "@react-native-firebase/app";
 import { getAnalytics } from "@react-native-firebase/analytics";
 import { BANNER_AD_UNIT_ID } from "./src/constants/config";
 import { SNACKBAR_DURATION_LONG } from "./src/constants/ui";
+import MobileAds, { MaxAdContentRating } from "react-native-google-mobile-ads";
+
+MobileAds().setRequestConfiguration({
+  maxAdContentRating: MaxAdContentRating.G,
+  tagForChildDirectedTreatment: true,
+  tagForUnderAgeOfConsent: true,
+});
+const adUnitId = __DEV__ ? TestIds.BANNER : BANNER_AD_UNIT_ID;
 
 const ThemedAppWithProviders = () => {
   const { activeTheme } = useSettings();
@@ -25,7 +33,7 @@ const ThemedAppWithProviders = () => {
 
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState(null);
-
+  const [adLoadAttempt, setAdLoadAttempt] = useState(0);
   const { error: weatherError, clearError: clearWeatherError } = useWeather();
   const { error: locationError, clearError: clearLocationError } = useLocationContext();
 
@@ -41,6 +49,18 @@ const ThemedAppWithProviders = () => {
     setSnackbarVisible(false);
     if (locationError) clearLocationError();
     if (weatherError) clearWeatherError();
+  };
+
+  const handleAdFailedToLoad = error => {
+    console.error("Banner Ad failed to load", error);
+    setTimeout(() => {
+      console.log("Retrying ad load...");
+      setAdLoadAttempt(prev => prev + 1);
+    }, 30000);
+  };
+
+  const handleAdLoaded = () => {
+    console.log("Banner Ad loaded successfully");
   };
 
   const onReady = () => {
@@ -81,7 +101,14 @@ const ThemedAppWithProviders = () => {
     <PaperProvider theme={themeToApply}>
       <NavigationContainer ref={navigationRef} onReady={onReady} onStateChange={onStateChange}>
         <App />
-        <BannerAd unitId={BANNER_AD_UNIT_ID} size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER} />
+        {/* Always render BannerAd, use key to trigger reloads */}
+        <BannerAd
+          key={adLoadAttempt}
+          unitId={adUnitId}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          onAdLoaded={handleAdLoaded}
+          onAdFailedToLoad={handleAdFailedToLoad}
+        />
         <Snackbar
           visible={snackbarVisible}
           onDismiss={onDismissSnackbar}

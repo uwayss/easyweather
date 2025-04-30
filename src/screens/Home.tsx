@@ -13,13 +13,6 @@ import ForecastList from "./HomeScreen/ForecastList";
 import WeatherCard from "./HomeScreen/WeatherCard";
 import SearchRow from "./HomeScreen/SearchRow";
 import { getAnalytics } from "@react-native-firebase/analytics";
-import MobileAds, { MaxAdContentRating } from "react-native-google-mobile-ads";
-
-MobileAds().setRequestConfiguration({
-  maxAdContentRating: MaxAdContentRating.G,
-  tagForChildDirectedTreatment: true,
-  tagForUnderAgeOfConsent: true,
-});
 
 export type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 type HomeProps = NativeStackScreenProps<RootStackParamList, "Home">;
