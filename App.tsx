@@ -5,6 +5,7 @@ import HomeScreen from "./src/screens/Home";
 import SettingsScreen from "./src/screens/Settings";
 import DayDetailsScreen from "./src/screens/Details";
 import { DayWeather, HourWeather } from "./src/types/weather";
+import "./global.css";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -24,9 +25,9 @@ export default function RootStack() {
       <Stack.Screen
         name="Settings"
         component={SettingsScreen}
-        options={{
-          animation: "slide_from_left",
-        }}
+        // options={{
+        //   animation: "slide_from_left",
+        // }}
       />
       <Stack.Screen
         name="DayDetails"

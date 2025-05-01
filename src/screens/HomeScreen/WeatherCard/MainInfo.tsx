@@ -1,38 +1,45 @@
 // FILE: src/screens/HomeScreen/WeatherCard/MainInfo.tsx
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import { ActivityIndicator, Surface, Text } from "react-native-paper";
+import { View, Text } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 import { CurrentWeather } from "../../../types/weather";
 import { useWeatherDescriptions } from "../../../utils/descriptions";
 import { useSettings } from "../../../context/SettingsContext";
 import { convertTemperature, formatTemperature } from "../../../utils/unitConversion";
 import { useTranslation } from "react-i18next";
+import { useLocationContext } from "../../../context/LocationContext";
 
-interface MainInfoProps {
-  name: string;
+export function MainInfo({
+  // name,
+  current,
+}: {
+  // name: string;
   current: CurrentWeather | undefined;
-}
-
-export function MainInfo({ name, current }: MainInfoProps) {
+}) {
   const { settings } = useSettings();
   const { t } = useTranslation();
+  const { location, loading: locationLoading } = useLocationContext();
   const timeOfDay = current?.isDay ? "day" : "night";
   const translatedDescriptions = useWeatherDescriptions();
-
+  const name = location
+    ? location.displayName
+    : locationLoading
+    ? t("weather.loading_location")
+    : t("weather.unknown_location");
   const description = current
     ? translatedDescriptions[current.weatherCode]?.[timeOfDay].description
     : null;
 
   return (
-    <View style={styles.mainInfoContainer}>
+    <View className="flex-1">
       {current ? (
-        <Surface style={styles.mainInfo} elevation={5}>
-          <View style={styles.locationContainer}>
-            <Text style={styles.locationName} numberOfLines={1} ellipsizeMode="tail">
+        <View className="p-4 w-full self-center items-center justify-center opacity-80 rounded-xl flex-1 elevation-sm">
+          <View className="p-3 self-center w-full bg-transparent">
+            <Text numberOfLines={1} ellipsizeMode="tail" className="text-center w-full">
               {name}
             </Text>
           </View>
-          <Text style={styles.temperature}>
+          <Text className="font-bold text-5xl">
             {current
               ? formatTemperature(
                   convertTemperature(current.temperature, settings.useImperialUnits),
@@ -40,10 +47,10 @@ export function MainInfo({ name, current }: MainInfoProps) {
                 )
               : ""}
           </Text>
-          <Text variant="headlineSmall" style={styles.description}>
+          <Text className="width-full flex-wrap uppercase mt-1 tracking-widest text-center text-base font-semibold leading-relaxed">
             {description || ""}
           </Text>
-          <Text variant="titleMedium" style={styles.feelsLike}>
+          <Text className="opacity-90 mt-2 text-base font-semibold leading-relaxed">
             {t("weather.feltTemperature")}
             {current
               ? formatTemperature(
@@ -52,54 +59,12 @@ export function MainInfo({ name, current }: MainInfoProps) {
                 ).replace(/°[CF]$/, "°")
               : ""}
           </Text>
-        </Surface>
+        </View>
       ) : (
-        <Surface style={[styles.mainInfo, { flex: 1 }]} elevation={5}>
+        <View className="p-4 w-full self-center items-center justify-center opacity-80 rounded-xl flex-1 elevation-sm">
           <ActivityIndicator />
-        </Surface>
+        </View>
       )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  mainInfoContainer: {
-    flex: 1,
-  },
-  mainInfo: {
-    borderRadius: 12,
-    padding: 16,
-    width: "100%",
-    alignSelf: "center",
-    alignItems: "center",
-    justifyContent: "center",
-    opacity: 0.8,
-  },
-  temperature: {
-    fontWeight: "bold",
-    fontSize: 48,
-  },
-  description: {
-    width: "100%",
-    flexWrap: "wrap",
-    textTransform: "uppercase",
-    marginTop: 4,
-    letterSpacing: 3,
-    textAlign: "center",
-  },
-  feelsLike: {
-    opacity: 0.9,
-    marginTop: 8,
-  },
-  locationContainer: {
-    borderRadius: 12,
-    padding: 12,
-    alignSelf: "center",
-    width: "100%",
-    backgroundColor: "transparent",
-  },
-  locationName: {
-    textAlign: "center",
-    width: "100%",
-  },
-});

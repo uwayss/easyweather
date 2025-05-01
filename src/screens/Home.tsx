@@ -67,7 +67,7 @@ export default function Home({ navigation }: HomeProps) {
         }
       >
         {/* SearchRow is always visible */}
-        <SearchRow textColor={theme.colors.onSurface} navigation={navigation} />
+        <SearchRow navigation={navigation} />
 
         {/* WeatherCard now handles its own skeleton */}
         <WeatherCard />

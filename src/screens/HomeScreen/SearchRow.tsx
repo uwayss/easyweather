@@ -1,45 +1,23 @@
-import { StyleSheet, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { HomeNavigationProp } from "../Home";
 import React from "react";
 import { LocationSearch } from "./LocationSearch";
-import { IconButton } from "react-native-paper";
 import { useTranslation } from "react-i18next";
+import SettingsIcon from "../../../assets/icons/settings.svg";
 
-export default React.memo(function SearchRow({
-  textColor,
-  navigation,
-}: {
-  textColor: string;
-  navigation: HomeNavigationProp;
-}) {
+export default React.memo(function SearchRow({ navigation }: { navigation: HomeNavigationProp }) {
   const { t } = useTranslation();
   return (
-    <View style={styles.topRow}>
-      <View style={styles.searchWrapper}>
-        <LocationSearch />
-      </View>
-      <IconButton
-        icon="cog-outline"
-        iconColor={textColor}
-        size={28}
+    <View className="flex-row items-center flex-1">
+      <LocationSearch />
+      <TouchableOpacity
         onPress={() => navigation.navigate("Settings")}
-        style={styles.settingsIcon}
+        className="p-2 mr-[-8px] ml-2" // Adjust padding/margin for hit area if needed
         accessibilityLabel={t("settings.title")}
-      />
+        accessibilityRole="button"
+      >
+        <SettingsIcon width={28} />
+      </TouchableOpacity>
     </View>
   );
-});
-
-const styles = StyleSheet.create({
-  topRow: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  searchWrapper: {
-    flex: 1,
-  },
-  settingsIcon: {
-    marginLeft: 8,
-    marginRight: -8,
-  },
 });

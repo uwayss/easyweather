@@ -17,7 +17,6 @@ import { getAnalytics } from "@react-native-firebase/analytics";
 import { BANNER_AD_UNIT_ID } from "./src/constants/config";
 import { SNACKBAR_DURATION_LONG } from "./src/constants/ui";
 import MobileAds, { MaxAdContentRating } from "react-native-google-mobile-ads";
-import "./global.css";
 
 MobileAds().setRequestConfiguration({
   maxAdContentRating: MaxAdContentRating.G,
