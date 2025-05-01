@@ -1,36 +1,47 @@
 // FILE: src/screens/DateScreen/DailySummaryCard.tsx
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import { Text, Card, Divider, Icon, useTheme, MD3Theme } from "react-native-paper";
+import { StyleSheet, View, Text } from "react-native";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"; // Import vector icon
 import { DayWeather } from "../../types/weather";
 import { useWeatherDescriptions } from "../../utils/descriptions";
 import { useSettings } from "../../context/SettingsContext";
 import { useTranslation } from "react-i18next";
 import { convertTemperature, convertWindSpeed, formatWindSpeed } from "../../utils/unitConversion";
 import { formatTimeStringToHour } from "../../utils/timeUtils";
-import FastImage from "react-native-fast-image"; // Use FastImage
+import FastImage from "react-native-fast-image";
+import { useColorScheme } from "nativewind";
 
 interface DetailItemProps {
   icon: string;
   label: string;
   value: string;
-  unit?: string; // Optional unit
+  unit?: string;
   color?: string;
 }
 
-// DetailItem remains largely the same internally, but we might adjust styles
 const DetailItem: React.FC<DetailItemProps> = ({ icon, label, value, unit, color }) => {
-  const theme = useTheme();
-  const styles = detailItemStyles(theme);
+  const { colorScheme } = useColorScheme();
+  const theme = colorScheme === "dark" ? darkThemeColors : lightThemeColors;
+  // Use default onSurfaceVariant if color prop is not passed
+  const finalIconColor = color || theme.onSurfaceVariant;
+  const styles = detailItemStyles();
   return (
     <View style={styles.detailItem}>
-      <Icon source={icon} size={20} color={color || theme.colors.onSurfaceVariant} />
+      {/* Use MaterialCommunityIcons */}
+      <MaterialCommunityIcons name={icon} size={20} color={finalIconColor} />
       <View style={styles.detailTextsContainer}>
-        <Text style={styles.detailValue} variant="bodyMedium">
+        <Text className="font-semibold text-sm text-light-onSurface dark:text-dark-onSurface">
           {value}
-          {unit && <Text style={styles.detailUnit}>{unit}</Text>}
+          {unit && (
+            <Text className="text-xs ml-0.5 text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant">
+              {unit}
+            </Text>
+          )}
         </Text>
-        <Text style={styles.detailLabel} variant="labelSmall" numberOfLines={1}>
+        <Text
+          className="text-xs mt-px text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant"
+          numberOfLines={1}
+        >
           {label}
         </Text>
       </View>
@@ -40,16 +51,14 @@ const DetailItem: React.FC<DetailItemProps> = ({ icon, label, value, unit, color
 
 export default function DailySummaryCard({ dayData }: { dayData: DayWeather | undefined }) {
   const { settings } = useSettings();
-  const theme = useTheme();
-  const styles = summaryCardStyles(theme);
+  const styles = summaryCardStyles();
   const { t } = useTranslation();
   const translatedWeatherDescriptions = useWeatherDescriptions();
 
-  if (!dayData) return null; // Render nothing if no data
+  if (!dayData) return null;
 
   const weatherInfo = translatedWeatherDescriptions[dayData.weatherCode]?.day;
 
-  // Format temperatures without the unit symbol initially
   const formattedHigh = Math.round(
     convertTemperature(dayData.maxTemp, settings.useImperialUnits),
   ).toString();
@@ -58,7 +67,6 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
   ).toString();
   const tempUnit = settings.useImperialUnits ? "°F" : "°C";
 
-  // Format wind speed and split value/unit
   const rawWindSpeed = convertWindSpeed(dayData.windSpeed, settings.useImperialUnits);
   const formattedWind = formatWindSpeed(rawWindSpeed, settings.useImperialUnits);
   const [windValue, windUnit] = formattedWind.split(" ");
@@ -67,154 +75,89 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
   const formattedSunset = formatTimeStringToHour(dayData.sunset);
 
   return (
-    <Card mode="contained" style={styles.card}>
-      <Card.Content style={styles.cardContent}>
-        {/* Top Section: Icon, Temps, Description */}
-        <View style={styles.topSection}>
-          {weatherInfo?.image && (
-            <FastImage
-              // source={weatherInfo.image}
-              source={weatherInfo.image}
-              style={styles.weatherIcon}
-              resizeMode={FastImage.resizeMode.contain}
-            />
-          )}
-          <View style={styles.topTextContainer}>
-            <View style={styles.tempsContainer}>
-              <Text variant="displayMedium" style={styles.highTemp}>
-                {formattedHigh}
-              </Text>
-              <Text variant="headlineMedium" style={styles.lowTemp}>
-                /{formattedLow}
-                {tempUnit}
-              </Text>
-            </View>
-            <Text variant="titleMedium" style={styles.description} numberOfLines={1}>
-              {weatherInfo?.description || ""}
+    <View className="bg-light-surface dark:bg-dark-surface rounded-lg shadow-sm overflow-hidden p-4 gap-3">
+      <View style={styles.topSection}>
+        {weatherInfo?.image && (
+          <FastImage
+            source={weatherInfo.image}
+            style={styles.weatherIcon}
+            resizeMode={FastImage.resizeMode.contain}
+          />
+        )}
+        <View style={styles.topTextContainer}>
+          <View style={styles.tempsContainer}>
+            <Text className="font-bold text-4xl text-light-onSurface dark:text-dark-onSurface">
+              {formattedHigh}
+            </Text>
+            <Text className="text-2xl text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant">
+              /{formattedLow}
+              {tempUnit}
             </Text>
           </View>
+          <Text
+            className="font-medium text-base mt-0.5 text-light-onSurface dark:text-dark-onSurface"
+            numberOfLines={1}
+          >
+            {weatherInfo?.description || ""}
+          </Text>
         </View>
+      </View>
 
-        <Divider style={styles.divider} />
+      <View className="h-px bg-light-outline dark:bg-dark-outline" />
 
-        {/* Details Section: 2x2 Grid */}
-        <View style={styles.detailsContainer}>
-          <View style={styles.detailsRow}>
-            <DetailItem
-              icon="weather-pouring" // Changed icon
-              label={t("weather.max_precipitation")}
-              value={`${Math.round(dayData.rainProb)}`}
-              unit="%"
-              color="#64B5F6" // Adjusted color
-            />
-            <DetailItem
-              icon="weather-windy"
-              label={t("weather.max_wind")}
-              value={windValue}
-              unit={windUnit}
-              color="#81D4FA"
-            />
-          </View>
-          <View style={styles.detailsRow}>
-            <DetailItem
-              icon="weather-sunset-up" // Changed icon
-              color="#FFB74D" // Adjusted color
-              label={t("weather.sunrise")}
-              value={formattedSunrise || "--:--"}
-            />
-            <DetailItem
-              icon="weather-sunset-down" // Changed icon
-              label={t("weather.sunset")}
-              value={formattedSunset || "--:--"}
-              color="#BA68C8" // Adjusted color
-            />
-          </View>
+      <View style={styles.detailsContainer}>
+        <View style={styles.detailsRow}>
+          <DetailItem
+            icon="weather-pouring"
+            label={t("weather.max_precipitation")}
+            value={`${Math.round(dayData.rainProb)}`}
+            unit="%"
+            color="#64B5F6"
+          />
+          <DetailItem
+            icon="weather-windy"
+            label={t("weather.max_wind")}
+            value={windValue}
+            unit={windUnit}
+            color="#81D4FA"
+          />
         </View>
-      </Card.Content>
-    </Card>
+        <View style={styles.detailsRow}>
+          <DetailItem
+            icon="weather-sunset-up"
+            color="#FFB74D"
+            label={t("weather.sunrise")}
+            value={formattedSunrise || "--:--"}
+          />
+          <DetailItem
+            icon="weather-sunset-down"
+            label={t("weather.sunset")}
+            value={formattedSunset || "--:--"}
+            color="#BA68C8"
+          />
+        </View>
+      </View>
+    </View>
   );
 }
 
-// --- Styles ---
+// Temporary color objects
+const lightThemeColors = { primary: "#006d77", onSurface: "#1f1f1f", onSurfaceVariant: "#666666" };
+const darkThemeColors = { primary: "#83c5be", onSurface: "#e1e1e1", onSurfaceVariant: "#aaaaaa" };
 
-const summaryCardStyles = (theme: MD3Theme) =>
+// Keep StyleSheet temporarily for layout structure
+const summaryCardStyles = () =>
   StyleSheet.create({
-    card: {
-      // Removed margin bottom, handled by ScrollView gap in Details.tsx
-    },
-    cardContent: {
-      paddingHorizontal: 16,
-      paddingVertical: 12, // Reduced vertical padding
-      gap: 12, // Reduced gap
-    },
-    topSection: {
-      flexDirection: "row",
-      alignItems: "center",
-      gap: 12, // Reduced gap
-    },
-    weatherIcon: {
-      width: 64, // Slightly smaller icon
-      height: 64,
-    },
-    topTextContainer: {
-      flex: 1,
-      alignItems: "flex-start", // Align text to the left
-    },
-    tempsContainer: {
-      flexDirection: "row",
-      alignItems: "baseline", // Align base of text
-      gap: 4, // Reduced gap
-    },
-    highTemp: {
-      fontWeight: "700", // Make high temp bolder
-      // displayMedium is already large
-    },
-    lowTemp: {
-      color: theme.colors.onSurfaceVariant, // Use theme color
-      // headlineMedium is appropriate size
-    },
-    description: {
-      fontWeight: "500",
-      color: theme.colors.onSurface, // Ensure contrast
-      marginTop: 2, // Small space above description
-    },
-    divider: {
-      // Keep divider as is, margin handled by gap
-    },
-    detailsContainer: {
-      gap: 10, // Space between the two rows of details
-    },
-    detailsRow: {
-      flexDirection: "row",
-      justifyContent: "space-around", // Distribute items evenly
-      alignItems: "center", // Align items vertically
-    },
+    topSection: { flexDirection: "row", alignItems: "center", gap: 12 },
+    weatherIcon: { width: 64, height: 64 },
+    topTextContainer: { flex: 1, alignItems: "flex-start" },
+    tempsContainer: { flexDirection: "row", alignItems: "baseline", gap: 4 },
+    detailsContainer: { gap: 10 },
+    detailsRow: { flexDirection: "row", justifyContent: "space-around", alignItems: "center" },
   });
 
-const detailItemStyles = (theme: MD3Theme) =>
+const detailItemStyles = () =>
   StyleSheet.create({
-    detailItem: {
-      flexDirection: "row", // Icon and text side-by-side
-      alignItems: "center",
-      gap: 8, // Space between icon and text block
-      flex: 1, // Allow items to take space in the row
-      // justifyContent: 'center', // Center content within the item's space if needed
-    },
-    detailTextsContainer: {
-      alignItems: "flex-start", // Align text left
-    },
-    detailValue: {
-      fontWeight: "600",
-      color: theme.colors.onSurface,
-    },
-    detailUnit: {
-      fontSize: 10, // Smaller font size for the unit
-      color: theme.colors.onSurfaceVariant,
-      marginLeft: 2, // Space before unit
-    },
-    detailLabel: {
-      color: theme.colors.onSurfaceVariant,
-      fontSize: 10, // Smaller label
-      marginTop: 1,
-    },
+    detailItem: { flexDirection: "row", alignItems: "center", gap: 8, flex: 1 },
+    detailTextsContainer: { alignItems: "flex-start" },
   });

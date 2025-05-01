@@ -1,11 +1,13 @@
 // FILE: src/components/Graph/LineChart.tsx
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Text } from "react-native"; // Import core Text
 import Svg, { Path, Circle, Defs, LinearGradient, Stop } from "react-native-svg";
-import { useTheme, Text as PaperText } from "react-native-paper";
+// Removed Text import from paper
 import { GraphDataPoint } from "../../utils/metricData";
+import { useColorScheme } from "nativewind"; // Need this for theme colors
 
 interface LineChartProps {
+  // ... props remain the same
   data: GraphDataPoint[];
   height: number;
   width: number;
@@ -17,7 +19,6 @@ interface LineChartProps {
   pointRadius?: number;
   showGradient?: boolean;
   gradientColor?: string;
-  // paddingHorizontal?: number; // REMOVED: No longer used for point positioning
   paddingVertical?: number;
 }
 const LineChart: React.FC<LineChartProps> = ({
@@ -31,47 +32,38 @@ const LineChart: React.FC<LineChartProps> = ({
   pointRadius = 5,
   showGradient = true,
   gradientColor: propGradientColor,
-  // paddingHorizontal = 15, // REMOVED
   paddingVertical = 5,
 }) => {
-  const theme = useTheme();
+  const { colorScheme } = useColorScheme(); // Get color scheme
+  // Use Tailwind theme colors
+  const themeColors = colorScheme === "dark" ? darkThemeColors : lightThemeColors;
 
-  // Line color defaults to theme.colors.primary if not provided
-  const lineColor = propLineColor || theme.colors.primary;
-  // Gradient color defaults to the lineColor (which defaults to primary)
+  const lineColor = propLineColor || themeColors.primary;
   const gradientColor = propGradientColor || lineColor;
-  const labelColor = theme.colors.onSurfaceVariant;
 
   if (!data || data.length < 2) {
-    // ... (error handling remains the same)
     return (
       <View style={[{ height, width }, styles.centerContent]}>
-        <PaperText style={{ color: labelColor }}>Not enough data</PaperText>
+        {/* Use core Text with Tailwind classes */}
+        <Text className="text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant">
+          Not enough data
+        </Text>
       </View>
     );
   }
-  if (data.length < 2 && showPoints) {
-    // Handle case with only one data point - render just the point
-    // (or decide if you want to render nothing/placeholder)
-  }
 
-  // Use the provided padding directly for vertical calculations
-  const chartHeight = height - paddingVertical * 2;
-  // const chartWidth = width - paddingHorizontal * 2; // REMOVED - width is the total SVG width
-  // const numDataPoints = data.length; // Already available
-  // const xStep = numDataPoints > 1 ? chartWidth / (numDataPoints - 1) : chartWidth; // REMOVED - using itemWidth now
+  // ... rest of the component logic remains the same
 
   // Calculate Y based on chartHeight and bottom padding
+  const chartHeight = height - paddingVertical * 2;
   const calculateY = (progress: number) => paddingVertical + chartHeight * (1 - progress);
 
-  // --- Point Coordinates Calculation (Using itemWidth) ---
   const points = data.map((point: GraphDataPoint, index: number) => ({
-    x: index * itemWidth + itemWidth / 2, // Center point in the item column
+    x: index * itemWidth + itemWidth / 2,
     y: calculateY(point.progress),
-    fill: point.color || theme.colors.primary, // Use point's color or default
+    fill: point.color || themeColors.primary, // Use theme color
   }));
 
-  // --- Path Calculations (Using new point coordinates) ---
   let linePath = "";
   if (points.length >= 2) {
     linePath = `M ${points[0].x} ${points[0].y}`;
@@ -84,39 +76,33 @@ const LineChart: React.FC<LineChartProps> = ({
 
   let gradientPath = "";
   if (showGradient && points.length >= 1) {
-    // Allow gradient even for 1 point (though it might look odd)
     const firstX = points[0].x;
     const lastX = points[points.length - 1].x;
     const bottomY = paddingVertical + chartHeight;
 
     if (points.length >= 2) {
-      // Start path from first point, go along line, then down to bottom corners
       gradientPath = linePath + ` L ${lastX} ${bottomY} L ${firstX} ${bottomY} Z`;
     } else {
-      // Handle gradient for a single point (e.g., a small vertical line/area)
       const pointY = points[0].y;
-      // Create a small base for the gradient centered under the point
-      const gradientBaseWidth = Math.min(itemWidth / 2, 10); // Adjust width as needed
+      const gradientBaseWidth = Math.min(itemWidth / 2, 10);
       gradientPath = `M ${firstX - gradientBaseWidth / 2} ${bottomY} L ${
         firstX + gradientBaseWidth / 2
       } ${bottomY} L ${firstX} ${pointY} Z`;
     }
   }
 
-  // --- Render ---
   return (
     <Svg height={height} width={width}>
-      {showGradient &&
-        gradientPath && ( // Check if gradientPath is generated
-          <Defs>
-            <LinearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
-              <Stop offset="0" stopColor={gradientColor} stopOpacity="0.3" />
-              <Stop offset="1" stopColor={gradientColor} stopOpacity="0" />
-            </LinearGradient>
-          </Defs>
-        )}
+      {showGradient && gradientPath && (
+        <Defs>
+          <LinearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+            <Stop offset="0" stopColor={gradientColor} stopOpacity="0.3" />
+            <Stop offset="1" stopColor={gradientColor} stopOpacity="0" />
+          </LinearGradient>
+        </Defs>
+      )}
       {showGradient && gradientPath && <Path d={gradientPath} fill="url(#grad)" />}
-      {linePath && ( // Check if linePath is generated (>= 2 points)
+      {linePath && (
         <Path
           d={linePath}
           stroke={lineColor}
@@ -133,6 +119,10 @@ const LineChart: React.FC<LineChartProps> = ({
     </Svg>
   );
 };
+
+// Temporary color objects (could centralize these later)
+const lightThemeColors = { primary: "#006d77", onSurfaceVariant: "#666666" };
+const darkThemeColors = { primary: "#83c5be", onSurfaceVariant: "#aaaaaa" };
 
 const styles = StyleSheet.create({
   centerContent: {

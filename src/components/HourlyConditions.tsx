@@ -1,7 +1,7 @@
 // FILE: src/components/HourlyConditions.tsx
 import React, { useMemo, useState } from "react";
-import { Text, Card, Divider, useTheme, MD3Theme } from "react-native-paper";
-import { StyleSheet, View, Dimensions, ScrollView } from "react-native";
+// Removed Card, Text imports from paper
+import { StyleSheet, View, Dimensions, ScrollView, Text } from "react-native"; // Added core Text
 import { useSettings } from "../context/SettingsContext";
 import { getMetricDataForForecast, MetricType, GraphDataPoint } from "../utils/metricData";
 import MetricSelector from "./Graph/MetricSelector";
@@ -19,7 +19,6 @@ import {
   HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL,
 } from "../constants/ui";
 
-// Screen Width
 const screenWidth = Dimensions.get("window").width;
 
 export default function HourlyConditions({
@@ -28,10 +27,11 @@ export default function HourlyConditions({
   selectedDateHourly: HourWeather[] | undefined;
 }) {
   const [currentMetric, setCurrentMetric] = useState<MetricType>("temperature");
-  const { settings } = useSettings();
+  const { settings, activeTheme } = useSettings();
   const { t } = useTranslation();
-  const theme = useTheme();
-  const styles = hourlyStyles(theme);
+  const theme = activeTheme === "dark" ? darkThemeColors : lightThemeColors;
+  const styles = hourlyStyles(theme); // Keep styles for layout
+
   const weatherDescriptions = useWeatherDescriptions();
 
   const graphData: GraphDataPoint[] | undefined = useMemo(
@@ -39,7 +39,6 @@ export default function HourlyConditions({
     [currentMetric, selectedDateHourly, settings.useImperialUnits],
   );
 
-  // Width Calculations
   const numDataPoints = graphData?.length || 0;
   const availableScrollWidth = screenWidth - HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL * 2;
 
@@ -62,30 +61,33 @@ export default function HourlyConditions({
     HOURLY_CONDITIONS_DETAILS_ROW_HEIGHT +
     10;
 
-  const chartColor = graphData?.[0]?.color || theme.colors.primary;
+  const chartColor = graphData?.[0]?.color || theme.primary;
 
   return (
-    <Card style={styles.card} mode="contained">
-      {/* Header Section */}
+    // Replace Card with View
+    <View className="mb-4 bg-light-surface dark:bg-dark-surface rounded-lg shadow-sm overflow-hidden">
       <View style={styles.headerSection}>
-        <Text variant="titleMedium">{t("weather.hourly_title")}</Text>
+        {/* Replace Paper Text */}
+        <Text className="text-base font-medium text-light-onSurface dark:text-dark-onSurface">
+          {t("weather.hourly_title")}
+        </Text>
       </View>
 
-      {/* Metric Selector Section */}
       <View style={styles.selectorSection}>
         <MetricSelector currentMetric={currentMetric} setCurrentMetric={setCurrentMetric} />
       </View>
 
-      {/* Divider Section */}
-      <Divider style={styles.divider} />
+      <View
+        className="h-px bg-light-outline dark:bg-dark-outline mx-4"
+        style={{ marginHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL }}
+      />
 
-      {/* Chart Section */}
       <View style={[styles.chartOuterContainer, { minHeight: chartAreaMinHeight }]}>
         {graphData && numDataPoints > 0 ? (
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={styles.chartScrollView} // Style the ScrollView itself
+            className="rounded-lg overflow-hidden bg-light-surfaceVariant/30 dark:bg-dark-surfaceVariant/30"
             contentContainerStyle={[
               styles.chartScrollContent,
               { width: internalContentWidth },
@@ -95,18 +97,17 @@ export default function HourlyConditions({
             ]}
           >
             <View>
-              {/* Values Row */}
               <View style={styles.valuesRow}>
                 {graphData.map((pointData, index) => (
                   <View key={`value-${index}`} style={[styles.hourItemContainer, { width: xStep }]}>
-                    <Text style={styles.valueText} variant="labelLarge" numberOfLines={1}>
+                    {/* Replace Paper Text */}
+                    <Text style={styles.valueText} numberOfLines={1}>
                       {pointData.value}
                     </Text>
                   </View>
                 ))}
               </View>
 
-              {/* Line Chart */}
               <View style={styles.lineChartWrapper}>
                 <LineChart
                   data={graphData}
@@ -123,7 +124,6 @@ export default function HourlyConditions({
                 />
               </View>
 
-              {/* Icons and Labels Row */}
               <View style={styles.detailsRow}>
                 {graphData.map((pointData, index) => {
                   const hour = selectedDateHourly?.[index];
@@ -140,9 +140,10 @@ export default function HourlyConditions({
                           resizeMode={FastImage.resizeMode.contain}
                         />
                       ) : (
-                        <View style={styles.weatherIcon} /> // Placeholder if no icon
+                        <View style={styles.weatherIcon} />
                       )}
-                      <Text style={styles.labelText} variant="labelMedium" numberOfLines={1}>
+                      {/* Replace Paper Text */}
+                      <Text style={styles.labelText} numberOfLines={1}>
                         {pointData.label}
                       </Text>
                     </View>
@@ -157,42 +158,30 @@ export default function HourlyConditions({
           </View>
         )}
       </View>
-    </Card>
+    </View>
   );
 }
 
-const hourlyStyles = (theme: MD3Theme) =>
+// Temporary color objects
+const lightThemeColors = { primary: "#006d77", onSurface: "#1f1f1f", onSurfaceVariant: "#666666" };
+const darkThemeColors = { primary: "#83c5be", onSurface: "#e1e1e1", onSurfaceVariant: "#aaaaaa" };
+
+// Keep StyleSheet for layout structure
+const hourlyStyles = (theme: typeof lightThemeColors | typeof darkThemeColors) =>
   StyleSheet.create({
-    card: {
-      marginBottom: 16,
-    },
-    headerSection: {
-      paddingHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL,
-      paddingTop: 16,
-    },
+    // card style removed
+    headerSection: { paddingHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL, paddingTop: 16 },
     selectorSection: {
       paddingHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL,
       paddingVertical: 8,
-    },
-    divider: {
-      marginHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL,
     },
     chartOuterContainer: {
       marginTop: 4,
       marginBottom: 8,
       paddingHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL,
     },
-    chartScrollView: {
-      backgroundColor: theme.colors.surfaceVariant + "30",
-      borderRadius: 8,
-      overflow: "hidden",
-    },
-    chartScrollContent: {
-      paddingVertical: 4,
-    },
-    lineChartWrapper: {
-      height: HOURLY_CONDITIONS_CHART_HEIGHT,
-    },
+    chartScrollContent: { paddingVertical: 4 },
+    lineChartWrapper: { height: HOURLY_CONDITIONS_CHART_HEIGHT },
     valuesRow: {
       flexDirection: "row",
       height: HOURLY_CONDITIONS_VALUES_ROW_HEIGHT,
@@ -204,29 +193,20 @@ const hourlyStyles = (theme: MD3Theme) =>
       height: HOURLY_CONDITIONS_DETAILS_ROW_HEIGHT,
       alignItems: "center",
     },
-    hourItemContainer: {
-      height: "100%",
-      alignItems: "center",
-      justifyContent: "center",
-    },
+    hourItemContainer: { height: "100%", alignItems: "center", justifyContent: "center" },
     valueText: {
+      // Keep StyleSheet for complex styling involving theme
       fontWeight: "600",
       fontSize: 13,
-      color: theme.colors.onSurface,
+      color: theme.onSurface,
       textAlign: "center",
     },
-    weatherIcon: {
-      width: 24,
-      height: 24,
-      marginBottom: 3,
-    },
+    weatherIcon: { width: 24, height: 24, marginBottom: 3 },
     labelText: {
-      color: theme.colors.onSurfaceVariant,
+      // Keep StyleSheet for complex styling involving theme
+      color: theme.onSurfaceVariant,
       fontSize: 11,
       textAlign: "center",
     },
-    placeholderWrapper: {
-      justifyContent: "center",
-      alignItems: "center",
-    },
+    placeholderWrapper: { justifyContent: "center", alignItems: "center" },
   });

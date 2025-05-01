@@ -1,8 +1,11 @@
-import { View, StyleSheet } from "react-native";
+// FILE: src/screens/SettingsScreen/UnitsSection.tsx
+import { View } from "react-native";
 import React from "react";
-import { Divider, List, SegmentedButtons } from "react-native-paper";
+// Removed List, SegmentedButtons imports from paper
 import { useSettings } from "../../context/SettingsContext";
 import { useTranslation } from "react-i18next";
+import CustomSegmentedButtons from "../../components/CustomSegmentedButtons"; // Import custom component
+import { ListSection } from "./Common"; // Import ListSection
 
 export default React.memo(function UnitsSection() {
   const { settings, updateSetting } = useSettings();
@@ -10,11 +13,13 @@ export default React.memo(function UnitsSection() {
 
   return (
     <View>
-      <List.Section title={t("settings.units")}>
-        <SegmentedButtons
+      {/* Wrap with ListSection for consistent title styling */}
+      <ListSection title={t("settings.units")}>
+        {/* Use CustomSegmentedButtons */}
+        <CustomSegmentedButtons
           value={settings.useImperialUnits ? "imperial" : "metric"}
           onValueChange={value => updateSetting("useImperialUnits", value === "imperial")}
-          style={styles.segmentedButtonContainer}
+          style={{ marginHorizontal: 16, marginBottom: 8 }} // Apply margin here
           buttons={[
             {
               value: "metric",
@@ -28,15 +33,9 @@ export default React.memo(function UnitsSection() {
             },
           ]}
         />
-      </List.Section>
-      <Divider className="my-2" />
+      </ListSection>
+      {/* Keep Divider temporarily */}
+      <View className="h-px my-2 bg-light-outline dark:bg-dark-outline" />
     </View>
   );
-});
-
-const styles = StyleSheet.create({
-  segmentedButtonContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 8,
-  },
 });
