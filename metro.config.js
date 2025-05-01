@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 const { getDefaultConfig, mergeConfig } = require("@react-native/metro-config");
+const { withNativeWind } = require("nativewind/metro");
 
 /**
  * Metro configuration
@@ -9,4 +10,7 @@ const { getDefaultConfig, mergeConfig } = require("@react-native/metro-config");
  */
 const config = {};
 
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+// module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+module.exports = withNativeWind(mergeConfig(getDefaultConfig(__dirname), config), {
+  input: "./global.css",
+});

@@ -17,6 +17,7 @@ import { getAnalytics } from "@react-native-firebase/analytics";
 import { BANNER_AD_UNIT_ID } from "./src/constants/config";
 import { SNACKBAR_DURATION_LONG } from "./src/constants/ui";
 import MobileAds, { MaxAdContentRating } from "react-native-google-mobile-ads";
+import "./global.css";
 
 MobileAds().setRequestConfiguration({
   maxAdContentRating: MaxAdContentRating.G,
@@ -51,8 +52,7 @@ const ThemedAppWithProviders = () => {
     if (weatherError) clearWeatherError();
   };
 
-  const handleAdFailedToLoad = error => {
-    console.error("Banner Ad failed to load", error);
+  const handleAdFailedToLoad = () => {
     setTimeout(() => {
       console.log("Retrying ad load...");
       setAdLoadAttempt(prev => prev + 1);
