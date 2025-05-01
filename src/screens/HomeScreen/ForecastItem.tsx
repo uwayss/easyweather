@@ -55,15 +55,11 @@ const ForecastItem = React.memo(function ForecastItem({ item, index }: ForecastI
           <Text variant="titleMedium" numberOfLines={1} style={styles.dayName}>
             {dayName}
           </Text>
-          <Image
-            source={weatherDescription.image}
-            style={styles.weatherIcon}
-            resizeMode="contain"
-          />
+          <Image source={weatherDescription.image} className="size-16" resizeMode="contain" />
           <Text variant="bodyMedium" style={styles.description} numberOfLines={1}>
             {weatherDescription.description}
           </Text>
-          <View style={styles.temperatures}>
+          <View className="flex-row gap-2 items-center">
             <Text style={styles.maxTemp}>
               {formatTemperature(
                 convertTemperature(item.maxTemp, settings.useImperialUnits),
@@ -96,10 +92,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     gap: 6,
   },
-  weatherIcon: {
-    width: 65,
-    height: 65,
-  },
   dayName: {
     width: "100%",
     textAlign: "center",
@@ -110,11 +102,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#666",
     fontSize: 12,
-  },
-  temperatures: {
-    flexDirection: "row",
-    gap: 8,
-    alignItems: "center",
   },
   maxTemp: {
     fontSize: 18,

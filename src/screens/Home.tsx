@@ -49,9 +49,9 @@ export default function Home({ navigation }: HomeProps) {
   );
 
   return (
-    <SafeAreaView style={[styles.safeContainer, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView style={{ backgroundColor: theme.colors.background }} className="flex-1">
       <ScrollView
-        style={styles.container}
+        className="flex-1"
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
@@ -61,21 +61,13 @@ export default function Home({ navigation }: HomeProps) {
             onRefresh={onRefresh}
             colors={[theme.colors.primary]}
             tintColor={theme.colors.primary}
-            // Disable refresh control while initial loading to avoid conflicts
             enabled={!isLoading}
           />
         }
       >
-        {/* SearchRow is always visible */}
         <SearchRow navigation={navigation} />
-
-        {/* WeatherCard now handles its own skeleton */}
         <WeatherCard />
-
-        {/* Pass isLoading prop to HourlyConditions */}
         <HourlyConditions selectedDateHourly={todaysHourlyData} />
-
-        {/* Pass isLoading prop to ForecastList */}
         <ForecastList />
       </ScrollView>
     </SafeAreaView>
@@ -83,12 +75,6 @@ export default function Home({ navigation }: HomeProps) {
 }
 
 const styles = StyleSheet.create({
-  safeContainer: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-  },
   contentContainer: {
     paddingHorizontal: 16,
     paddingBottom: 16,

@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import React from "react";
 import { Divider, SegmentedButtons } from "react-native-paper";
 import { ThemePreference, useSettings } from "../../context/SettingsContext";
@@ -17,7 +17,10 @@ export default React.memo(function AppearanceSection() {
         <SegmentedButtons
           value={settings.theme}
           onValueChange={handleThemeChange}
-          style={styles.segmentedButtonContainer}
+          style={{
+            paddingHorizontal: 16,
+            paddingBottom: 8,
+          }}
           buttons={[
             {
               value: "system",
@@ -37,21 +40,7 @@ export default React.memo(function AppearanceSection() {
           ]}
         />
       </ListSection>
-      <Divider style={styles.divider} />
+      <Divider className="my-2" />
     </View>
   );
-});
-const styles = StyleSheet.create({
-  label: {
-    paddingHorizontal: 16,
-    paddingBottom: 8,
-    fontSize: 14,
-  },
-  segmentedButtonContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 8,
-  },
-  divider: {
-    marginVertical: 8,
-  },
 });

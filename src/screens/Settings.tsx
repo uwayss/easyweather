@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
@@ -18,12 +18,18 @@ const SettingsScreen = () => {
   const { t } = useTranslation();
 
   return (
-    <SafeAreaView style={[styles.safeContainer, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView style={{ backgroundColor: theme.colors.background }} className="flex-1">
       <Appbar.Header>
         <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title={t("settings.title")} />
       </Appbar.Header>
-      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{
+          paddingVertical: 8,
+          paddingHorizontal: 0,
+        }}
+      >
         <AppearanceSection />
         <LanguageSection />
         <UnitsSection />
@@ -34,18 +40,5 @@ const SettingsScreen = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  safeContainer: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-  },
-  contentContainer: {
-    paddingVertical: 8,
-    paddingHorizontal: 0,
-  },
-});
 
 export default React.memo(SettingsScreen);

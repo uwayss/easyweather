@@ -29,22 +29,14 @@ export default React.memo(function UnitsSection() {
           ]}
         />
       </List.Section>
-      <Divider style={styles.divider} />
+      <Divider className="my-2" />
     </View>
   );
 });
 
 const styles = StyleSheet.create({
-  label: {
-    paddingHorizontal: 16,
-    paddingBottom: 8,
-    fontSize: 14,
-  },
   segmentedButtonContainer: {
     paddingHorizontal: 16,
     paddingBottom: 8,
-  },
-  divider: {
-    marginVertical: 8,
   },
 });

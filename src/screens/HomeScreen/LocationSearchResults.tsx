@@ -11,10 +11,10 @@ function LocationItem({ result, onPress }: { result: LocationResult; onPress: ()
   return (
     <Pressable onPress={onPress}>
       <Surface style={styles.itemSurface}>
-        <View style={styles.iconContainer}>
+        <View className="mr-4">
           <Icon source="map-marker" size={24} />
         </View>
-        <View style={styles.textContainer}>
+        <View className="flex-1">
           <Text variant="titleMedium">{getLocationName(result)}</Text>
           <Text variant="bodySmall" style={styles.description}>
             {result.display_name}
@@ -32,7 +32,17 @@ function ResultsList({
   onSelectLocation: (location: LocationResult) => void;
 }) {
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      // style={{
+      //   position: "absolute",
+      //   top: 60,
+      //   borderRadius: 12,
+      //   overflow: "hidden",
+      //   width: "100%",
+      //   zIndex: 1000,
+      // }}
+      className="absolute top-16 w-full rounded-xl overflow-hidden z-50"
+    >
       {results.slice(0, 3).map((result, index) => (
         <LocationItem key={index} result={result} onPress={() => onSelectLocation(result)} />
       ))}
@@ -52,33 +62,14 @@ export default function LocationSearchResults({
   return <ResultsList results={results} onSelectLocation={onSelectLocation} />;
 }
 const styles = StyleSheet.create({
-  container: {
-    position: "absolute",
-    top: 60,
-    borderRadius: 12,
-    overflow: "hidden",
-    width: "100%",
-    zIndex: 1000,
-  },
   itemSurface: {
     padding: 8,
     flexDirection: "row",
     alignItems: "center",
     elevation: 1,
   },
-  iconContainer: {
-    marginRight: 16,
-  },
-  textContainer: {
-    flex: 1,
-  },
   description: {
     marginTop: 2,
     opacity: 0.7,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: "#e0e0e0",
-    marginVertical: 4,
   },
 });

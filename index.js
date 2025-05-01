@@ -4,8 +4,7 @@ import { AppRegistry } from "react-native";
 import App from "./App";
 import { NavigationContainer, useNavigationContainerRef } from "@react-navigation/native";
 import { name as appName } from "./app.json";
-import { PaperProvider, Snackbar } from "react-native-paper";
-import { darkTheme, lightTheme } from "./src/theme";
+import { Snackbar } from "react-native-paper";
 import { WeatherProvider, useWeather } from "./src/context/WeatherContext";
 import { LocationProvider, useLocationContext } from "./src/context/LocationContext";
 import { SettingsProvider, useSettings } from "./src/context/SettingsContext";
@@ -17,6 +16,8 @@ import { getAnalytics } from "@react-native-firebase/analytics";
 import { BANNER_AD_UNIT_ID } from "./src/constants/config";
 import { SNACKBAR_DURATION_LONG } from "./src/constants/ui";
 import MobileAds, { MaxAdContentRating } from "react-native-google-mobile-ads";
+import { useColorScheme } from "nativewind";
+import { SafeAreaProvider } from "react-native-safe-area-context"; // Import SafeAreaProvider
 
 MobileAds().setRequestConfiguration({
   maxAdContentRating: MaxAdContentRating.G,
@@ -27,15 +28,19 @@ const adUnitId = __DEV__ ? TestIds.BANNER : BANNER_AD_UNIT_ID;
 
 const ThemedAppWithProviders = () => {
   const { activeTheme } = useSettings();
-  const themeToApply = activeTheme === "dark" ? darkTheme : lightTheme;
   const navigationRef = useNavigationContainerRef();
   const routeNameRef = useRef(null);
+  const { setColorScheme } = useColorScheme();
 
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState(null);
   const [adLoadAttempt, setAdLoadAttempt] = useState(0);
   const { error: weatherError, clearError: clearWeatherError } = useWeather();
   const { error: locationError, clearError: clearLocationError } = useLocationContext();
+
+  useEffect(() => {
+    setColorScheme(activeTheme);
+  }, [activeTheme, setColorScheme]);
 
   useEffect(() => {
     const errorMessage = locationError || weatherError;
@@ -97,10 +102,9 @@ const ThemedAppWithProviders = () => {
   };
 
   return (
-    <PaperProvider theme={themeToApply}>
+    <>
       <NavigationContainer ref={navigationRef} onReady={onReady} onStateChange={onStateChange}>
         <App />
-        {/* Always render BannerAd, use key to trigger reloads */}
         <BannerAd
           key={adLoadAttempt}
           unitId={adUnitId}
@@ -108,6 +112,7 @@ const ThemedAppWithProviders = () => {
           onAdLoaded={handleAdLoaded}
           onAdFailedToLoad={handleAdFailedToLoad}
         />
+        {/* Keep Snackbar temporarily, will need replacement */}
         <Snackbar
           visible={snackbarVisible}
           onDismiss={onDismissSnackbar}
@@ -120,7 +125,7 @@ const ThemedAppWithProviders = () => {
           {snackbarMessage || ""}
         </Snackbar>
       </NavigationContainer>
-    </PaperProvider>
+    </>
   );
 };
 
@@ -136,11 +141,14 @@ const AppWithProviders = () => {
 
 function AppRoot() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SettingsProvider>
-        <AppWithProviders />
-      </SettingsProvider>
-    </GestureHandlerRootView>
+    // Wrap with SafeAreaProvider
+    <SafeAreaProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SettingsProvider>
+          <AppWithProviders />
+        </SettingsProvider>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }
 

@@ -47,10 +47,4 @@ const styles = StyleSheet.create({
     paddingLeft: 0, // Ensure it starts from the edge if needed
     paddingRight: 8, // Space at the end
   },
-  skeletonContainer: {
-    flexDirection: "row", // Necessary for horizontal ScrollView
-    paddingVertical: 8,
-    paddingLeft: 0,
-    paddingRight: 8,
-  },
 });
