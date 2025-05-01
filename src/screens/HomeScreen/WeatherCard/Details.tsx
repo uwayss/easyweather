@@ -1,71 +1,35 @@
 // FILE: src/screens/HomeScreen/WeatherCard/Details.tsx
 import React from "react";
-import { StyleSheet, View } from "react-native";
-import { Surface, Text } from "react-native-paper";
+import { View } from "react-native";
+import { Text } from "react-native-paper";
 import { CurrentWeather } from "../../../types/weather";
 import { useSettings } from "../../../context/SettingsContext";
 import { convertWindSpeed, formatWindSpeed } from "../../../utils/unitConversion";
 import { useTranslation } from "react-i18next";
 
-interface DetailsProps {
-  current: CurrentWeather | undefined;
-}
-
-export function Details({ current }: DetailsProps) {
+export function Details({ current }: { current: CurrentWeather | undefined }) {
   const { settings } = useSettings();
   const { t } = useTranslation();
   return (
-    <View>
-      <Surface style={styles.detailsContainer} elevation={5}>
-        <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>{t("weather.humidity")}</Text>
-          <Text style={styles.detailValue}>{current?.humidity ? current?.humidity + "%" : ""}</Text>
-        </View>
-        <View style={styles.separator} />
-        <View style={styles.detailItem}>
-          <Text style={styles.detailLabel}>{t("weather.wind_speed")}</Text>
-          <Text style={styles.detailValue}>
-            {current
-              ? formatWindSpeed(
-                  convertWindSpeed(current.windSpeed, settings.useImperialUnits),
-                  settings.useImperialUnits,
-                )
-              : ""}
-          </Text>
-        </View>
-      </Surface>
+    <View className="flex-row justify-center items-center mt-5 rounded-xl p-4 w-full opacity-80 elevation-sm">
+      <View className="flex-1 items-center">
+        <Text className="opacity-80 text-sm mb-1">{t("weather.humidity")}</Text>
+        <Text className="text-base font-semibold">
+          {current?.humidity ? current?.humidity + "%" : ""}
+        </Text>
+      </View>
+      <View className="w-px h-full bg-neutral-400 opacity-30 mx-4" />
+      <View className="flex-1 items-center">
+        <Text className="opacity-80 text-sm mb-1">{t("weather.wind_speed")}</Text>
+        <Text className="text-base font-semibold">
+          {current
+            ? formatWindSpeed(
+                convertWindSpeed(current.windSpeed, settings.useImperialUnits),
+                settings.useImperialUnits,
+              )
+            : ""}
+        </Text>
+      </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  detailsContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 20,
-    borderRadius: 12,
-    padding: 16,
-    width: "100%",
-    opacity: 0.8,
-  },
-  detailItem: {
-    flex: 1,
-    alignItems: "center",
-  },
-  separator: {
-    width: 1,
-    height: "100%",
-    backgroundColor: "rgba(255,255,255,0.3)",
-    marginHorizontal: 16,
-  },
-  detailLabel: {
-    opacity: 0.8,
-    fontSize: 14,
-    marginBottom: 4,
-  },
-  detailValue: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-});

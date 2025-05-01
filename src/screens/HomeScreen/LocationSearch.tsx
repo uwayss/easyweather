@@ -88,6 +88,7 @@ export const LocationSearch = () => {
   const styles = StyleSheet.create({
     container: {
       zIndex: 100,
+      flex: 1,
     },
     searchbar: {
       borderRadius: 12,
