@@ -1,29 +1,41 @@
+// FILE: src/screens/HomeScreen/LocationSearchResults.tsx
 import React from "react";
 import { LocationResult } from "../../api/location";
-import { ScrollView, View, StyleSheet, Pressable } from "react-native";
-import { Surface, Text, Icon } from "react-native-paper";
+import { ScrollView, View, Pressable, Text } from "react-native"; // Import core Text
+// Removed Icon import from paper
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"; // Import vector icon component
+import { useColorScheme } from "nativewind"; // Import useColorScheme
 
 function getLocationName(location: LocationResult): string {
   const { address } = location;
   return address.city || address.town || address.village || address.state || address.country;
 }
+
 function LocationItem({ result, onPress }: { result: LocationResult; onPress: () => void }) {
+  const { colorScheme } = useColorScheme();
+  const iconColor = colorScheme === "dark" ? "#aaaaaa" : "#666666"; // Use appropriate onSurfaceVariant color
+
   return (
     <Pressable onPress={onPress}>
-      <Surface style={styles.itemSurface}>
+      <View className="p-2 flex-row items-center bg-light-surface dark:bg-dark-surface border-b border-light-outline/20 dark:border-dark-outline/20">
         <View className="mr-4">
-          <Icon source="map-marker" size={24} />
+          {/* Use MaterialCommunityIcons */}
+          <MaterialCommunityIcons name="map-marker" size={24} color={iconColor} />
         </View>
         <View className="flex-1">
-          <Text variant="titleMedium">{getLocationName(result)}</Text>
-          <Text variant="bodySmall" style={styles.description}>
+          <Text className="text-base font-medium text-light-onSurface dark:text-dark-onSurface">
+            {getLocationName(result)}
+          </Text>
+          <Text className="mt-0.5 text-xs opacity-70 text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant">
             {result.display_name}
           </Text>
         </View>
-      </Surface>
+      </View>
     </Pressable>
   );
 }
+// ... rest of the component remains the same
+
 function ResultsList({
   results,
   onSelectLocation,
@@ -33,15 +45,8 @@ function ResultsList({
 }) {
   return (
     <ScrollView
-      // style={{
-      //   position: "absolute",
-      //   top: 60,
-      //   borderRadius: 12,
-      //   overflow: "hidden",
-      //   width: "100%",
-      //   zIndex: 1000,
-      // }}
-      className="absolute top-16 w-full rounded-xl overflow-hidden z-50"
+      className="absolute top-0 w-full rounded-b-lg overflow-hidden z-50 bg-light-surface dark:bg-dark-surface shadow-md"
+      keyboardShouldPersistTaps="handled"
     >
       {results.slice(0, 3).map((result, index) => (
         <LocationItem key={index} result={result} onPress={() => onSelectLocation(result)} />
@@ -49,6 +54,7 @@ function ResultsList({
     </ScrollView>
   );
 }
+
 export default function LocationSearchResults({
   results,
   onSelectLocation,
@@ -61,15 +67,3 @@ export default function LocationSearchResults({
   if (!visible || results.length === 0) return null;
   return <ResultsList results={results} onSelectLocation={onSelectLocation} />;
 }
-const styles = StyleSheet.create({
-  itemSurface: {
-    padding: 8,
-    flexDirection: "row",
-    alignItems: "center",
-    elevation: 1,
-  },
-  description: {
-    marginTop: 2,
-    opacity: 0.7,
-  },
-});

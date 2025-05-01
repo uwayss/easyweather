@@ -1,7 +1,6 @@
 // FILE: src/screens/SettingsScreen/AboutSection.tsx
 import React from "react";
 import { View } from "react-native";
-import { Divider } from "react-native-paper";
 import { Item, ListSection } from "./Common";
 import { openLink } from "./Common";
 import { useTranslation } from "react-i18next";
@@ -33,7 +32,7 @@ function AboutSectionComponent() {
           right="open-in-new"
         />
       </ListSection>
-      <Divider />
+      <View className="h-px my-2 bg-light-outline dark:bg-dark-outline" />
     </View>
   );
 }

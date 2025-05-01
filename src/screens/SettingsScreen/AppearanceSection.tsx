@@ -1,9 +1,10 @@
+// FILE: src/screens/SettingsScreen/AppearanceSection.tsx
 import { View } from "react-native";
 import React from "react";
-import { Divider, SegmentedButtons } from "react-native-paper";
 import { ThemePreference, useSettings } from "../../context/SettingsContext";
 import { ListSection } from "./Common";
 import { useTranslation } from "react-i18next";
+import CustomSegmentedButtons from "../../components/CustomSegmentedButtons"; // Import custom component
 
 export default React.memo(function AppearanceSection() {
   const { settings, updateSetting } = useSettings();
@@ -14,13 +15,11 @@ export default React.memo(function AppearanceSection() {
   return (
     <View>
       <ListSection title={t("theme.system").split(" ")[0]}>
-        <SegmentedButtons
+        {/* Use CustomSegmentedButtons */}
+        <CustomSegmentedButtons
           value={settings.theme}
           onValueChange={handleThemeChange}
-          style={{
-            paddingHorizontal: 16,
-            paddingBottom: 8,
-          }}
+          style={{ marginHorizontal: 16, marginBottom: 8 }} // Apply margin here
           buttons={[
             {
               value: "system",
@@ -40,7 +39,8 @@ export default React.memo(function AppearanceSection() {
           ]}
         />
       </ListSection>
-      <Divider className="my-2" />
+      {/* Keep Divider temporarily */}
+      <View className="h-px my-2 bg-light-outline dark:bg-dark-outline" />
     </View>
   );
 });

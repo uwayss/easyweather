@@ -1,10 +1,10 @@
 // FILE: src/screens/SettingsScreen/LegalSection.tsx
 import React from "react";
-import { Divider } from "react-native-paper";
 import { Item, ListSection } from "./Common";
 import { openLink } from "./Common";
 import { useTranslation } from "react-i18next";
 import { PRIVACY_POLICY_URL } from "../../constants/config";
+import { View } from "react-native";
 
 const LegalSectionComponent = () => {
   const { t } = useTranslation();
@@ -19,7 +19,7 @@ const LegalSectionComponent = () => {
           right="chevron-right"
         />
       </ListSection>
-      <Divider />
+      <View className="h-px my-2 bg-light-outline dark:bg-dark-outline" />
     </>
   );
 };

@@ -1,9 +1,10 @@
-import React from "react";
+// FILE: src/components/Graph/MetricSelector.tsx
+import React, { useCallback } from "react"; // Added useCallback
 import { MetricType } from "../../utils/metricData";
-import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
-import { Text } from "react-native-paper";
+import { ScrollView, StyleSheet } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getAnalytics } from "@react-native-firebase/analytics";
+import MetricButton from "./MetricButton"; // Import the memoized button
 
 export default function MetricSelector({
   currentMetric,
@@ -23,14 +24,20 @@ export default function MetricSelector({
     ],
     [t],
   );
-  const handleMetricChange = (newMetric: MetricType) => {
-    getAnalytics().logEvent("change_hourly_metric", {
-      metric: newMetric,
-      // Add context if possible (e.g., screen: 'home' or 'details')
-      screen_context: "home_or_details",
-    });
-    setCurrentMetric(newMetric);
-  };
+
+  // Memoize the handler function to ensure stability for MetricButton's onPress prop
+  const handleMetricChange = useCallback(
+    (newMetric: string) => {
+      // Use string type here as it comes from button value
+      getAnalytics().logEvent("change_hourly_metric", {
+        metric: newMetric,
+        screen_context: "home_or_details",
+      });
+      setCurrentMetric(newMetric as MetricType); // Cast back to MetricType
+    },
+    [setCurrentMetric], // Dependency is stable
+  );
+
   return (
     <ScrollView
       horizontal
@@ -38,14 +45,13 @@ export default function MetricSelector({
       contentContainerStyle={styles.scrollContent}
     >
       {metrics.map(button => (
-        <TouchableOpacity
+        <MetricButton
           key={button.value}
-          activeOpacity={0.5}
-          style={[styles.tabButton, currentMetric === button.value && styles.activeTab]}
-          onPress={() => handleMetricChange(button.value as MetricType)}
-        >
-          <Text style={styles.tabText}>{button.label}</Text>
-        </TouchableOpacity>
+          label={button.label}
+          value={button.value}
+          isActive={currentMetric === button.value}
+          onPress={handleMetricChange} // Pass the memoized handler
+        />
       ))}
     </ScrollView>
   );
@@ -55,19 +61,5 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexDirection: "row",
     paddingVertical: 4,
-  },
-  tabButton: {
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    borderRadius: 8,
-    marginRight: 8,
-    borderWidth: 1,
-  },
-  activeTab: {
-    backgroundColor: "rgba(0, 109, 119, 0.2)",
-  },
-  tabText: {
-    fontSize: 14,
-    fontWeight: "500",
   },
 });
