@@ -19,7 +19,7 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [weather, setWeather] = useState<Weather | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const { location } = useLocationContext(); // Removed locationError
+  const { location } = useLocationContext();
 
   const clearError = () => setError(null);
 
@@ -48,12 +48,12 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (location) {
       fetchWeatherData(location.latitude, location.longitude);
     }
-  }, [location]); // Correct dependency
+  }, [location]);
 
   const value: WeatherContextProps = {
     weather,
     loading,
-    error: error, // Use the local error state
+    error: error,
     fetchWeatherData,
     clearError,
   };
