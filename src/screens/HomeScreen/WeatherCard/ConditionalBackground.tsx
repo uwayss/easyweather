@@ -1,6 +1,5 @@
 // FILE: src/screens/HomeScreen/WeatherCard/ConditionalBackground.tsx
 import React from "react";
-import { StyleSheet } from "react-native";
 import FastImage from "react-native-fast-image";
 import { CurrentWeather } from "../../../types/weather";
 import backgroundMappings from "../../../utils/backgroundMappings";
@@ -16,21 +15,9 @@ export function ConditionalBackground({ children, current }: ConditionalBackgrou
   if (current) {
     background = backgroundMappings[current.weatherCode]?.[timeOfDay];
   }
-
   return (
-    <FastImage
-      source={background ? background : undefined}
-      style={styles.background}
-      resizeMode="cover"
-    >
+    <FastImage source={background || undefined} className="w-full flex-1" resizeMode="cover">
       {children}
     </FastImage>
   );
 }
-
-const styles = StyleSheet.create({
-  background: {
-    width: "100%",
-    height: 360,
-  },
-});

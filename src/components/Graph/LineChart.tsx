@@ -45,7 +45,7 @@ const LineChart: React.FC<LineChartProps> = ({
   if (!data || data.length < 2) {
     // ... (error handling remains the same)
     return (
-      <View style={[styles.container, { height, width }, styles.centerContent]}>
+      <View style={[{ height, width }, styles.centerContent]}>
         <PaperText style={{ color: labelColor }}>Not enough data</PaperText>
       </View>
     );
@@ -135,7 +135,6 @@ const LineChart: React.FC<LineChartProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {},
   centerContent: {
     justifyContent: "center",
     alignItems: "center",

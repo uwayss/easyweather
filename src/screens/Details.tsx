@@ -1,6 +1,6 @@
 // FILE: src/screens/Details.tsx
 import React from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView } from "react-native";
 import { formatForecastDate } from "../utils/timeUtils";
 import { useTheme, Appbar } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,28 +21,21 @@ export default function DayDetailsScreen({ route, navigation }: DetailsScreenPro
   const formattedTitle = formatForecastDate(dayData?.date);
 
   return (
-    <SafeAreaView style={[styles.safeContainer, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView style={{ backgroundColor: theme.colors.background }} className="flex-1">
       <Appbar.Header>
         <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title={formattedTitle || t("weather.hourly_forecast")} />
       </Appbar.Header>
-      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+      <ScrollView
+        className="flex-1"
+        contentContainerStyle={{
+          padding: 16,
+          gap: 20,
+        }}
+      >
         <DailySummaryCard dayData={dayData} />
         {hourlyData && <HourlyConditions selectedDateHourly={hourlyData} />}
       </ScrollView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safeContainer: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-  },
-  contentContainer: {
-    padding: 16,
-    gap: 20,
-  },
-});

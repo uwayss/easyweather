@@ -1,5 +1,5 @@
 import React from "react";
-import { Linking, StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native";
+import { Linking, TouchableOpacity, View, ViewStyle } from "react-native";
 import { Icon, Text, useTheme } from "react-native-paper";
 import { getAnalytics } from "@react-native-firebase/analytics";
 
@@ -20,15 +20,8 @@ export const openLink = async (url: string, linkContext?: string) => {
 export function ListSection({ title, children }: { title: string; children: React.ReactNode }) {
   const theme = useTheme();
   return (
-    <View style={styles.section}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: theme.colors.onSurfaceVariant,
-          },
-        ]}
-      >
+    <View className="gap-6 py-3">
+      <Text style={{ color: theme.colors.onSurfaceVariant }} className="px-4">
         {title}
       </Text>
       {children}
@@ -50,11 +43,16 @@ export function Item({
 }) {
   const Wrapper = ({ children, style }: { children: React.ReactNode; style?: ViewStyle }) => {
     return onPress ? (
-      <TouchableOpacity style={[styles.wrapper, style]} onPress={onPress} activeOpacity={0.5}>
+      <TouchableOpacity
+        className="flex-row gap-4 justify-between items-center px-4"
+        style={[style]}
+        onPress={onPress}
+        activeOpacity={0.5}
+      >
         {children}
       </TouchableOpacity>
     ) : (
-      <View style={styles.wrapper}>{children}</View>
+      <View className="flex-row gap-4 justify-between items-center px-4">{children}</View>
     );
   };
   return (
@@ -68,19 +66,3 @@ export function Item({
     </Wrapper>
   );
 }
-const styles = StyleSheet.create({
-  wrapper: {
-    flexDirection: "row",
-    gap: 16,
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    alignItems: "center",
-  },
-  section: {
-    gap: 24,
-    paddingVertical: 12,
-  },
-  sectionTitle: {
-    paddingHorizontal: 16,
-  },
-});

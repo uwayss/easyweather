@@ -1,6 +1,6 @@
 // FILE: src/screens/SettingsScreen/LanguageSection.tsx
 import React, { useCallback, memo } from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import { useTheme } from "react-native-paper";
 import { useSettings } from "../../context/SettingsContext";
 import { ListSection } from "./Common";
@@ -24,7 +24,10 @@ function LanguageSection() {
 
   return (
     <ListSection title={t("settings.language")}>
-      <View style={[styles.pickerContainer, { backgroundColor: theme.colors.surface }]}>
+      <View
+        style={{ backgroundColor: theme.colors.surface }}
+        className="mx-4 rounded-xl overflow-hidden"
+      >
         <Picker
           selectedValue={i18next.language}
           onValueChange={handleLanguageChange}
@@ -44,13 +47,5 @@ function LanguageSection() {
     </ListSection>
   );
 }
-
-const styles = StyleSheet.create({
-  pickerContainer: {
-    marginHorizontal: 16,
-    borderRadius: 12,
-    overflow: "hidden",
-  },
-});
 
 export default memo(LanguageSection);

@@ -86,24 +86,13 @@ export const LocationSearch = () => {
   };
 
   const styles = StyleSheet.create({
-    container: {
-      zIndex: 100,
-      flex: 1,
-    },
     searchbar: {
       borderRadius: 12,
       backgroundColor: theme.colors.elevation.level3,
     },
-    resultsContainer: {
-      position: "absolute",
-      top: 55,
-      left: 0,
-      right: 0,
-      zIndex: 1000,
-    },
   });
   return (
-    <View style={styles.container}>
+    <View className="z-40 flex-1">
       <Searchbar
         placeholder={t("search.placeholder")}
         onChangeText={handleSearchChange}
@@ -113,7 +102,7 @@ export const LocationSearch = () => {
         onIconPress={handleGeolocationPress}
         icon={"crosshairs-gps"}
       />
-      <View style={styles.resultsContainer}>
+      <View className="absolute top-14 z-50 left-0 right-0">
         <LocationSearchResults
           results={results}
           onSelectLocation={handleSelectLocation}
