@@ -36,8 +36,6 @@ const ForecastItem = React.memo(function ForecastItem({ item, index }: ForecastI
     dayName = date.toLocaleDateString(locale, { weekday: "long" });
   }
   const { weather } = useWeather();
-  const currentDate = new Date().toISOString().split("T")[0];
-  const isToday = item.date === currentDate;
 
   function onPress() {
     const hourly = filterHourlyDataForDate(weather?.hourly, item.date);
@@ -48,37 +46,45 @@ const ForecastItem = React.memo(function ForecastItem({ item, index }: ForecastI
     navigation.navigate("DayDetails", { dayData: item, hourlyData: hourly });
   }
 
-  const todayStyle = isToday
-    ? "border-2 border-light-primary dark:border-dark-primary bg-light-primary/10 dark:bg-dark-primary/10"
-    : "bg-light-surface dark:bg-dark-surface";
-
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.6}>
-      <Card className={`mr-2 items-center justify-between p-3 gap-1.5 ${todayStyle} w-32 h-44`}>
+      <Card
+        elevated
+        // bordered={false}
+        className={`mx-2 items-center justify-between p-3 gap-1.5 w-36 h-48`}
+      >
         <Text numberOfLines={1} className="w-full text-center font-semibold">
           {dayName}
         </Text>
-        <Image source={weatherDescription.image} className="size-16" resizeMode="contain" />
+        {!item.empty ? (
+          <Image source={weatherDescription.image} className="size-16" resizeMode="contain" />
+        ) : (
+          <Card className="size-16 rounded-full" />
+        )}
         <Text
           numberOfLines={1}
           className="text-center text-xs text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant"
         >
-          {weatherDescription.description}
+          {!item.empty ? weatherDescription.description : ""}
         </Text>
-        <View className="flex-row gap-2 items-center">
-          <Text className="text-lg font-bold">
-            {formatTemperature(
-              convertTemperature(item.maxTemp, settings.useImperialUnits),
-              settings.useImperialUnits,
-            ).replace(/°[CF]$/, "°")}
-          </Text>
-          <Text className="text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant">
-            {formatTemperature(
-              convertTemperature(item.minTemp, settings.useImperialUnits),
-              settings.useImperialUnits,
-            ).replace(/°[CF]$/, "°")}
-          </Text>
-        </View>
+        {!item.empty ? (
+          <View className="flex-row gap-2 items-center">
+            <Text className="text-lg font-bold">
+              {formatTemperature(
+                convertTemperature(item.maxTemp, settings.useImperialUnits),
+                settings.useImperialUnits,
+              ).replace(/°[CF]$/, "°")}
+            </Text>
+            <Text className="text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant">
+              {formatTemperature(
+                convertTemperature(item.minTemp, settings.useImperialUnits),
+                settings.useImperialUnits,
+              ).replace(/°[CF]$/, "°")}
+            </Text>
+          </View>
+        ) : (
+          <View />
+        )}
       </Card>
     </TouchableOpacity>
   );

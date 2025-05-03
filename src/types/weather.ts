@@ -69,6 +69,7 @@ export interface DayWeather {
   windSpeed: number;
   sunset: string;
   sunrise: string;
+  empty?: boolean;
 }
 export interface CurrentWeather {
   temperature: number;
