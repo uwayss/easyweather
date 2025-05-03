@@ -16,7 +16,7 @@ export default function Card({
   className,
   elevated,
   borderType = "default",
-  opacity = 30,
+  opacity = 35,
   background,
   ...props
 }: CardProps) {
@@ -40,7 +40,7 @@ export default function Card({
       </FastImage>
     </View>
   ) : (
-    <View className={`${combinedClassName} ${className || ""}`} {...props}>
+    <View className={`${combinedClassName} ${className}`} {...props}>
       {children}
     </View>
   );

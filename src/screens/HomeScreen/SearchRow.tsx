@@ -1,10 +1,11 @@
+// FILE: src/screens/HomeScreen/SearchRow.tsx
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import Icon from "../../components/Icon";
 import { HomeNavigationProp } from "../Home";
 import { LocationSearch } from "./LocationSearch";
 
-export default React.memo(function SearchRow({ navigation }: { navigation: HomeNavigationProp }) {
+const SearchRowComponent = ({ navigation }: { navigation: HomeNavigationProp }) => {
   return (
     <View className="flex-row items-center flex-1">
       <LocationSearch />
@@ -16,4 +17,6 @@ export default React.memo(function SearchRow({ navigation }: { navigation: HomeN
       </TouchableOpacity>
     </View>
   );
-});
+};
+
+export default React.memo(SearchRowComponent);
