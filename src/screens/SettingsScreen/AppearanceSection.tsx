@@ -5,6 +5,7 @@ import { ThemePreference, useSettings } from "../../context/SettingsContext";
 import { ListSection } from "./Common";
 import { useTranslation } from "react-i18next";
 import CustomSegmentedButtons from "../../components/CustomSegmentedButtons"; // Import custom component
+import Divider from "../../components/Common/Divider";
 
 export default React.memo(function AppearanceSection() {
   const { settings, updateSetting } = useSettings();
@@ -39,8 +40,7 @@ export default React.memo(function AppearanceSection() {
           ]}
         />
       </ListSection>
-      {/* Keep Divider temporarily */}
-      <View className="h-px my-2 bg-light-outline dark:bg-dark-outline" />
+      <Divider />
     </View>
   );
 });

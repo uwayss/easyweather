@@ -25,7 +25,13 @@ const MetricButton: React.FC<MetricButtonProps> = ({ label, value, isActive, onP
       `}
       onPress={() => onPress(value)}
     >
-      <Text className={`text-sm font-medium ${isActive && activeText}`}>{label}</Text>
+      <Text
+        className={`text-sm font-medium ${
+          isActive ? activeText : "text-light-onSurface dark:text-dark-onSurface"
+        }`}
+      >
+        {label}
+      </Text>
     </TouchableOpacity>
   );
 };

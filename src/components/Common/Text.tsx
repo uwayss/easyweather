@@ -6,12 +6,22 @@ interface TextProps extends NativeTextProps {
   className?: string;
   passive?: boolean;
   invertColors?: boolean;
+  pop?: boolean;
 }
 
-export default function Text({ children, className, passive, invertColors, ...props }: TextProps) {
+export default function Text({
+  children,
+  className,
+  passive,
+  invertColors,
+  pop = false,
+  ...props
+}: TextProps) {
   const colorStyle = invertColors
     ? "text-dark-onSurface dark:text-light-onSurface"
-    : "text-light-onSurface dark:text-dark-onSurface";
+    : !pop
+    ? "text-light-onSurface dark:text-dark-onSurface"
+    : "text-black dark:text-white";
   const sizeStyle = passive ? "opacity-80 text-sm" : "";
   return (
     <NativeText className={`${colorStyle} ${sizeStyle} ${className}`} {...props}>

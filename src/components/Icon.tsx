@@ -1,4 +1,5 @@
 // FILE: src/components/Icon.tsx
+import { useColorScheme } from "nativewind";
 import React from "react";
 import { StyleProp, TextStyle } from "react-native";
 import { ColorValue } from "react-native";
@@ -14,13 +15,21 @@ interface IconProps {
 }
 
 const Icon: React.FC<IconProps> = ({ name, size = 24, color, style, type = "material" }) => {
+  const { colorScheme } = useColorScheme();
+  const theme = colorScheme === "dark" ? darkThemeColors : lightThemeColors;
+  const iconColor = theme.onSurface;
+
   const IconComponent = type === "feather" ? Feather : Material;
   try {
-    return <IconComponent name={name as never} size={size} color={color} style={style} />;
+    return (
+      <IconComponent name={name as never} size={size} color={color || iconColor} style={style} />
+    );
   } catch (error) {
     console.error("An error occurred when rendering an Icon", error);
     return null;
   }
 };
+const lightThemeColors = { primary: "#006d77", onSurface: "#1f1f1f" };
+const darkThemeColors = { primary: "#83c5be", onSurface: "#e1e1e1" };
 
 export default Icon;
