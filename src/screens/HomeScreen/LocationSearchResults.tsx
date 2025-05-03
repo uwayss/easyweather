@@ -1,10 +1,9 @@
 // FILE: src/screens/HomeScreen/LocationSearchResults.tsx
 import React from "react";
 import { LocationResult } from "../../api/location";
-import { ScrollView, View, Pressable, Text } from "react-native"; // Import core Text
-// Removed Icon import from paper
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"; // Import vector icon component
-import { useColorScheme } from "nativewind"; // Import useColorScheme
+import { ScrollView, View, Pressable, Text } from "react-native";
+import Icon from "../../components/Icon";
+import { useColorScheme } from "nativewind";
 
 function getLocationName(location: LocationResult): string {
   const { address } = location;
@@ -13,14 +12,13 @@ function getLocationName(location: LocationResult): string {
 
 function LocationItem({ result, onPress }: { result: LocationResult; onPress: () => void }) {
   const { colorScheme } = useColorScheme();
-  const iconColor = colorScheme === "dark" ? "#aaaaaa" : "#666666"; // Use appropriate onSurfaceVariant color
+  const iconColor = colorScheme === "dark" ? "#aaaaaa" : "#666666";
 
   return (
     <Pressable onPress={onPress}>
       <View className="p-2 flex-row items-center bg-light-surface dark:bg-dark-surface border-b border-light-outline/20 dark:border-dark-outline/20">
         <View className="mr-4">
-          {/* Use MaterialCommunityIcons */}
-          <MaterialCommunityIcons name="map-marker" size={24} color={iconColor} />
+          <Icon name="map-pin" size={24} color={iconColor} />
         </View>
         <View className="flex-1">
           <Text className="text-base font-medium text-light-onSurface dark:text-dark-onSurface">
@@ -34,7 +32,6 @@ function LocationItem({ result, onPress }: { result: LocationResult; onPress: ()
     </Pressable>
   );
 }
-// ... rest of the component remains the same
 
 function ResultsList({
   results,

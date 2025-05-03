@@ -1,7 +1,6 @@
 // FILE: src/screens/DateScreen/DailySummaryCard.tsx
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"; // Import vector icon
 import { DayWeather } from "../../types/weather";
 import { useWeatherDescriptions } from "../../utils/descriptions";
 import { useSettings } from "../../context/SettingsContext";
@@ -10,9 +9,10 @@ import { convertTemperature, convertWindSpeed, formatWindSpeed } from "../../uti
 import { formatTimeStringToHour } from "../../utils/timeUtils";
 import FastImage from "react-native-fast-image";
 import { useColorScheme } from "nativewind";
+import Icon from "../../components/Icon";
 
 interface DetailItemProps {
-  icon: string;
+  icon: string; // Feather icon name
   label: string;
   value: string;
   unit?: string;
@@ -22,13 +22,12 @@ interface DetailItemProps {
 const DetailItem: React.FC<DetailItemProps> = ({ icon, label, value, unit, color }) => {
   const { colorScheme } = useColorScheme();
   const theme = colorScheme === "dark" ? darkThemeColors : lightThemeColors;
-  // Use default onSurfaceVariant if color prop is not passed
   const finalIconColor = color || theme.onSurfaceVariant;
   const styles = detailItemStyles();
   return (
     <View style={styles.detailItem}>
-      {/* Use MaterialCommunityIcons */}
-      <MaterialCommunityIcons name={icon} size={20} color={finalIconColor} />
+      {/* Use Feather icon */}
+      <Icon name={icon} size={20} color={finalIconColor} />
       <View style={styles.detailTextsContainer}>
         <Text className="font-semibold text-sm text-light-onSurface dark:text-dark-onSurface">
           {value}
@@ -58,7 +57,6 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
   if (!dayData) return null;
 
   const weatherInfo = translatedWeatherDescriptions[dayData.weatherCode]?.day;
-
   const formattedHigh = Math.round(
     convertTemperature(dayData.maxTemp, settings.useImperialUnits),
   ).toString();
@@ -66,11 +64,9 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
     convertTemperature(dayData.minTemp, settings.useImperialUnits),
   ).toString();
   const tempUnit = settings.useImperialUnits ? "°F" : "°C";
-
   const rawWindSpeed = convertWindSpeed(dayData.windSpeed, settings.useImperialUnits);
   const formattedWind = formatWindSpeed(rawWindSpeed, settings.useImperialUnits);
   const [windValue, windUnit] = formattedWind.split(" ");
-
   const formattedSunrise = formatTimeStringToHour(dayData.sunrise);
   const formattedSunset = formatTimeStringToHour(dayData.sunset);
 
@@ -108,14 +104,15 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
       <View style={styles.detailsContainer}>
         <View style={styles.detailsRow}>
           <DetailItem
-            icon="weather-pouring"
+            // Use Feather icon names
+            icon="cloud-drizzle" // Replaced weather-pouring
             label={t("weather.max_precipitation")}
             value={`${Math.round(dayData.rainProb)}`}
             unit="%"
             color="#64B5F6"
           />
           <DetailItem
-            icon="weather-windy"
+            icon="wind" // Replaced weather-windy
             label={t("weather.max_wind")}
             value={windValue}
             unit={windUnit}
@@ -124,13 +121,13 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
         </View>
         <View style={styles.detailsRow}>
           <DetailItem
-            icon="weather-sunset-up"
+            icon="sunrise" // Replaced weather-sunset-up
             color="#FFB74D"
             label={t("weather.sunrise")}
             value={formattedSunrise || "--:--"}
           />
           <DetailItem
-            icon="weather-sunset-down"
+            icon="sunset" // Replaced weather-sunset-down
             label={t("weather.sunset")}
             value={formattedSunset || "--:--"}
             color="#BA68C8"
@@ -145,7 +142,7 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
 const lightThemeColors = { primary: "#006d77", onSurface: "#1f1f1f", onSurfaceVariant: "#666666" };
 const darkThemeColors = { primary: "#83c5be", onSurface: "#e1e1e1", onSurfaceVariant: "#aaaaaa" };
 
-// Keep StyleSheet temporarily for layout structure
+// StyleSheet remains for layout
 const summaryCardStyles = () =>
   StyleSheet.create({
     topSection: { flexDirection: "row", alignItems: "center", gap: 12 },

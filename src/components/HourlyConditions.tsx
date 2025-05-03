@@ -96,7 +96,7 @@ export default function HourlyConditions({
                 : {},
             ]}
           >
-            <View>
+            <View className="bg-white">
               <View style={styles.valuesRow}>
                 {graphData.map((pointData, index) => (
                   <View key={`value-${index}`} style={[styles.hourItemContainer, { width: xStep }]}>

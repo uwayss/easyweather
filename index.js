@@ -1,10 +1,9 @@
 // FILE: index.js
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import { AppRegistry } from "react-native";
 import App from "./App";
 import { NavigationContainer, useNavigationContainerRef } from "@react-navigation/native";
 import { name as appName } from "./app.json";
-import { Snackbar } from "react-native-paper";
 import { WeatherProvider, useWeather } from "./src/context/WeatherContext";
 import { LocationProvider, useLocationContext } from "./src/context/LocationContext";
 import { SettingsProvider, useSettings } from "./src/context/SettingsContext";
@@ -14,10 +13,10 @@ import "./services/i18next";
 import { getApp } from "@react-native-firebase/app";
 import { getAnalytics } from "@react-native-firebase/analytics";
 import { BANNER_AD_UNIT_ID } from "./src/constants/config";
-import { SNACKBAR_DURATION_LONG } from "./src/constants/ui";
 import MobileAds, { MaxAdContentRating } from "react-native-google-mobile-ads";
 import { useColorScheme } from "nativewind";
-import { SafeAreaProvider } from "react-native-safe-area-context"; // Import SafeAreaProvider
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 MobileAds().setRequestConfiguration({
   maxAdContentRating: MaxAdContentRating.G,
@@ -32,9 +31,8 @@ const ThemedAppWithProviders = () => {
   const routeNameRef = useRef(null);
   const { setColorScheme } = useColorScheme();
 
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState(null);
-  const [adLoadAttempt, setAdLoadAttempt] = useState(0);
+  // Removed Snackbar state
+  const [adLoadAttempt, setAdLoadAttempt] = React.useState(0); // Use React.useState
   const { error: weatherError, clearError: clearWeatherError } = useWeather();
   const { error: locationError, clearError: clearLocationError } = useLocationContext();
 
@@ -42,19 +40,25 @@ const ThemedAppWithProviders = () => {
     setColorScheme(activeTheme);
   }, [activeTheme, setColorScheme]);
 
+  // Show Toast on error
   useEffect(() => {
     const errorMessage = locationError || weatherError;
     if (errorMessage) {
-      setSnackbarMessage(errorMessage);
-      setSnackbarVisible(true);
+      Toast.show({
+        type: "error", // 'success', 'error', 'info'
+        text1: "Error", // Optional title
+        text2: errorMessage,
+        position: "bottom",
+        visibilityTime: 4000, // Duration in ms
+        autoHide: true,
+        onHide: () => {
+          // Clear error state when toast hides
+          if (locationError) clearLocationError();
+          if (weatherError) clearWeatherError();
+        },
+      });
     }
-  }, [weatherError, locationError]);
-
-  const onDismissSnackbar = () => {
-    setSnackbarVisible(false);
-    if (locationError) clearLocationError();
-    if (weatherError) clearWeatherError();
-  };
+  }, [weatherError, locationError, clearWeatherError, clearLocationError]); // Added clear functions to deps
 
   const handleAdFailedToLoad = () => {
     setTimeout(() => {
@@ -112,18 +116,6 @@ const ThemedAppWithProviders = () => {
           onAdLoaded={handleAdLoaded}
           onAdFailedToLoad={handleAdFailedToLoad}
         />
-        {/* Keep Snackbar temporarily, will need replacement */}
-        <Snackbar
-          visible={snackbarVisible}
-          onDismiss={onDismissSnackbar}
-          action={{
-            label: "Dismiss",
-            onPress: onDismissSnackbar,
-          }}
-          duration={SNACKBAR_DURATION_LONG}
-        >
-          {snackbarMessage || ""}
-        </Snackbar>
       </NavigationContainer>
     </>
   );
@@ -141,12 +133,12 @@ const AppWithProviders = () => {
 
 function AppRoot() {
   return (
-    // Wrap with SafeAreaProvider
     <SafeAreaProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SettingsProvider>
           <AppWithProviders />
         </SettingsProvider>
+        <Toast />
       </GestureHandlerRootView>
     </SafeAreaProvider>
   );

@@ -1,18 +1,22 @@
 // FILE: src/screens/SettingsScreen/LanguageSection.tsx
 import React, { useCallback, memo } from "react";
 import { View } from "react-native";
-import { useTheme } from "react-native-paper";
 import { useSettings } from "../../context/SettingsContext";
 import { ListSection } from "./Common";
 import i18next from "i18next";
 import { useTranslation } from "react-i18next";
 import { Picker } from "@react-native-picker/picker";
-import { SUPPORTED_LANGUAGES } from "../../constants/settings"; // Import languages constant
+import { SUPPORTED_LANGUAGES } from "../../constants/settings";
+import { useColorScheme } from "nativewind";
 
 function LanguageSection() {
   const { updateSetting } = useSettings();
   const { t } = useTranslation();
-  const theme = useTheme();
+  const { colorScheme } = useColorScheme();
+
+  const pickerTextColor = colorScheme === "dark" ? "#e1e1e1" : "#1f1f1f";
+  const pickerDropdownIconColor = pickerTextColor;
+  const pickerBackgroundColor = colorScheme === "dark" ? "#1e1e1e" : "#ffffff";
 
   const handleLanguageChange = useCallback(
     (lang: string) => {
@@ -25,21 +29,22 @@ function LanguageSection() {
   return (
     <ListSection title={t("settings.language")}>
       <View
-        style={{ backgroundColor: theme.colors.surface }}
-        className="mx-4 rounded-xl overflow-hidden"
+        style={{ backgroundColor: pickerBackgroundColor }}
+        className="mx-4 rounded-xl overflow-hidden border border-light-outline dark:border-dark-outline"
       >
         <Picker
           selectedValue={i18next.language}
           onValueChange={handleLanguageChange}
-          dropdownIconColor={theme.colors.onSurface}
-          style={{ color: theme.colors.onSurface }}
+          dropdownIconColor={pickerDropdownIconColor}
+          style={{ color: pickerTextColor, height: 50 }}
+          itemStyle={{ color: pickerTextColor }}
         >
           {SUPPORTED_LANGUAGES.map(lang => (
             <Picker.Item
               key={lang.value}
               label={lang.label}
               value={lang.value}
-              color={theme.colors.onSurface}
+              color={pickerTextColor}
             />
           ))}
         </Picker>

@@ -1,25 +1,30 @@
+// FILE: src/screens/DateScreen/CustomVerticalProgressBar.tsx
 import React from "react";
 import { View } from "react-native";
-import { useTheme } from "react-native-paper";
 
 interface CustomVerticalProgressBarProps {
   progress: number;
   color: string;
   style?: object;
-  trackColor?: string;
+  className?: string;
 }
 
 const CustomVerticalProgressBar: React.FC<CustomVerticalProgressBarProps> = ({
   progress,
   color,
   style = {},
+  className = "",
 }) => {
   const clampedProgress = Math.max(0, Math.min(1, progress));
-  const theme = useTheme();
+
   return (
     <View
-      style={[style, { backgroundColor: theme.colors.onSurfaceDisabled }]}
-      className="justify-end overflow-hidden rounded-md w-1/3"
+      style={style}
+      className={
+        className
+          ? `justify-end overflow-hidden rounded-md w-1/3 bg-black/10 dark:bg-white/10 ${className}`
+          : className
+      }
     >
       <View
         style={{ backgroundColor: color, height: `${clampedProgress * 100}%` }}

@@ -1,8 +1,8 @@
 // FILE: src/screens/DateScreen/HourlyChart.tsx
-import { FlatList, StyleSheet, View, Image } from "react-native";
+import { FlatList, View, Image, Text } from "react-native"; // Import core Text
 import React from "react";
-import { MD3Theme, Text, useTheme } from "react-native-paper";
-import { GraphDataPoint, MetricType } from "../../utils/metricData";
+// Removed MD3Theme, Text, useTheme imports from 'react-native-paper'
+import { GraphDataPoint } from "../../utils/metricData";
 import { HourWeather } from "../../types/weather";
 import weatherDescriptions from "../../utils/descriptions";
 import CustomVerticalProgressBar from "./CustomVerticalProgressBar";
@@ -10,7 +10,6 @@ import CustomVerticalProgressBar from "./CustomVerticalProgressBar";
 interface HourlyChartProps {
   data: GraphDataPoint[];
   hourlySource: HourWeather[];
-  metric: MetricType;
 }
 
 const HourItem = React.memo(function HourItem({
@@ -20,26 +19,26 @@ const HourItem = React.memo(function HourItem({
   graphPoint: GraphDataPoint;
   hourInfo: HourWeather;
 }) {
-  const theme = useTheme();
-  const styles = chartStyles(theme);
+  // Removed theme and styles access as classes are used now
   const weatherIconInfo =
     weatherDescriptions[hourInfo.weatherCode]?.[hourInfo.isDay ? "day" : "night"];
 
   return (
-    <View style={styles.itemContainer}>
-      <Text style={styles.itemValueText} variant="labelSmall">
+    // Use className for layout and styling
+    <View className="items-center gap-1.5 w-[60px] px-1">
+      <Text className="text-xs font-semibold text-light-onSurface dark:text-dark-onSurface">
         {graphPoint.value}
       </Text>
       <CustomVerticalProgressBar
         progress={graphPoint.progress}
         color={graphPoint.color}
-        style={styles.customProgressBar}
-        trackColor={theme.dark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)"}
+        style={{ height: 60 }} // Keep height from style if needed, width is in component
+        className="w-3" // Adjust width with className
       />
       {weatherIconInfo && (
-        <Image source={weatherIconInfo.image} style={styles.weatherIcon} resizeMode="contain" />
+        <Image source={weatherIconInfo.image} className="size-7" resizeMode="contain" />
       )}
-      <Text style={styles.itemLabelText} variant="labelSmall">
+      <Text className="text-[11px] text-center w-full text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant">
         {graphPoint.label}
       </Text>
     </View>
@@ -47,11 +46,9 @@ const HourItem = React.memo(function HourItem({
 });
 
 export default function HourlyChart({ data, hourlySource }: HourlyChartProps) {
-  const theme = useTheme();
-  const styles = chartStyles(theme);
-
   if (data.length !== hourlySource.length) {
-    return <Text style={styles.errorText}>Data mismatch</Text>;
+    // Apply dark mode styling to error text
+    return <Text className="p-4 text-center text-red-600 dark:text-red-400">Data mismatch</Text>;
   }
 
   return (
@@ -66,41 +63,9 @@ export default function HourlyChart({ data, hourlySource }: HourlyChartProps) {
       maxToRenderPerBatch={10}
       windowSize={10}
       showsHorizontalScrollIndicator={false}
-      removeClippedSubviews={false}
+      removeClippedSubviews={false} // Keep if performance requires it
     />
   );
 }
 
-const chartStyles = (theme: MD3Theme) =>
-  StyleSheet.create({
-    itemContainer: {
-      alignItems: "center",
-      gap: 6,
-      width: 60,
-      paddingHorizontal: 4,
-    },
-    itemValueText: {
-      fontSize: 12,
-      fontWeight: "600",
-      color: theme.colors.onSurface,
-    },
-    customProgressBar: {
-      width: 12,
-      height: 60,
-    },
-    weatherIcon: {
-      width: 28,
-      height: 28,
-    },
-    itemLabelText: {
-      fontSize: 11,
-      color: theme.colors.onSurfaceVariant,
-      textAlign: "center",
-      width: "100%",
-    },
-    errorText: {
-      color: theme.colors.error,
-      textAlign: "center",
-      padding: 16,
-    },
-  });
+// Removed chartStyles function and StyleSheet import

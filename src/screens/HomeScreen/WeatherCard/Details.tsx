@@ -1,7 +1,6 @@
 // FILE: src/screens/HomeScreen/WeatherCard/Details.tsx
 import React from "react";
-import { View } from "react-native";
-import { Text } from "react-native-paper";
+import { Text, View } from "react-native";
 import { CurrentWeather } from "../../../types/weather";
 import { useSettings } from "../../../context/SettingsContext";
 import { convertWindSpeed, formatWindSpeed } from "../../../utils/unitConversion";
@@ -13,15 +12,19 @@ export function Details({ current }: { current: CurrentWeather | undefined }) {
   return (
     <View className="flex-row justify-center items-center mt-5 rounded-xl p-4 w-full opacity-80 elevation-sm">
       <View className="flex-1 items-center">
-        <Text className="opacity-80 text-sm mb-1">{t("weather.humidity")}</Text>
-        <Text className="text-base font-semibold">
+        <Text className="text-light-onSurface dark:text-dark-onSurface opacity-80 text-sm mb-1">
+          {t("weather.humidity")}
+        </Text>
+        <Text className="text-light-onSurface dark:text-dark-onSurface text-base font-semibold">
           {current?.humidity ? current?.humidity + "%" : ""}
         </Text>
       </View>
       <View className="w-px h-full bg-neutral-400 opacity-30 mx-4" />
       <View className="flex-1 items-center">
-        <Text className="opacity-80 text-sm mb-1">{t("weather.wind_speed")}</Text>
-        <Text className="text-base font-semibold">
+        <Text className="text-light-onSurface dark:text-dark-onSurface opacity-80 text-sm mb-1">
+          {t("weather.wind_speed")}
+        </Text>
+        <Text className="text-light-onSurface dark:text-dark-onSurface text-base font-semibold">
           {current
             ? formatWindSpeed(
                 convertWindSpeed(current.windSpeed, settings.useImperialUnits),

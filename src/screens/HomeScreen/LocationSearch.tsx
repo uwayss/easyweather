@@ -1,12 +1,13 @@
-// FILE: src\screens\HomeScreen\LocationSearch.tsx
+// FILE: src/screens/HomeScreen/LocationSearch.tsx
 import React, { useState, useCallback } from "react";
-import { StyleSheet, View } from "react-native";
-import { Searchbar, useTheme } from "react-native-paper";
+import { View, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
 import { searchLocation, LocationResult } from "../../api/location";
 import LocationSearchResults from "./LocationSearchResults";
 import { useLocationContext } from "../../context/LocationContext";
 import { useTranslation } from "react-i18next";
 import { getAnalytics } from "@react-native-firebase/analytics";
+import Icon from "../../components/Icon";
+import { useColorScheme } from "nativewind";
 
 type DebouncedSearchFunction = (query: string) => Promise<void> | void;
 
@@ -19,10 +20,17 @@ function debounce(func: DebouncedSearchFunction, wait: number): DebouncedSearchF
 }
 
 export const LocationSearch = () => {
-  const theme = useTheme();
+  const { colorScheme } = useColorScheme();
   const { updateLocation, getCurrentLocation, setError } = useLocationContext();
   const { t } = useTranslation();
 
+  // ... state declarations ...
+  const [searchQuery, setSearchQuery] = useState("");
+  const [results, setResults] = useState<LocationResult[]>([]);
+  const [showResults, setShowResults] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // ... handlers (onLocationSelect, debouncedSearch, handleSearchChange, etc.) ...
   const onLocationSelect = (selectedLocation: LocationResult) => {
     updateLocation({
       latitude: parseFloat(selectedLocation.lat),
@@ -30,11 +38,6 @@ export const LocationSearch = () => {
       displayName: selectedLocation.display_name,
     });
   };
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const [results, setResults] = useState<LocationResult[]>([]);
-  const [showResults, setShowResults] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const debouncedSearch = useCallback(
     debounce(async (query: string) => {
@@ -57,7 +60,7 @@ export const LocationSearch = () => {
         setShowResults(false);
       }
     }, 500),
-    [setError],
+    [setError, updateLocation],
   );
 
   const handleSearchChange = (query: string) => {
@@ -85,23 +88,36 @@ export const LocationSearch = () => {
     }
   };
 
-  const styles = StyleSheet.create({
-    searchbar: {
-      borderRadius: 12,
-      backgroundColor: theme.colors.elevation.level3,
-    },
-  });
+  const placeholderTextColor = colorScheme === "dark" ? "#aaaaaa" : "#666666";
+  const iconColor = colorScheme === "dark" ? "#e1e1e1" : "#1f1f1f";
+  const indicatorColor = colorScheme === "dark" ? "#83c5be" : "#006d77";
+
   return (
     <View className="z-40 flex-1">
-      <Searchbar
-        placeholder={t("search.placeholder")}
-        onChangeText={handleSearchChange}
-        value={searchQuery}
-        style={styles.searchbar}
-        loading={isLoading}
-        onIconPress={handleGeolocationPress}
-        icon={"crosshairs-gps"}
-      />
+      <View className="flex-row items-center h-14 px-1 rounded-xl bg-light-elevation-level3 dark:bg-dark-elevation-level3">
+        <TextInput
+          placeholder={t("search.placeholder")}
+          placeholderTextColor={placeholderTextColor}
+          onChangeText={handleSearchChange}
+          value={searchQuery}
+          className="flex-1 h-full px-3 text-base text-light-onSurface dark:text-dark-onSurface"
+          returnKeyType="search"
+          onFocus={() => searchQuery && setShowResults(true)}
+          onBlur={() => setTimeout(() => setShowResults(false), 150)}
+        />
+        {isLoading ? (
+          <ActivityIndicator size="small" color={indicatorColor} className="px-3" />
+        ) : (
+          searchQuery.length > 0 && (
+            <TouchableOpacity onPress={() => handleSearchChange("")} className="p-2">
+              <Icon name="x" size={22} color={iconColor} />
+            </TouchableOpacity>
+          )
+        )}
+        <TouchableOpacity onPress={handleGeolocationPress} className="p-2">
+          <Icon name="x" size={22} color={iconColor} type="feather" />
+        </TouchableOpacity>
+      </View>
       <View className="absolute top-14 z-50 left-0 right-0">
         <LocationSearchResults
           results={results}

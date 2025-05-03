@@ -1,8 +1,7 @@
-// FILE: src\screens\Home.tsx
+// FILE: src/screens/Home.tsx
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useState, useMemo, useCallback } from "react";
 import { RefreshControl, ScrollView, StyleSheet } from "react-native";
-import { useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "../../App";
 import HourlyConditions from "../components/HourlyConditions";
@@ -13,17 +12,18 @@ import ForecastList from "./HomeScreen/ForecastList";
 import WeatherCard from "./HomeScreen/WeatherCard";
 import SearchRow from "./HomeScreen/SearchRow";
 import { getAnalytics } from "@react-native-firebase/analytics";
+import { useColorScheme } from "nativewind"; // Import useColorScheme
 
 export type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 type HomeProps = NativeStackScreenProps<RootStackParamList, "Home">;
 
 export default function Home({ navigation }: HomeProps) {
-  const theme = useTheme();
+  // Removed theme usage
+  const { colorScheme } = useColorScheme(); // Get color scheme for potential specific styling
   const { weather, loading: weatherLoading, fetchWeatherData } = useWeather();
   const { location, loading: locationLoading } = useLocationContext();
   const [refreshing, setRefreshing] = useState(false);
 
-  // Combined loading state for skeletons
   const isLoading = locationLoading || weatherLoading;
 
   const onRefresh = useCallback(async () => {
@@ -37,7 +37,6 @@ export default function Home({ navigation }: HomeProps) {
       await fetchWeatherData(location.latitude, location.longitude);
     } catch (e) {
       console.error("Refresh error:", e);
-      // Error is handled by Snackbar via context
     } finally {
       setRefreshing(false);
     }
@@ -48,8 +47,13 @@ export default function Home({ navigation }: HomeProps) {
     [weather?.hourly],
   );
 
+  // Determine RefreshControl colors based on theme
+  const refreshControlColors = colorScheme === "dark" ? ["#83c5be"] : ["#006d77"]; // Primary colors
+  const refreshControlTintColor = colorScheme === "dark" ? "#83c5be" : "#006d77";
+
   return (
-    <SafeAreaView style={{ backgroundColor: theme.colors.background }} className="flex-1">
+    // Use Tailwind for background
+    <SafeAreaView className="flex-1 bg-light-background dark:bg-dark-background">
       <ScrollView
         className="flex-1"
         contentContainerStyle={styles.contentContainer}
@@ -59,8 +63,8 @@ export default function Home({ navigation }: HomeProps) {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={[theme.colors.primary]}
-            tintColor={theme.colors.primary}
+            colors={refreshControlColors} // Use dynamic colors
+            tintColor={refreshControlTintColor} // Use dynamic tintColor
             enabled={!isLoading}
           />
         }
@@ -74,6 +78,7 @@ export default function Home({ navigation }: HomeProps) {
   );
 }
 
+// Keep styles for contentContainer which might be complex for pure className
 const styles = StyleSheet.create({
   contentContainer: {
     paddingHorizontal: 16,

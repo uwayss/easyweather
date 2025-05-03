@@ -3,7 +3,7 @@ import { HomeNavigationProp } from "../Home";
 import React from "react";
 import { LocationSearch } from "./LocationSearch";
 import { useTranslation } from "react-i18next";
-import SettingsIcon from "../../../assets/icons/settings.svg";
+import Icon from "../../components/Icon";
 
 export default React.memo(function SearchRow({ navigation }: { navigation: HomeNavigationProp }) {
   const { t } = useTranslation();
@@ -16,7 +16,7 @@ export default React.memo(function SearchRow({ navigation }: { navigation: HomeN
         accessibilityLabel={t("settings.title")}
         accessibilityRole="button"
       >
-        <SettingsIcon width={28} />
+        <Icon name="settings" type="feather" />
       </TouchableOpacity>
     </View>
   );
