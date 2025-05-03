@@ -1,12 +1,11 @@
 // FILE: src/screens/HomeScreen/ForecastList.tsx
 import React from "react";
-import { View, StyleSheet, FlatList } from "react-native";
+import { View, FlatList } from "react-native";
 import { DayWeather } from "../../types/weather";
 import { useWeather } from "../../context/WeatherContext";
 import ForecastItem from "./ForecastItem";
 
 export default function ForecastList() {
-  // Destructure isLoading
   const { weather } = useWeather();
   const forecast = weather?.daily;
 
@@ -32,19 +31,14 @@ export default function ForecastList() {
         initialNumToRender={7}
         maxToRenderPerBatch={7} // Match initialNumToRender
         windowSize={7} // Optimize window size
-        contentContainerStyle={styles.container}
+        contentContainerStyle={{
+          paddingVertical: 8,
+          paddingLeft: 0, // Ensure it starts from the edge if needed
+          paddingRight: 8, // Space at the end
+        }}
         removeClippedSubviews={true} // Enable for performance on lists
         showsHorizontalScrollIndicator={false}
       />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 8,
-    // No flexGrow needed for horizontal FlatList container
-    paddingLeft: 0, // Ensure it starts from the edge if needed
-    paddingRight: 8, // Space at the end
-  },
-});

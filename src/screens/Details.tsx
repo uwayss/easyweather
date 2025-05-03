@@ -46,7 +46,7 @@ export default function DayDetailsScreen({ route, navigation }: DetailsScreenPro
 
       <ScrollView className="flex-1" contentContainerStyle={{ padding: 16, gap: 20 }}>
         <DailySummaryCard dayData={dayData} />
-        {hourlyData && <HourlyConditions selectedDateHourly={hourlyData} />}
+        {hourlyData && <HourlyConditions selectedHoursData={hourlyData} />}
       </ScrollView>
     </SafeAreaView>
   );

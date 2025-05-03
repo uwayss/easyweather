@@ -1,6 +1,6 @@
 // FILE: src/screens/DateScreen/DailySummaryCard.tsx
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { DayWeather } from "../../types/weather";
 import { useWeatherDescriptions } from "../../utils/descriptions";
 import { useSettings } from "../../context/SettingsContext";
@@ -24,12 +24,10 @@ const DetailItem: React.FC<DetailItemProps> = ({ icon, label, value, unit, color
   const { colorScheme } = useColorScheme();
   const theme = colorScheme === "dark" ? darkThemeColors : lightThemeColors;
   const finalIconColor = color || theme.onSurfaceVariant;
-  const styles = detailItemStyles();
   return (
-    <View style={styles.detailItem}>
-      {/* Use Feather icon */}
-      <Icon name={icon} size={20} color={finalIconColor} />
-      <View style={styles.detailTextsContainer}>
+    <View className="flex-row items-center gap-2 flex-1">
+      <Icon name={icon} size={20} color={finalIconColor} type="feather" />
+      <View className="items-start">
         <Text className="font-semibold text-sm">
           {value}
           {unit && (
@@ -51,7 +49,6 @@ const DetailItem: React.FC<DetailItemProps> = ({ icon, label, value, unit, color
 
 export default function DailySummaryCard({ dayData }: { dayData: DayWeather | undefined }) {
   const { settings } = useSettings();
-  const styles = summaryCardStyles();
   const { t } = useTranslation();
   const translatedWeatherDescriptions = useWeatherDescriptions();
 
@@ -73,16 +70,16 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
 
   return (
     <View className="bg-light-surface dark:bg-dark-surface rounded-lg shadow-sm overflow-hidden p-4 gap-3">
-      <View style={styles.topSection}>
+      <View className="flex-row items-center gap-3">
         {weatherInfo?.image && (
           <FastImage
             source={weatherInfo.image}
-            style={styles.weatherIcon}
+            style={{ width: 64, height: 64 }}
             resizeMode={FastImage.resizeMode.contain}
           />
         )}
-        <View style={styles.topTextContainer}>
-          <View style={styles.tempsContainer}>
+        <View className="flex-1 items-start">
+          <View className="flex-row items-baseline gap-1">
             <Text className="font-bold text-4xl">{formattedHigh}</Text>
             <Text className="text-2xl text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant">
               /{formattedLow}
@@ -97,8 +94,8 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
 
       <View className="h-px bg-light-outline dark:bg-dark-outline" />
 
-      <View style={styles.detailsContainer}>
-        <View style={styles.detailsRow}>
+      <View className="gap-3">
+        <View className="flex-row justify-around items-center">
           <DetailItem
             // Use Feather icon names
             icon="cloud-drizzle" // Replaced weather-pouring
@@ -115,7 +112,7 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
             color="#81D4FA"
           />
         </View>
-        <View style={styles.detailsRow}>
+        <View className="flex-row justify-around items-center">
           <DetailItem
             icon="sunrise" // Replaced weather-sunset-up
             color="#FFB74D"
@@ -137,20 +134,3 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
 // Temporary color objects
 const lightThemeColors = { primary: "#006d77", onSurface: "#1f1f1f", onSurfaceVariant: "#666666" };
 const darkThemeColors = { primary: "#83c5be", onSurface: "#e1e1e1", onSurfaceVariant: "#aaaaaa" };
-
-// StyleSheet remains for layout
-const summaryCardStyles = () =>
-  StyleSheet.create({
-    topSection: { flexDirection: "row", alignItems: "center", gap: 12 },
-    weatherIcon: { width: 64, height: 64 },
-    topTextContainer: { flex: 1, alignItems: "flex-start" },
-    tempsContainer: { flexDirection: "row", alignItems: "baseline", gap: 4 },
-    detailsContainer: { gap: 10 },
-    detailsRow: { flexDirection: "row", justifyContent: "space-around", alignItems: "center" },
-  });
-
-const detailItemStyles = () =>
-  StyleSheet.create({
-    detailItem: { flexDirection: "row", alignItems: "center", gap: 8, flex: 1 },
-    detailTextsContainer: { alignItems: "flex-start" },
-  });
