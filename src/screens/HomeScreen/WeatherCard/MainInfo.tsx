@@ -34,17 +34,20 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
       {current ? (
         <View className="p-4 w-full self-center items-center justify-center opacity-80 rounded-xl flex-1">
           <View className="p-3 self-center w-full bg-transparent">
-            <Text numberOfLines={1} ellipsizeMode="tail" className="text-center w-full">
+            <Text numberOfLines={1} ellipsizeMode="tail" className="text-center w-full text-sm" pop>
               {name}
             </Text>
           </View>
-          <Text className="font-bold text-5xl">
+          <Text className="font-bold text-5xl" pop>
             {formatTemperature(
               convertTemperature(current.temperature, settings.useImperialUnits),
               settings.useImperialUnits,
             )}
           </Text>
-          <Text className="w-full flex-wrap uppercase mt-1 tracking-widest text-center text-base font-semibold leading-relaxed">
+          <Text
+            className="w-full flex-wrap uppercase mt-1 tracking-widest text-center text-base font-semibold leading-relaxed"
+            pop
+          >
             {description || ""}
           </Text>
           <Text className="opacity-90 mt-2 text-base font-semibold leading-relaxed">

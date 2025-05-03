@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { Picker } from "@react-native-picker/picker";
 import { SUPPORTED_LANGUAGES } from "../../constants/settings";
 import { useColorScheme } from "nativewind";
+import Divider from "../../components/Common/Divider";
 
 function LanguageSection() {
   const { updateSetting } = useSettings();
@@ -49,6 +50,7 @@ function LanguageSection() {
           ))}
         </Picker>
       </View>
+      <Divider />
     </ListSection>
   );
 }

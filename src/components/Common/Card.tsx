@@ -6,7 +6,6 @@ interface CardProps extends ViewProps {
   children?: React.ReactNode;
   className?: string;
   elevated?: boolean;
-  opacity?: number;
   background?: Source;
   borderType?: "default" | "thin" | "hidden";
 }
@@ -16,16 +15,16 @@ export default function Card({
   className,
   elevated,
   borderType = "default",
-  opacity = 35,
   background,
   ...props
 }: CardProps) {
   const cardBaseStyle = "overflow-hidden rounded-xl";
-  const elevationStyle = elevated ? `bg-light-outline/${opacity}` : "";
+  const elevationStyle = elevated ? `bg-light-outline/35 dark:bg-dark-outline/50` : "";
   let borderStyle =
-    "border-light-outline border-b-2 border-r-2 border-t-hairline border-l-hairline";
+    "border-light-outline dark:border-dark-outline border-b-2 border-r-2 border-t-hairline border-l-hairline";
   if (borderType == "thin") {
-    borderStyle = "border-light-outline border-b-hairline border-r-hairline";
+    borderStyle =
+      "border-light-outline dark:border-dark-outline border-b-hairline border-r-hairline";
   } else if (borderType == "hidden") {
     borderStyle = "";
   }
