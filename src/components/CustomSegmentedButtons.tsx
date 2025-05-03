@@ -1,7 +1,8 @@
 // FILE: src/components/CustomSegmentedButtons.tsx
+import { useColorScheme } from "nativewind";
 import React from "react";
 import { View, Text, TouchableOpacity, ViewStyle, StyleProp } from "react-native";
-import { useColorScheme } from "nativewind";
+
 import Icon from "./Icon";
 
 interface SegmentButtonOption {

@@ -1,10 +1,11 @@
 // FILE: src/screens/HomeScreen/LocationSearchResults.tsx
-import React from "react";
-import { LocationResult } from "../../api/location";
-import { ScrollView, View, Pressable } from "react-native";
-import Icon from "../../components/Icon";
 import { useColorScheme } from "nativewind";
+import React from "react";
+import { ScrollView, View, Pressable } from "react-native";
+
+import { LocationResult } from "../../api/location";
 import Text from "../../components/Common/Text";
+import Icon from "../../components/Icon";
 
 function getLocationName(location: LocationResult): string {
   const { address } = location;

@@ -1,19 +1,20 @@
 // FILE: src/screens/HomeScreen/NextDays/ForecastItem.tsx
-import React, { useMemo, useCallback } from "react"; // Added useMemo, useCallback
-import { View, TouchableOpacity } from "react-native";
-import FastImage from "react-native-fast-image";
-import { useWeatherDescriptions } from "../../../utils/descriptions";
-import { DayWeather } from "../../../types/weather";
-import { useSettings } from "../../../context/SettingsContext";
-import { convertTemperature, formatTemperature } from "../../../utils/unitConversion";
-import { filterHourlyDataForDate } from "../../../utils/weatherUtils";
-import { useWeather } from "../../../context/WeatherContext";
-import { useTranslation } from "react-i18next";
 import { getAnalytics } from "@react-native-firebase/analytics";
 import { useNavigation } from "@react-navigation/native";
-import { HomeNavigationProp } from "../../Home";
-import Text from "../../../components/Common/Text";
+import React, { useMemo, useCallback } from "react";
+import { useTranslation } from "react-i18next";
+import { View, TouchableOpacity } from "react-native";
+import FastImage from "react-native-fast-image";
+
 import Card from "../../../components/Common/Card";
+import Text from "../../../components/Common/Text";
+import { useSettings } from "../../../context/SettingsContext";
+import { useWeather } from "../../../context/WeatherContext";
+import { DayWeather } from "../../../types/weather";
+import { useWeatherDescriptions } from "../../../utils/descriptions";
+import { convertTemperature, formatTemperature } from "../../../utils/unitConversion";
+import { filterHourlyDataForDate } from "../../../utils/weatherUtils";
+import { HomeNavigationProp } from "../../Home";
 
 interface ForecastItemProps {
   item: DayWeather;
@@ -24,10 +25,10 @@ const ForecastItem = React.memo(function ForecastItem({ item, index }: ForecastI
   const { settings } = useSettings();
   const { t, i18n } = useTranslation();
   const navigation = useNavigation<HomeNavigationProp>();
-  const translatedDescriptions = useWeatherDescriptions(); // This hook should be efficient due to its internal useCallback
+  const translatedDescriptions = useWeatherDescriptions();
   const { weather } = useWeather();
   const hourlyWeather = weather?.hourly;
-  // Memoize derived data based on item and settings
+
   const { dayName, weatherDescription, formattedMaxTemp, formattedMinTemp } = useMemo(() => {
     const date = new Date(item.date);
     let dayNameStr;
@@ -56,9 +57,8 @@ const ForecastItem = React.memo(function ForecastItem({ item, index }: ForecastI
       formattedMaxTemp: maxT,
       formattedMinTemp: minT,
     };
-  }, [item, index, t, i18n.language, translatedDescriptions, settings.useImperialUnits]); // Dependencies
+  }, [item, index, t, i18n.language, translatedDescriptions, settings.useImperialUnits]);
 
-  // Memoize the onPress handler
   const handlePress = useCallback(() => {
     const hourly = filterHourlyDataForDate(hourlyWeather, item.date);
     getAnalytics().logEvent("view_daily_details", {
@@ -66,7 +66,7 @@ const ForecastItem = React.memo(function ForecastItem({ item, index }: ForecastI
       weather_code: item.weatherCode,
     });
     navigation.navigate("DayDetails", { dayData: item, hourlyData: hourly });
-  }, [navigation, hourlyWeather, item]); // Dependencies
+  }, [navigation, hourlyWeather, item]);
 
   return (
     <TouchableOpacity onPress={handlePress} activeOpacity={0.6}>
@@ -81,7 +81,7 @@ const ForecastItem = React.memo(function ForecastItem({ item, index }: ForecastI
             resizeMode={FastImage.resizeMode.contain}
           />
         ) : (
-          <Card className="size-16 rounded-full" />
+          <Card className="size-16" />
         )}
         <Text
           numberOfLines={1}

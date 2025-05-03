@@ -1,5 +1,7 @@
 // FILE: src/utils/descriptions.ts
-// --- Find this interface definition ---
+import { useCallback } from "react";
+import { useTranslation } from "react-i18next";
+
 interface weatherDescriptionsType {
   [code: number]: {
     day: { description: string; image: number; translationKey: string }; // Changed ImageSourcePropType to number
@@ -15,12 +17,8 @@ export interface WeatherDescriptionInfo {
   translationKey: string;
 }
 
-import { useCallback } from "react";
-// --- No other changes needed in this file, just the type definitions ---
-
 /* eslint-disable @typescript-eslint/no-require-imports */
 // import { ImageSourcePropType } from "react-native"; // No longer needed from here
-import { useTranslation } from "react-i18next";
 
 // This function returns the weather descriptions with translated text
 export function useWeatherDescriptions() {

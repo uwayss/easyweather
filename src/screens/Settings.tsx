@@ -1,16 +1,17 @@
 // FILE: src/screens/Settings.tsx
+import { useNavigation } from "@react-navigation/native";
+import { useColorScheme } from "nativewind";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, View, Text, TouchableOpacity, StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
-import { useTranslation } from "react-i18next";
+
 import { AboutSection } from "./SettingsScreen/AboutSection";
-import { LegalSection } from "./SettingsScreen/LegalSection";
 import { ActionsSection } from "./SettingsScreen/ActionsSection";
-import UnitsSection from "./SettingsScreen/UnitsSection";
 import AppearanceSection from "./SettingsScreen/AppearanceSection";
 import LanguageSection from "./SettingsScreen/LanguageSection";
-import { useColorScheme } from "nativewind";
+import { LegalSection } from "./SettingsScreen/LegalSection";
+import UnitsSection from "./SettingsScreen/UnitsSection";
 import Icon from "../components/Icon";
 
 const SettingsScreen = () => {

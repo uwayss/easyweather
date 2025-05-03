@@ -1,10 +1,11 @@
 // FILE: src/components/Graph/LineChart.tsx
+import { useColorScheme } from "nativewind"; // Need this for theme colors
 import React from "react";
 import { View, Text } from "react-native"; // Import core Text
 import Svg, { Path, Circle, Defs, LinearGradient, Stop } from "react-native-svg";
+
 // Removed Text import from paper
 import { GraphDataPoint } from "../../utils/metricData";
-import { useColorScheme } from "nativewind"; // Need this for theme colors
 
 interface LineChartProps {
   data: GraphDataPoint[];

@@ -1,10 +1,11 @@
 // FILE: src/components/Graph/MetricSelector.tsx
-import React, { useCallback } from "react"; // Added useCallback
-import { MetricType } from "../../utils/metricData";
-import { ScrollView } from "react-native";
-import { useTranslation } from "react-i18next";
 import { getAnalytics } from "@react-native-firebase/analytics";
+import React, { useCallback } from "react"; // Added useCallback
+import { useTranslation } from "react-i18next";
+import { ScrollView } from "react-native";
+
 import MetricButton from "./MetricButton"; // Import the memoized button
+import { MetricType } from "../../utils/metricData";
 
 export default function MetricSelector({
   currentMetric,

@@ -1,6 +1,6 @@
 // FILE: src/api/geolocation.ts
-import { longToast } from "../utils/debug";
 import { GEOLOCATION_API_URL, GEOLOCATION_API_FIELDS, IP_FETCH_API_URL } from "../constants/api";
+import { longToast } from "../utils/debug";
 
 /**
  * Geolocation API module

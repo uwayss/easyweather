@@ -1,11 +1,12 @@
 // FILE: src/screens/SettingsScreen/UnitsSection.tsx
-import { View } from "react-native";
 import React from "react";
-import { useSettings } from "../../context/SettingsContext";
 import { useTranslation } from "react-i18next";
-import CustomSegmentedButtons from "../../components/CustomSegmentedButtons";
+import { View } from "react-native";
+
 import { ListSection } from "./Common";
 import Divider from "../../components/Common/Divider";
+import CustomSegmentedButtons from "../../components/CustomSegmentedButtons";
+import { useSettings } from "../../context/SettingsContext";
 
 export default React.memo(function UnitsSection() {
   const { settings, updateSetting } = useSettings();

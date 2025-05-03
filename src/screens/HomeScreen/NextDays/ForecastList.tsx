@@ -1,19 +1,21 @@
 // FILE: src/screens/HomeScreen/NextDays/ForecastList.tsx
 import React from "react"; // Removed useEffect import
 import { FlatList, ScrollView } from "react-native";
-import { DayWeather } from "../../../types/weather";
-import { useWeather } from "../../../context/WeatherContext";
+
+import EmptyForecastList from "./EmptyForecastList";
 import ForecastItem from "./ForecastItem";
 import Card from "../../../components/Common/Card";
-import EmptyForecastList from "./EmptyForecastList";
+import { useWeather } from "../../../context/WeatherContext";
+import { DayWeather } from "../../../types/weather";
 
 export default function ForecastList() {
-  const { weather, loading: isLoading } = useWeather();
+  const { weather } = useWeather();
+  const dailyWeather = weather?.daily;
   return (
     <Card borderType="hidden">
-      {!isLoading ? (
+      {dailyWeather ? (
         <FlatList
-          data={weather?.daily}
+          data={dailyWeather}
           renderItem={({ item, index }: { item: DayWeather; index: number }) => (
             <ForecastItem item={item} index={index} />
           )}

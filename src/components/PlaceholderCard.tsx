@@ -1,6 +1,6 @@
 // FILE: src/components/PlaceholderCard.tsx
-import { ActivityIndicator, View } from "react-native"; // Use core ActivityIndicator
 import React from "react";
+import { ActivityIndicator, View } from "react-native"; // Use core ActivityIndicator
 
 export default function PlaceholderCard({ withoutContainer }: { withoutContainer?: boolean }) {
   const indicator = (

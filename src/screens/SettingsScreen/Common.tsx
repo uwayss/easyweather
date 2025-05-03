@@ -1,11 +1,12 @@
 // FILE: src/screens/SettingsScreen/Common.tsx
+import { getAnalytics } from "@react-native-firebase/analytics";
+import { useColorScheme } from "nativewind";
 import React from "react";
 import { Linking, TouchableOpacity, View, ViewStyle } from "react-native";
-import { getAnalytics } from "@react-native-firebase/analytics";
+
 // Removed Feather import
-import Icon from "../../components/Icon"; // Import custom Icon component
-import { useColorScheme } from "nativewind";
 import Text from "../../components/Common/Text";
+import Icon from "../../components/Icon"; // Import custom Icon component
 
 export const openLink = async (url: string, linkContext?: string) => {
   if (linkContext) {

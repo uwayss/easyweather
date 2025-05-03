@@ -1,14 +1,15 @@
 // FILE: src/screens/SettingsScreen/LanguageSection.tsx
-import React, { useCallback, memo } from "react";
-import { View } from "react-native";
-import { useSettings } from "../../context/SettingsContext";
-import { ListSection } from "./Common";
-import i18next from "i18next";
-import { useTranslation } from "react-i18next";
 import { Picker } from "@react-native-picker/picker";
-import { SUPPORTED_LANGUAGES } from "../../constants/settings";
+import i18next from "i18next";
 import { useColorScheme } from "nativewind";
+import React, { useCallback, memo } from "react";
+import { useTranslation } from "react-i18next";
+
+import { ListSection } from "./Common";
+import Card from "../../components/Common/Card";
 import Divider from "../../components/Common/Divider";
+import { SUPPORTED_LANGUAGES } from "../../constants/settings";
+import { useSettings } from "../../context/SettingsContext";
 
 function LanguageSection() {
   const { updateSetting } = useSettings();
@@ -17,7 +18,6 @@ function LanguageSection() {
 
   const pickerTextColor = colorScheme === "dark" ? "#e1e1e1" : "#1f1f1f";
   const pickerDropdownIconColor = pickerTextColor;
-  const pickerBackgroundColor = colorScheme === "dark" ? "#1e1e1e" : "#ffffff";
 
   const handleLanguageChange = useCallback(
     (lang: string) => {
@@ -29,10 +29,7 @@ function LanguageSection() {
 
   return (
     <ListSection title={t("settings.language")}>
-      <View
-        style={{ backgroundColor: pickerBackgroundColor }}
-        className="mx-4 rounded-xl overflow-hidden border border-light-outline dark:border-dark-outline"
-      >
+      <Card className="mx-4">
         <Picker
           selectedValue={i18next.language}
           onValueChange={handleLanguageChange}
@@ -49,7 +46,7 @@ function LanguageSection() {
             />
           ))}
         </Picker>
-      </View>
+      </Card>
       <Divider />
     </ListSection>
   );

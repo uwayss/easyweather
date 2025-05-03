@@ -1,14 +1,15 @@
 // FILE: src/screens/Details.tsx
-import React from "react";
-import { ScrollView, View, Text, TouchableOpacity, StatusBar } from "react-native";
-import { formatForecastDate } from "../utils/timeUtils";
-import { SafeAreaView } from "react-native-safe-area-context";
-import DailySummaryCard from "./DateScreen/DailySummaryCard";
-import HourlyConditions from "../components/HourlyConditions";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../App";
-import { useTranslation } from "react-i18next";
 import { useColorScheme } from "nativewind";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { ScrollView, View, Text, TouchableOpacity, StatusBar } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import { formatForecastDate } from "../utils/timeUtils";
+import DailySummaryCard from "./DateScreen/DailySummaryCard";
+import { RootStackParamList } from "../../App";
+import HourlyConditions from "../components/HourlyConditions";
 import Icon from "../components/Icon";
 
 type DetailsScreenProps = NativeStackScreenProps<RootStackParamList, "DayDetails">;

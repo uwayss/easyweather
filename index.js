@@ -1,22 +1,27 @@
 // FILE: index.js
-import React, { useRef, useEffect } from "react";
-import { AppRegistry } from "react-native";
-import App from "./App";
-import { NavigationContainer, useNavigationContainerRef } from "@react-navigation/native";
-import { name as appName } from "./app.json";
-import { WeatherProvider, useWeather } from "./src/context/WeatherContext";
-import { LocationProvider, useLocationContext } from "./src/context/LocationContext";
-import { SettingsProvider, useSettings } from "./src/context/SettingsContext";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { BannerAd, BannerAdSize, TestIds } from "react-native-google-mobile-ads";
-import "./services/i18next";
-import { getApp } from "@react-native-firebase/app";
 import { getAnalytics } from "@react-native-firebase/analytics";
-import { BANNER_AD_UNIT_ID } from "./src/constants/config";
-import MobileAds, { MaxAdContentRating } from "react-native-google-mobile-ads";
+import { getApp } from "@react-native-firebase/app";
+import { NavigationContainer, useNavigationContainerRef } from "@react-navigation/native";
 import { useColorScheme } from "nativewind";
+import React, { useEffect, useRef } from "react";
+import { AppRegistry } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import MobileAds, {
+  BannerAd,
+  BannerAdSize,
+  MaxAdContentRating,
+  TestIds,
+} from "react-native-google-mobile-ads";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
+
+import App from "./App";
+import { name as appName } from "./app.json";
+import { BANNER_AD_UNIT_ID } from "./src/constants/config";
+import { LocationProvider, useLocationContext } from "./src/context/LocationContext";
+import { SettingsProvider, useSettings } from "./src/context/SettingsContext";
+import { WeatherProvider, useWeather } from "./src/context/WeatherContext";
+import "./services/i18next";
 
 MobileAds().setRequestConfiguration({
   maxAdContentRating: MaxAdContentRating.G,

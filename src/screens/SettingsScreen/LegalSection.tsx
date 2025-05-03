@@ -1,10 +1,11 @@
 // FILE: src/screens/SettingsScreen/LegalSection.tsx
 import React from "react";
+import { useTranslation } from "react-i18next";
+import { View } from "react-native";
+
 import { Item, ListSection } from "./Common";
 import { openLink } from "./Common";
-import { useTranslation } from "react-i18next";
 import { PRIVACY_POLICY_URL } from "../../constants/config";
-import { View } from "react-native";
 
 const LegalSectionComponent = () => {
   const { t } = useTranslation();

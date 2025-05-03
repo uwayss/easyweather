@@ -1,9 +1,10 @@
 // FILE: src/screens/SettingsScreen/ActionsSection.tsx
-import React from "react";
-import { Share, Platform, Alert } from "react-native";
-import { Item, ListSection, openLink } from "./Common";
-import { useTranslation } from "react-i18next";
 import { getAnalytics } from "@react-native-firebase/analytics";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { Share, Platform, Alert } from "react-native";
+
+import { Item, ListSection, openLink } from "./Common";
 import {
   FEEDBACK_EMAIL,
   PLAY_STORE_URL_ANDROID,
