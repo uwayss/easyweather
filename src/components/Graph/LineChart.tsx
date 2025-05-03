@@ -1,6 +1,6 @@
 // FILE: src/components/Graph/LineChart.tsx
 import React from "react";
-import { View, StyleSheet, Text } from "react-native"; // Import core Text
+import { View, Text } from "react-native"; // Import core Text
 import Svg, { Path, Circle, Defs, LinearGradient, Stop } from "react-native-svg";
 // Removed Text import from paper
 import { GraphDataPoint } from "../../utils/metricData";
@@ -41,7 +41,7 @@ const LineChart: React.FC<LineChartProps> = ({
 
   if (!data || data.length < 2) {
     return (
-      <View style={[{ height, width }, styles.centerContent]}>
+      <View style={{ height, width }} className="justify-center items-center">
         <Text className="text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant">
           Not enough data
         </Text>
@@ -118,12 +118,5 @@ const LineChart: React.FC<LineChartProps> = ({
 // Temporary color objects (could centralize these later)
 const lightThemeColors = { primary: "#006d77", onSurfaceVariant: "#666666" };
 const darkThemeColors = { primary: "#83c5be", onSurfaceVariant: "#aaaaaa" };
-
-const styles = StyleSheet.create({
-  centerContent: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
 
 export default LineChart;

@@ -1,7 +1,7 @@
 // FILE: src/components/Graph/MetricSelector.tsx
 import React, { useCallback } from "react"; // Added useCallback
 import { MetricType } from "../../utils/metricData";
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView } from "react-native";
 import { useTranslation } from "react-i18next";
 import { getAnalytics } from "@react-native-firebase/analytics";
 import MetricButton from "./MetricButton"; // Import the memoized button
@@ -42,7 +42,10 @@ export default function MetricSelector({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.scrollContent}
+      contentContainerStyle={{
+        flexDirection: "row",
+        paddingVertical: 4,
+      }}
     >
       {metrics.map(button => (
         <MetricButton
@@ -56,10 +59,3 @@ export default function MetricSelector({
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  scrollContent: {
-    flexDirection: "row",
-    paddingVertical: 4,
-  },
-});

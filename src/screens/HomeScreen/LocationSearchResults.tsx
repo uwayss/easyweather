@@ -19,7 +19,7 @@ function LocationItem({ result, onPress }: { result: LocationResult; onPress: ()
     <Pressable onPress={onPress}>
       <View className="p-2 flex-row items-center bg-light-surface dark:bg-dark-surface border-b border-light-outline/20 dark:border-dark-outline/20">
         <View className="mr-4">
-          <Icon name="map-pin" size={24} color={iconColor} />
+          <Icon name="map-pin" size={18} color={iconColor} type="feather" />
         </View>
         <View className="flex-1">
           <Text className="font-medium">{getLocationName(result)}</Text>

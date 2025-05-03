@@ -1,7 +1,6 @@
 // FILE: src/screens/HomeScreen/ForecastItem.tsx
 import React from "react";
-import { View, TouchableOpacity, Image, StyleSheet } from "react-native"; // Import core Text
-// Removed Card import
+import { View, TouchableOpacity, Image } from "react-native";
 import { useWeatherDescriptions } from "../../utils/descriptions";
 import { DayWeather } from "../../types/weather";
 import { useSettings } from "../../context/SettingsContext";
@@ -13,6 +12,7 @@ import { getAnalytics } from "@react-native-firebase/analytics";
 import { useNavigation } from "@react-navigation/native";
 import { HomeNavigationProp } from "../Home";
 import Text from "../../components/Common/Text";
+import Card from "../../components/Common/Card";
 
 interface ForecastItemProps {
   item: DayWeather;
@@ -54,11 +54,7 @@ const ForecastItem = React.memo(function ForecastItem({ item, index }: ForecastI
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.6}>
-      {/* Replace Card with View */}
-      <View
-        style={styles.cardSize} // Apply fixed size via StyleSheet for now
-        className={`mr-2 rounded-lg shadow-sm overflow-hidden items-center justify-between p-3 gap-1.5 ${todayStyle}`}
-      >
+      <Card className={`mr-2 items-center justify-between p-3 gap-1.5 ${todayStyle} w-32 h-44`}>
         <Text numberOfLines={1} className="w-full text-center font-semibold">
           {dayName}
         </Text>
@@ -83,17 +79,9 @@ const ForecastItem = React.memo(function ForecastItem({ item, index }: ForecastI
             ).replace(/°[CF]$/, "°")}
           </Text>
         </View>
-      </View>
+      </Card>
     </TouchableOpacity>
   );
-});
-
-// Keep fixed size for horizontal scroll consistency
-const styles = StyleSheet.create({
-  cardSize: {
-    width: 130,
-    height: 180,
-  },
 });
 
 export default ForecastItem;

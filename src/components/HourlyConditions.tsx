@@ -24,13 +24,16 @@ import Card from "./Common/Card";
 
 const screenWidth = Dimensions.get("window").width;
 
-export default function HourlyConditions() {
+export default function HourlyConditions({
+  selectedHoursData,
+}: {
+  selectedHoursData?: HourWeather[];
+}) {
   const { weather } = useWeather();
   const hourlyWeather = weather?.hourly;
-  const selectedDateHourly = useMemo(
-    () => filterHourlyWeatherForNext24HoursIncludingNow(hourlyWeather),
-    [hourlyWeather],
-  );
+  const hourlyData =
+    selectedHoursData ||
+    useMemo(() => filterHourlyWeatherForNext24HoursIncludingNow(hourlyWeather), [hourlyWeather]);
   const [currentMetric, setCurrentMetric] = useState<MetricType>("temperature");
   const { settings, activeTheme } = useSettings();
   const { t } = useTranslation();
@@ -40,8 +43,8 @@ export default function HourlyConditions() {
   const weatherDescriptions = useWeatherDescriptions();
 
   const graphData: GraphDataPoint[] | undefined = useMemo(
-    () => getMetricDataForForecast(currentMetric, selectedDateHourly, settings.useImperialUnits),
-    [currentMetric, selectedDateHourly, settings.useImperialUnits],
+    () => getMetricDataForForecast(currentMetric, hourlyData, settings.useImperialUnits),
+    [currentMetric, hourlyData, settings.useImperialUnits],
   );
 
   const numDataPoints = graphData?.length || 0;
@@ -78,7 +81,7 @@ export default function HourlyConditions() {
         <MetricSelector currentMetric={currentMetric} setCurrentMetric={setCurrentMetric} />
       </View>
 
-      <View
+      <Card
         className="h-px bg-light-outline dark:bg-dark-outline mx-4"
         style={{ marginHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL }}
       />
@@ -88,7 +91,7 @@ export default function HourlyConditions() {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            className="rounded-lg overflow-hidden bg-light-surfaceVariant/30 dark:bg-dark-surfaceVariant/30"
+            className="rounded-lg overflow-hidden"
             contentContainerStyle={[
               styles.chartScrollContent,
               { width: internalContentWidth },
@@ -97,7 +100,7 @@ export default function HourlyConditions() {
                 : {},
             ]}
           >
-            <View className="bg-white">
+            <View>
               <View style={styles.valuesRow}>
                 {graphData.map((pointData, index) => (
                   <View key={`value-${index}`} style={[styles.hourItemContainer, { width: xStep }]}>
@@ -126,7 +129,7 @@ export default function HourlyConditions() {
 
               <View style={styles.detailsRow}>
                 {graphData.map((pointData, index) => {
-                  const hour = selectedDateHourly?.[index];
+                  const hour = hourlyData?.[index];
                   const iconSource = hour ? getIconForHour(hour) : undefined;
                   return (
                     <View
@@ -162,11 +165,9 @@ export default function HourlyConditions() {
   );
 }
 
-// Temporary color objects
 const lightThemeColors = { primary: "#006d77", onSurface: "#1f1f1f", onSurfaceVariant: "#666666" };
 const darkThemeColors = { primary: "#83c5be", onSurface: "#e1e1e1", onSurfaceVariant: "#aaaaaa" };
 
-// Keep StyleSheet for layout structure
 const hourlyStyles = (theme: typeof lightThemeColors | typeof darkThemeColors) =>
   StyleSheet.create({
     headerSection: { paddingHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL, paddingTop: 16 },

@@ -93,6 +93,9 @@ export const LocationSearch = () => {
   return (
     <View className="z-40 flex-1">
       <View className="flex-row items-center h-14 px-1 rounded-xl bg-light-elevation-level3 dark:bg-dark-elevation-level3">
+        <TouchableOpacity onPress={handleGeolocationPress} className="p-2">
+          <Icon name="crosshairs-gps" size={22} color={iconColor} />
+        </TouchableOpacity>
         <TextInput
           placeholder={t("search.placeholder")}
           placeholderTextColor={placeholderTextColor}
@@ -108,13 +111,10 @@ export const LocationSearch = () => {
         ) : (
           searchQuery.length > 0 && (
             <TouchableOpacity onPress={() => handleSearchChange("")} className="p-2">
-              <Icon name="x" size={22} color={iconColor} />
+              <Icon name="x" size={22} color={iconColor} type="feather" />
             </TouchableOpacity>
           )
         )}
-        <TouchableOpacity onPress={handleGeolocationPress} className="p-2">
-          <Icon name="x" size={22} color={iconColor} type="feather" />
-        </TouchableOpacity>
       </View>
       <View className="absolute top-14 z-50 left-0 right-0">
         <LocationSearchResults
