@@ -1,7 +1,6 @@
 // FILE: src/components/HourlyConditions.tsx
 import React, { useMemo, useState } from "react";
-// Removed Card, Text imports from paper
-import { StyleSheet, View, Dimensions, ScrollView, Text } from "react-native"; // Added core Text
+import { StyleSheet, View, Dimensions, ScrollView } from "react-native";
 import { useSettings } from "../context/SettingsContext";
 import { getMetricDataForForecast, MetricType, GraphDataPoint } from "../utils/metricData";
 import MetricSelector from "./Graph/MetricSelector";
@@ -18,19 +17,25 @@ import {
   HOURLY_CONDITIONS_DETAILS_ROW_HEIGHT,
   HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL,
 } from "../constants/ui";
+import Text from "./Common/Text";
+import { filterHourlyWeatherForNext24HoursIncludingNow } from "../utils/weatherUtils";
+import { useWeather } from "../context/WeatherContext";
+import Card from "./Common/Card";
 
 const screenWidth = Dimensions.get("window").width;
 
-export default function HourlyConditions({
-  selectedDateHourly,
-}: {
-  selectedDateHourly: HourWeather[] | undefined;
-}) {
+export default function HourlyConditions() {
+  const { weather } = useWeather();
+  const hourlyWeather = weather?.hourly;
+  const selectedDateHourly = useMemo(
+    () => filterHourlyWeatherForNext24HoursIncludingNow(hourlyWeather),
+    [hourlyWeather],
+  );
   const [currentMetric, setCurrentMetric] = useState<MetricType>("temperature");
   const { settings, activeTheme } = useSettings();
   const { t } = useTranslation();
   const theme = activeTheme === "dark" ? darkThemeColors : lightThemeColors;
-  const styles = hourlyStyles(theme); // Keep styles for layout
+  const styles = hourlyStyles(theme);
 
   const weatherDescriptions = useWeatherDescriptions();
 
@@ -64,13 +69,9 @@ export default function HourlyConditions({
   const chartColor = graphData?.[0]?.color || theme.primary;
 
   return (
-    // Replace Card with View
-    <View className="mb-4 bg-light-surface dark:bg-dark-surface rounded-lg shadow-sm overflow-hidden">
+    <Card className="mb-4 overflow-hidden" elevated>
       <View style={styles.headerSection}>
-        {/* Replace Paper Text */}
-        <Text className="text-base font-medium text-light-onSurface dark:text-dark-onSurface">
-          {t("weather.hourly_title")}
-        </Text>
+        <Text className="font-medium">{t("weather.hourly_title")}</Text>
       </View>
 
       <View style={styles.selectorSection}>
@@ -100,7 +101,6 @@ export default function HourlyConditions({
               <View style={styles.valuesRow}>
                 {graphData.map((pointData, index) => (
                   <View key={`value-${index}`} style={[styles.hourItemContainer, { width: xStep }]}>
-                    {/* Replace Paper Text */}
                     <Text style={styles.valueText} numberOfLines={1}>
                       {pointData.value}
                     </Text>
@@ -142,7 +142,7 @@ export default function HourlyConditions({
                       ) : (
                         <View style={styles.weatherIcon} />
                       )}
-                      {/* Replace Paper Text */}
+
                       <Text style={styles.labelText} numberOfLines={1}>
                         {pointData.label}
                       </Text>
@@ -158,7 +158,7 @@ export default function HourlyConditions({
           </View>
         )}
       </View>
-    </View>
+    </Card>
   );
 }
 
@@ -169,7 +169,6 @@ const darkThemeColors = { primary: "#83c5be", onSurface: "#e1e1e1", onSurfaceVar
 // Keep StyleSheet for layout structure
 const hourlyStyles = (theme: typeof lightThemeColors | typeof darkThemeColors) =>
   StyleSheet.create({
-    // card style removed
     headerSection: { paddingHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL, paddingTop: 16 },
     selectorSection: {
       paddingHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL,
@@ -195,7 +194,6 @@ const hourlyStyles = (theme: typeof lightThemeColors | typeof darkThemeColors) =
     },
     hourItemContainer: { height: "100%", alignItems: "center", justifyContent: "center" },
     valueText: {
-      // Keep StyleSheet for complex styling involving theme
       fontWeight: "600",
       fontSize: 13,
       color: theme.onSurface,
@@ -203,7 +201,6 @@ const hourlyStyles = (theme: typeof lightThemeColors | typeof darkThemeColors) =
     },
     weatherIcon: { width: 24, height: 24, marginBottom: 3 },
     labelText: {
-      // Keep StyleSheet for complex styling involving theme
       color: theme.onSurfaceVariant,
       fontSize: 11,
       textAlign: "center",

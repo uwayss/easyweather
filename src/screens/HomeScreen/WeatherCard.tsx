@@ -1,21 +1,28 @@
 // FILE: src/screens/HomeScreen/WeatherCard.tsx
-import { View } from "react-native";
 import React from "react";
-import { ConditionalBackground } from "./WeatherCard/ConditionalBackground";
+import Card from "../../components/Common/Card";
+import { useWeather } from "../../context/WeatherContext";
+import backgroundMappings from "../../utils/backgroundMappings";
 import { Details } from "./WeatherCard/Details";
 import { MainInfo } from "./WeatherCard/MainInfo";
-import { useWeather } from "../../context/WeatherContext";
 
 export default function WeatherCard() {
   const { weather } = useWeather();
+  const currentWeather = weather?.current;
   return (
-    <View className="my-2 overflow-hidden rounded-2xl">
-      <ConditionalBackground current={weather?.current}>
-        <View className="flex-1 p-4 justify-around">
-          <MainInfo current={weather?.current} />
-          <Details current={weather?.current} />
-        </View>
-      </ConditionalBackground>
-    </View>
+    <Card
+      className="flex-1 p-4 justify-around"
+      elevated
+      background={
+        currentWeather
+          ? backgroundMappings[currentWeather.weatherCode]?.[
+              currentWeather?.isDay ? "day" : "night"
+            ]
+          : undefined
+      }
+    >
+      <MainInfo current={currentWeather} />
+      <Details current={currentWeather} />
+    </Card>
   );
 }

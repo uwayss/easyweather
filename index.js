@@ -67,9 +67,9 @@ const ThemedAppWithProviders = () => {
     }, 30000);
   };
 
-  const handleAdLoaded = () => {
-    console.log("Banner Ad loaded successfully");
-  };
+  // const handleAdLoaded = () => {
+  //   console.log("Banner Ad loaded successfully");
+  // };
 
   const onReady = () => {
     const currentRoute = navigationRef.getCurrentRoute();
@@ -113,7 +113,7 @@ const ThemedAppWithProviders = () => {
           key={adLoadAttempt}
           unitId={adUnitId}
           size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-          onAdLoaded={handleAdLoaded}
+          // onAdLoaded={handleAdLoaded}
           onAdFailedToLoad={handleAdFailedToLoad}
         />
       </NavigationContainer>

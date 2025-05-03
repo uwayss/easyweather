@@ -17,7 +17,6 @@ export interface WeatherDescriptionInfo {
 
 import { useCallback } from "react";
 // --- No other changes needed in this file, just the type definitions ---
-// ... rest of the file remains the same ...
 
 /* eslint-disable @typescript-eslint/no-require-imports */
 // import { ImageSourcePropType } from "react-native"; // No longer needed from here

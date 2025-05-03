@@ -24,13 +24,11 @@ export const LocationSearch = () => {
   const { updateLocation, getCurrentLocation, setError } = useLocationContext();
   const { t } = useTranslation();
 
-  // ... state declarations ...
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState<LocationResult[]>([]);
   const [showResults, setShowResults] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // ... handlers (onLocationSelect, debouncedSearch, handleSearchChange, etc.) ...
   const onLocationSelect = (selectedLocation: LocationResult) => {
     updateLocation({
       latitude: parseFloat(selectedLocation.lat),
@@ -100,7 +98,7 @@ export const LocationSearch = () => {
           placeholderTextColor={placeholderTextColor}
           onChangeText={handleSearchChange}
           value={searchQuery}
-          className="flex-1 h-full px-3 text-base text-light-onSurface dark:text-dark-onSurface"
+          className="flex-1 h-full px-3"
           returnKeyType="search"
           onFocus={() => searchQuery && setShowResults(true)}
           onBlur={() => setTimeout(() => setShowResults(false), 150)}

@@ -12,7 +12,6 @@ interface MetricButtonProps {
 const MetricButton: React.FC<MetricButtonProps> = ({ label, value, isActive, onPress }) => {
   const activeBg = "bg-light-primary/20 dark:bg-dark-primary/20";
   const activeText = "text-light-primary dark:text-dark-primary";
-  const inactiveText = "text-light-onSurface dark:text-dark-onSurface";
   const activeBorder = "border-light-primary dark:border-dark-primary";
   const inactiveBorder = "border-light-outline dark:border-dark-outline";
 
@@ -26,7 +25,7 @@ const MetricButton: React.FC<MetricButtonProps> = ({ label, value, isActive, onP
       `}
       onPress={() => onPress(value)}
     >
-      <Text className={`text-sm font-medium ${isActive ? activeText : inactiveText}`}>{label}</Text>
+      <Text className={`text-sm font-medium ${isActive && activeText}`}>{label}</Text>
     </TouchableOpacity>
   );
 };

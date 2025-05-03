@@ -1,11 +1,12 @@
 // FILE: src/screens/DateScreen/HourlyChart.tsx
-import { FlatList, View, Image, Text } from "react-native"; // Import core Text
+import { FlatList, View, Image } from "react-native"; // Import core Text
 import React from "react";
 // Removed MD3Theme, Text, useTheme imports from 'react-native-paper'
 import { GraphDataPoint } from "../../utils/metricData";
 import { HourWeather } from "../../types/weather";
 import weatherDescriptions from "../../utils/descriptions";
 import CustomVerticalProgressBar from "./CustomVerticalProgressBar";
+import Text from "../../components/Common/Text";
 
 interface HourlyChartProps {
   data: GraphDataPoint[];
@@ -26,9 +27,7 @@ const HourItem = React.memo(function HourItem({
   return (
     // Use className for layout and styling
     <View className="items-center gap-1.5 w-[60px] px-1">
-      <Text className="text-xs font-semibold text-light-onSurface dark:text-dark-onSurface">
-        {graphPoint.value}
-      </Text>
+      <Text className="text-xs font-semibold">{graphPoint.value}</Text>
       <CustomVerticalProgressBar
         progress={graphPoint.progress}
         color={graphPoint.color}

@@ -1,9 +1,10 @@
 // FILE: src/screens/HomeScreen/LocationSearchResults.tsx
 import React from "react";
 import { LocationResult } from "../../api/location";
-import { ScrollView, View, Pressable, Text } from "react-native";
+import { ScrollView, View, Pressable } from "react-native";
 import Icon from "../../components/Icon";
 import { useColorScheme } from "nativewind";
+import Text from "../../components/Common/Text";
 
 function getLocationName(location: LocationResult): string {
   const { address } = location;
@@ -21,9 +22,7 @@ function LocationItem({ result, onPress }: { result: LocationResult; onPress: ()
           <Icon name="map-pin" size={24} color={iconColor} />
         </View>
         <View className="flex-1">
-          <Text className="text-base font-medium text-light-onSurface dark:text-dark-onSurface">
-            {getLocationName(result)}
-          </Text>
+          <Text className="font-medium">{getLocationName(result)}</Text>
           <Text className="mt-0.5 text-xs opacity-70 text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant">
             {result.display_name}
           </Text>
