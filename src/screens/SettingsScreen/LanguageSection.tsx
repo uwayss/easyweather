@@ -36,7 +36,7 @@ function LanguageSection() {
           selectedValue={i18next.language}
           onValueChange={handleLanguageChange}
           dropdownIconColor={pickerDropdownIconColor}
-          style={{ color: pickerTextColor, height: 50 }}
+          style={{ color: pickerTextColor }}
           itemStyle={{ color: pickerTextColor }}
         >
           {SUPPORTED_LANGUAGES.map(lang => (

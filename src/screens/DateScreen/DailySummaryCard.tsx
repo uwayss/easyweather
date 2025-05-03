@@ -1,6 +1,6 @@
 // FILE: src/screens/DateScreen/DailySummaryCard.tsx
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { DayWeather } from "../../types/weather";
 import { useWeatherDescriptions } from "../../utils/descriptions";
 import { useSettings } from "../../context/SettingsContext";
@@ -10,6 +10,7 @@ import { formatTimeStringToHour } from "../../utils/timeUtils";
 import FastImage from "react-native-fast-image";
 import { useColorScheme } from "nativewind";
 import Icon from "../../components/Icon";
+import Text from "../../components/Common/Text";
 
 interface DetailItemProps {
   icon: string; // Feather icon name
@@ -29,7 +30,7 @@ const DetailItem: React.FC<DetailItemProps> = ({ icon, label, value, unit, color
       {/* Use Feather icon */}
       <Icon name={icon} size={20} color={finalIconColor} />
       <View style={styles.detailTextsContainer}>
-        <Text className="font-semibold text-sm text-light-onSurface dark:text-dark-onSurface">
+        <Text className="font-semibold text-sm">
           {value}
           {unit && (
             <Text className="text-xs ml-0.5 text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant">
@@ -82,18 +83,13 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
         )}
         <View style={styles.topTextContainer}>
           <View style={styles.tempsContainer}>
-            <Text className="font-bold text-4xl text-light-onSurface dark:text-dark-onSurface">
-              {formattedHigh}
-            </Text>
+            <Text className="font-bold text-4xl">{formattedHigh}</Text>
             <Text className="text-2xl text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant">
               /{formattedLow}
               {tempUnit}
             </Text>
           </View>
-          <Text
-            className="font-medium text-base mt-0.5 text-light-onSurface dark:text-dark-onSurface"
-            numberOfLines={1}
-          >
+          <Text className="font-medium mt-0.5" numberOfLines={1}>
             {weatherInfo?.description || ""}
           </Text>
         </View>

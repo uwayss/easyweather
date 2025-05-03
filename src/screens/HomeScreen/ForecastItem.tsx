@@ -1,6 +1,6 @@
 // FILE: src/screens/HomeScreen/ForecastItem.tsx
 import React from "react";
-import { View, TouchableOpacity, Image, Text, StyleSheet } from "react-native"; // Import core Text
+import { View, TouchableOpacity, Image, StyleSheet } from "react-native"; // Import core Text
 // Removed Card import
 import { useWeatherDescriptions } from "../../utils/descriptions";
 import { DayWeather } from "../../types/weather";
@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { getAnalytics } from "@react-native-firebase/analytics";
 import { useNavigation } from "@react-navigation/native";
 import { HomeNavigationProp } from "../Home";
+import Text from "../../components/Common/Text";
 
 interface ForecastItemProps {
   item: DayWeather;
@@ -58,10 +59,7 @@ const ForecastItem = React.memo(function ForecastItem({ item, index }: ForecastI
         style={styles.cardSize} // Apply fixed size via StyleSheet for now
         className={`mr-2 rounded-lg shadow-sm overflow-hidden items-center justify-between p-3 gap-1.5 ${todayStyle}`}
       >
-        <Text
-          numberOfLines={1}
-          className="w-full text-center text-base font-semibold text-light-onSurface dark:text-dark-onSurface"
-        >
+        <Text numberOfLines={1} className="w-full text-center font-semibold">
           {dayName}
         </Text>
         <Image source={weatherDescription.image} className="size-16" resizeMode="contain" />
@@ -72,13 +70,13 @@ const ForecastItem = React.memo(function ForecastItem({ item, index }: ForecastI
           {weatherDescription.description}
         </Text>
         <View className="flex-row gap-2 items-center">
-          <Text className="text-lg font-bold text-light-onSurface dark:text-dark-onSurface">
+          <Text className="text-lg font-bold">
             {formatTemperature(
               convertTemperature(item.maxTemp, settings.useImperialUnits),
               settings.useImperialUnits,
             ).replace(/°[CF]$/, "°")}
           </Text>
-          <Text className="text-base text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant">
+          <Text className="text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant">
             {formatTemperature(
               convertTemperature(item.minTemp, settings.useImperialUnits),
               settings.useImperialUnits,

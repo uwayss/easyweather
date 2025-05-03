@@ -7,7 +7,6 @@ import { GraphDataPoint } from "../../utils/metricData";
 import { useColorScheme } from "nativewind"; // Need this for theme colors
 
 interface LineChartProps {
-  // ... props remain the same
   data: GraphDataPoint[];
   height: number;
   width: number;
@@ -49,8 +48,6 @@ const LineChart: React.FC<LineChartProps> = ({
       </View>
     );
   }
-
-  // ... rest of the component logic remains the same
 
   // Calculate Y based on chartHeight and bottom padding
   const chartHeight = height - paddingVertical * 2;

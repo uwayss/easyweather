@@ -1,14 +1,13 @@
 // FILE: src/screens/SettingsScreen/Common.tsx
 import React from "react";
-import { Linking, TouchableOpacity, View, ViewStyle, Text } from "react-native";
+import { Linking, TouchableOpacity, View, ViewStyle } from "react-native";
 import { getAnalytics } from "@react-native-firebase/analytics";
 // Removed Feather import
 import Icon from "../../components/Icon"; // Import custom Icon component
 import { useColorScheme } from "nativewind";
+import Text from "../../components/Common/Text";
 
-// ... openLink function ...
 export const openLink = async (url: string, linkContext?: string) => {
-  // ... (implementation remains the same)
   if (linkContext) {
     getAnalytics().logEvent("open_external_link", {
       target_url: url,
@@ -22,7 +21,6 @@ export const openLink = async (url: string, linkContext?: string) => {
   Linking.openURL(url).catch(err => console.error("An error occurred: ", err));
 };
 
-// ... ListSection function ...
 export function ListSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <View className="gap-6 py-3">
@@ -53,7 +51,6 @@ export function Item({
     colorScheme === "dark" ? "text-dark-onSurfaceVariant" : "text-light-onSurfaceVariant";
 
   const Wrapper = ({ children, style }: { children: React.ReactNode; style?: ViewStyle }) => {
-    // ... Wrapper component logic ...
     return onPress ? (
       <TouchableOpacity
         className="flex-row gap-4 justify-between items-center px-4 min-h-[48px] py-2"
@@ -74,7 +71,7 @@ export function Item({
       {/* Use custom Icon component */}
       {left && <Icon name={left} size={24} color={iconColor} />}
       <View style={{ flex: 1, justifyContent: "center" }}>
-        <Text className="text-base text-light-onSurface dark:text-dark-onSurface">{title}</Text>
+        <Text>{title}</Text>
         {description && <Text className={`text-sm ${descriptionColor}`}>{description}</Text>}
       </View>
       {/* Use custom Icon component */}
