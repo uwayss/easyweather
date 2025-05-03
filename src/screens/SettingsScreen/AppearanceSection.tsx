@@ -1,11 +1,12 @@
 // FILE: src/screens/SettingsScreen/AppearanceSection.tsx
-import { View } from "react-native";
 import React from "react";
-import { ThemePreference, useSettings } from "../../context/SettingsContext";
-import { ListSection } from "./Common";
 import { useTranslation } from "react-i18next";
-import CustomSegmentedButtons from "../../components/CustomSegmentedButtons"; // Import custom component
+import { View } from "react-native";
+
+import { ListSection } from "./Common";
 import Divider from "../../components/Common/Divider";
+import CustomSegmentedButtons from "../../components/CustomSegmentedButtons"; // Import custom component
+import { ThemePreference, useSettings } from "../../context/SettingsContext";
 
 export default React.memo(function AppearanceSection() {
   const { settings, updateSetting } = useSettings();

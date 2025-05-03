@@ -1,13 +1,14 @@
 // FILE: src/screens/HomeScreen/LocationSearch.tsx
-import React, { useState, useCallback } from "react";
-import { View, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
-import { searchLocation, LocationResult } from "../../api/location";
-import LocationSearchResults from "./LocationSearchResults";
-import { useLocationContext } from "../../context/LocationContext";
-import { useTranslation } from "react-i18next";
 import { getAnalytics } from "@react-native-firebase/analytics";
-import Icon from "../../components/Icon";
 import { useColorScheme } from "nativewind";
+import React, { useState, useCallback } from "react";
+import { useTranslation } from "react-i18next";
+import { View, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+
+import LocationSearchResults from "./LocationSearchResults";
+import { searchLocation, LocationResult } from "../../api/location";
+import Icon from "../../components/Icon";
+import { useLocationContext } from "../../context/LocationContext";
 
 type DebouncedSearchFunction = (query: string) => Promise<void> | void;
 

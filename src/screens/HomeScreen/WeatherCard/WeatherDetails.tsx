@@ -1,13 +1,14 @@
 // FILE: src/screens/HomeScreen/WeatherCard/Details.tsx
 import React from "react";
 // import { Text, View } from "react-native";
-import { View } from "react-native";
-import { CurrentWeather } from "../../../types/weather";
-import { useSettings } from "../../../context/SettingsContext";
-import { convertWindSpeed, formatWindSpeed } from "../../../utils/unitConversion";
 import { useTranslation } from "react-i18next";
-import Text from "../../../components/Common/Text";
+import { View } from "react-native";
+
 import Card from "../../../components/Common/Card";
+import Text from "../../../components/Common/Text";
+import { useSettings } from "../../../context/SettingsContext";
+import { CurrentWeather } from "../../../types/weather";
+import { convertWindSpeed, formatWindSpeed } from "../../../utils/unitConversion";
 
 export function Details({ current }: { current: CurrentWeather | undefined }) {
   const { settings } = useSettings();

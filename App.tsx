@@ -1,9 +1,10 @@
 // FILE: App.tsx
-import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
+
+import DayDetailsScreen from "./src/screens/Details";
 import HomeScreen from "./src/screens/Home";
 import SettingsScreen from "./src/screens/Settings";
-import DayDetailsScreen from "./src/screens/Details";
 import { DayWeather, HourWeather } from "./src/types/weather";
 import "./global.css";
 

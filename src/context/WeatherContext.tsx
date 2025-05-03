@@ -1,9 +1,10 @@
 // FILE: src\context\WeatherContext.tsx
-import React, { createContext, useState, useContext, useEffect } from "react";
-import { fetchWeather } from "../api/weather";
-import { useLocationContext } from "./LocationContext";
-import { Weather } from "../types/weather";
 import { getAnalytics } from "@react-native-firebase/analytics";
+import React, { createContext, useState, useContext, useEffect } from "react";
+
+import { useLocationContext } from "./LocationContext";
+import { fetchWeather } from "../api/weather";
+import { Weather } from "../types/weather";
 
 interface WeatherContextProps {
   weather: Weather | null;

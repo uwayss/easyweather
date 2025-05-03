@@ -1,16 +1,17 @@
 // FILE: src/screens/DateScreen/DailySummaryCard.tsx
+import { useColorScheme } from "nativewind";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
+import FastImage from "react-native-fast-image";
+
+import Text from "../../components/Common/Text";
+import Icon from "../../components/Icon";
+import { useSettings } from "../../context/SettingsContext";
 import { DayWeather } from "../../types/weather";
 import { useWeatherDescriptions } from "../../utils/descriptions";
-import { useSettings } from "../../context/SettingsContext";
-import { useTranslation } from "react-i18next";
-import { convertTemperature, convertWindSpeed, formatWindSpeed } from "../../utils/unitConversion";
 import { formatTimeStringToHour } from "../../utils/timeUtils";
-import FastImage from "react-native-fast-image";
-import { useColorScheme } from "nativewind";
-import Icon from "../../components/Icon";
-import Text from "../../components/Common/Text";
+import { convertTemperature, convertWindSpeed, formatWindSpeed } from "../../utils/unitConversion";
 
 interface DetailItemProps {
   icon: string; // Feather icon name

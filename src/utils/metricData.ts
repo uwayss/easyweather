@@ -1,5 +1,4 @@
 // FILE: src/utils/metricData.ts
-import { HourWeather } from "../types/weather";
 import { getTemperatureGradientColor } from "./colorUtils";
 import {
   convertTemperature,
@@ -20,6 +19,7 @@ import {
   WIND_COLOR_MEDIUM,
   WIND_COLOR_SEVERE,
 } from "../constants/colors";
+import { HourWeather } from "../types/weather";
 
 export type MetricType = "temperature" | "precipitation" | "humidity" | "wind";
 

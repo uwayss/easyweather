@@ -1,6 +1,7 @@
 // FILE: src/screens/HomeScreen/SearchRow.tsx
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
+
 import Icon from "../../components/Icon";
 import { HomeNavigationProp } from "../Home";
 import { LocationSearch } from "./LocationSearch";

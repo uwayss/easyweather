@@ -1,15 +1,16 @@
 // FILE: src/screens/HomeScreen/WeatherCard/MainInfo.tsx
+import { useColorScheme } from "nativewind";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { View, ActivityIndicator } from "react-native";
+
+import Card from "../../../components/Common/Card";
+import Text from "../../../components/Common/Text";
+import { useLocationContext } from "../../../context/LocationContext";
+import { useSettings } from "../../../context/SettingsContext";
 import { CurrentWeather } from "../../../types/weather";
 import { useWeatherDescriptions } from "../../../utils/descriptions";
-import { useSettings } from "../../../context/SettingsContext";
 import { convertTemperature, formatTemperature } from "../../../utils/unitConversion";
-import { useTranslation } from "react-i18next";
-import { useLocationContext } from "../../../context/LocationContext";
-import { useColorScheme } from "nativewind";
-import Text from "../../../components/Common/Text";
-import Card from "../../../components/Common/Card";
 
 export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
   const { settings } = useSettings();
@@ -50,7 +51,7 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
           >
             {description || ""}
           </Text>
-          <Text className="opacity-90 mt-2 text-base font-semibold leading-relaxed">
+          <Text className="opacity-90 mt-2 text-base font-semibold leading-relaxed" pop>
             {t("weather.feltTemperature")}
             {formatTemperature(
               convertTemperature(current.feltTemp, settings.useImperialUnits),

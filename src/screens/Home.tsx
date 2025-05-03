@@ -1,17 +1,18 @@
 // FILE: src/screens/Home.tsx
+import { getAnalytics } from "@react-native-firebase/analytics";
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useColorScheme } from "nativewind";
 import React, { useState, useCallback } from "react";
 import { RefreshControl, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 import { RootStackParamList } from "../../App";
 import HourlyConditions from "../components/HourlyConditions";
 import { useLocationContext } from "../context/LocationContext";
 import { useWeather } from "../context/WeatherContext";
 import ForecastList from "./HomeScreen/NextDays/ForecastList";
-import WeatherCard from "./HomeScreen/WeatherCard";
 import SearchRow from "./HomeScreen/SearchRow";
-import { getAnalytics } from "@react-native-firebase/analytics";
-import { useColorScheme } from "nativewind";
+import WeatherCard from "./HomeScreen/WeatherCard";
 
 export type HomeNavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">;
 type HomeProps = NativeStackScreenProps<RootStackParamList, "Home">;

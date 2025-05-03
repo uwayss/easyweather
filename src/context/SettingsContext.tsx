@@ -1,10 +1,11 @@
 // FILE: src/context/SettingsContext.tsx
-import React, { createContext, useState, useContext, ReactNode, useEffect, useMemo } from "react";
-import { MMKV } from "react-native-mmkv";
-import { useColorScheme } from "react-native";
 import i18next from "i18next";
-import { MMKV_SETTINGS_INSTANCE_ID, STORAGE_KEY_APP_SETTINGS } from "../constants/storage";
+import React, { createContext, useState, useContext, ReactNode, useEffect, useMemo } from "react";
+import { useColorScheme } from "react-native";
+import { MMKV } from "react-native-mmkv";
+
 import { DEFAULT_LANGUAGE, DEFAULT_SETTINGS, SUPPORTED_LANGUAGES } from "../constants/settings";
+import { MMKV_SETTINGS_INSTANCE_ID, STORAGE_KEY_APP_SETTINGS } from "../constants/storage";
 
 export type ThemePreference = "system" | "light" | "dark";
 

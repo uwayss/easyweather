@@ -1,6 +1,7 @@
 import React from "react";
-import { DayWeather } from "../../../types/weather";
+
 import ForecastItem from "./ForecastItem";
+import { DayWeather } from "../../../types/weather";
 
 export default function EmptyComponent() {
   const emptyList: DayWeather[] = Array.from({ length: 4 }, () => ({

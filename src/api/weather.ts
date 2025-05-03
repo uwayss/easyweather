@@ -1,6 +1,4 @@
 // FILE: src/api/weather.ts
-import { Weather, WeatherResponseAPI } from "../types/weather";
-import { processWeatherData } from "../utils/weatherUtils";
 import {
   WEATHER_API_BASE_URL,
   WEATHER_API_CURRENT_PARAMS,
@@ -8,6 +6,8 @@ import {
   WEATHER_API_DEFAULT_FORECAST_DAYS,
   WEATHER_API_HOURLY_PARAMS,
 } from "../constants/api";
+import { Weather, WeatherResponseAPI } from "../types/weather";
+import { processWeatherData } from "../utils/weatherUtils";
 
 export async function fetchWeather(latitude: number, longitude: number): Promise<Weather> {
   const params = new URLSearchParams({
@@ -26,6 +26,5 @@ export async function fetchWeather(latitude: number, longitude: number): Promise
     throw new Error("Failed to fetch weather data");
   }
   const apiResponse: WeatherResponseAPI = await response.json();
-  console.warn("THE DATA IS HERE");
   return processWeatherData(apiResponse);
 }

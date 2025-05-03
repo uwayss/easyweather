@@ -1,11 +1,12 @@
 // FILE: src/screens/DateScreen/HourlyChart.tsx
-import { FlatList, View, Image } from "react-native";
 import React from "react";
-import { GraphDataPoint } from "../../utils/metricData";
-import { HourWeather } from "../../types/weather";
-import weatherDescriptions from "../../utils/descriptions";
+import { FlatList, View, Image } from "react-native";
+
 import CustomVerticalProgressBar from "./CustomVerticalProgressBar";
 import Text from "../../components/Common/Text";
+import { HourWeather } from "../../types/weather";
+import weatherDescriptions from "../../utils/descriptions";
+import { GraphDataPoint } from "../../utils/metricData";
 
 interface HourlyChartProps {
   data: GraphDataPoint[];

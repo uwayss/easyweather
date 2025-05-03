@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 /* eslint-disable @typescript-eslint/no-require-imports */
-const chalk = require("chalk");
-const fs = require("fs-extra");
 const os = require("os");
 const path = require("path");
-const argv = require("minimist")(process.argv.slice(2));
+
+const chalk = require("chalk");
 const execa = require("execa");
+const fs = require("fs-extra");
+const argv = require("minimist")(process.argv.slice(2));
 const open = require("open");
 const { explore } = require("source-map-explorer");
 const pkgJSON = JSON.parse(fs.readFileSync("./package.json"));

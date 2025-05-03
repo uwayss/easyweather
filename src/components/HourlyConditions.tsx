@@ -1,15 +1,14 @@
 // FILE: src/components/HourlyConditions.tsx
 import React, { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { StyleSheet, View, Dimensions, ScrollView } from "react-native";
+import FastImage from "react-native-fast-image";
+
 import { useSettings } from "../context/SettingsContext";
 import { getMetricDataForForecast, MetricType, GraphDataPoint } from "../utils/metricData";
+import LineChart from "./Graph/LineChart";
 import MetricSelector from "./Graph/MetricSelector";
 import PlaceholderCard from "./PlaceholderCard";
-import { useTranslation } from "react-i18next";
-import LineChart from "./Graph/LineChart";
-import { HourWeather } from "../types/weather";
-import { useWeatherDescriptions } from "../utils/descriptions";
-import FastImage from "react-native-fast-image";
 import {
   HOURLY_CONDITIONS_POINT_ITEM_WIDTH,
   HOURLY_CONDITIONS_CHART_HEIGHT,
@@ -17,9 +16,11 @@ import {
   HOURLY_CONDITIONS_DETAILS_ROW_HEIGHT,
   HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL,
 } from "../constants/ui";
+import { useWeather } from "../context/WeatherContext";
+import { HourWeather } from "../types/weather";
+import { useWeatherDescriptions } from "../utils/descriptions";
 import Text from "./Common/Text";
 import { filterHourlyWeatherForNext24HoursIncludingNow } from "../utils/weatherUtils";
-import { useWeather } from "../context/WeatherContext";
 import Card from "./Common/Card";
 import Divider from "./Common/Divider";
 
