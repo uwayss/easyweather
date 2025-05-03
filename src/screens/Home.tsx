@@ -1,6 +1,6 @@
 // FILE: src/screens/Home.tsx
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { RefreshControl, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "../../App";
@@ -18,20 +18,12 @@ type HomeProps = NativeStackScreenProps<RootStackParamList, "Home">;
 
 export default function Home({ navigation }: HomeProps) {
   const { colorScheme } = useColorScheme();
-  const { weather, loading: weatherLoading, fetchWeatherData } = useWeather();
+  const { loading: weatherLoading, fetchWeatherData } = useWeather();
   const { location, loading: locationLoading } = useLocationContext();
   const [refreshing, setRefreshing] = useState(false);
   const isLoading = locationLoading || weatherLoading;
 
-  // Log marker for rendering when data is available
-  useEffect(() => {
-    if (weather && location && !isLoading) {
-      console.log("LOG_MARKER: HomeScreen - Data Available, Starting Render");
-    }
-  }, [weather, location, isLoading]);
-
   const onRefresh = useCallback(async () => {
-    // ... (onRefresh code remains the same)
     if (!location) {
       setRefreshing(false);
       return;
@@ -49,8 +41,6 @@ export default function Home({ navigation }: HomeProps) {
 
   const refreshControlColors = colorScheme === "dark" ? ["#83c5be"] : ["#006d77"];
   const refreshControlTintColor = colorScheme === "dark" ? "#83c5be" : "#006d77";
-
-  console.log("LOG_MARKER: HomeScreen - Rendering Outer Structure"); // Log outer render
 
   return (
     <SafeAreaView className="flex-1 bg-light-background dark:bg-dark-background">

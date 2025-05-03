@@ -1,5 +1,5 @@
 // FILE: src/components/HourlyConditions.tsx
-import React, { useMemo, useState } from "react"; // Removed useEffect
+import React, { useMemo, useState } from "react";
 import { StyleSheet, View, Dimensions, ScrollView } from "react-native";
 import { useSettings } from "../context/SettingsContext";
 import { getMetricDataForForecast, MetricType, GraphDataPoint } from "../utils/metricData";
@@ -21,6 +21,7 @@ import Text from "./Common/Text";
 import { filterHourlyWeatherForNext24HoursIncludingNow } from "../utils/weatherUtils";
 import { useWeather } from "../context/WeatherContext";
 import Card from "./Common/Card";
+import Divider from "./Common/Divider";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -29,8 +30,6 @@ export default function HourlyConditions({
 }: {
   selectedHoursData?: HourWeather[];
 }) {
-  console.log("LOG_MARKER: Rendering HourlyConditions"); // Log component render start
-
   const { weather } = useWeather();
   const hourlyWeather = weather?.hourly;
   const hourlyData =
@@ -45,10 +44,7 @@ export default function HourlyConditions({
   const weatherDescriptions = useWeatherDescriptions();
 
   const graphData: GraphDataPoint[] | undefined = useMemo(() => {
-    // console.time("getMetricDataForForecast"); // Keep this if needed for calculation time
-    const result = getMetricDataForForecast(currentMetric, hourlyData, settings.useImperialUnits);
-    // console.timeEnd("getMetricDataForForecast");
-    return result;
+    return getMetricDataForForecast(currentMetric, hourlyData, settings.useImperialUnits);
   }, [currentMetric, hourlyData, settings.useImperialUnits]);
 
   const numDataPoints = graphData?.length || 0;
@@ -74,7 +70,6 @@ export default function HourlyConditions({
     10;
 
   const chartColor = graphData?.[0]?.color || theme.primary;
-
   return (
     <Card className="overflow-hidden" elevated>
       <View style={styles.headerSection}>
@@ -85,10 +80,7 @@ export default function HourlyConditions({
         <MetricSelector currentMetric={currentMetric} setCurrentMetric={setCurrentMetric} />
       </View>
 
-      <Card
-        className="h-px bg-light-outline dark:bg-dark-outline mx-4"
-        style={{ marginHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL }}
-      />
+      <Divider style={{ marginHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL }} />
 
       <View style={[styles.chartOuterContainer, { minHeight: chartAreaMinHeight }]}>
         {graphData && numDataPoints > 0 ? (
