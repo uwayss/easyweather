@@ -60,7 +60,7 @@ Aim for a style similar to a normal dev. Do NOT include any "```" delimiters.
 
 
         response = client.models.generate_content(
-            model="gemini-1.5-flash",  # Or whatever model you prefer
+            model="gemini-2.0-flash",  # Or whatever model you prefer
             contents=prompt
         )
 

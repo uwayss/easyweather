@@ -1,8 +1,8 @@
 // FILE: src/components/CustomSegmentedButtons.tsx
 import React from "react";
 import { View, Text, TouchableOpacity, ViewStyle, StyleProp } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"; // Import vector icon component
-import { useColorScheme } from "nativewind"; // Import useColorScheme
+import { useColorScheme } from "nativewind";
+import Icon from "./Icon";
 
 interface SegmentButtonOption {
   value: string;
@@ -25,7 +25,7 @@ const CustomSegmentedButtons: React.FC<CustomSegmentedButtonsProps> = ({
   style,
 }) => {
   const { colorScheme } = useColorScheme();
-  const theme = colorScheme === "dark" ? darkThemeColors : lightThemeColors; // Get theme colors
+  const theme = colorScheme === "dark" ? darkThemeColors : lightThemeColors;
 
   return (
     <View
@@ -42,7 +42,7 @@ const CustomSegmentedButtons: React.FC<CustomSegmentedButtonsProps> = ({
         const activeText = "text-light-primary dark:text-dark-primary";
         const inactiveText = "text-light-onSurface dark:text-dark-onSurface";
 
-        const iconColor = isActive ? theme.primary : theme.onSurface; // Determine icon color
+        const iconColor = isActive ? theme.primary : theme.onSurface;
 
         return (
           <TouchableOpacity
@@ -57,12 +57,11 @@ const CustomSegmentedButtons: React.FC<CustomSegmentedButtonsProps> = ({
             `}
           >
             {button.icon && (
-              // Use MaterialCommunityIcons
-              <MaterialCommunityIcons
-                name={button.icon}
+              <Icon
+                name={button.icon} // Pass string name
                 size={18}
-                color={iconColor} // Apply determined color
-                style={{ marginRight: 6 }} // Add margin if needed (ml-1.5 on Text already exists)
+                color={iconColor}
+                style={{ marginRight: 6 }}
               />
             )}
             <Text
@@ -82,7 +81,6 @@ const CustomSegmentedButtons: React.FC<CustomSegmentedButtonsProps> = ({
   );
 };
 
-// Temporary theme objects needed for iconColor logic
 const lightThemeColors = { primary: "#006d77", onSurface: "#1f1f1f" };
 const darkThemeColors = { primary: "#83c5be", onSurface: "#e1e1e1" };
 

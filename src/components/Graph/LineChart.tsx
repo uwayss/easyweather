@@ -34,8 +34,7 @@ const LineChart: React.FC<LineChartProps> = ({
   gradientColor: propGradientColor,
   paddingVertical = 5,
 }) => {
-  const { colorScheme } = useColorScheme(); // Get color scheme
-  // Use Tailwind theme colors
+  const { colorScheme } = useColorScheme();
   const themeColors = colorScheme === "dark" ? darkThemeColors : lightThemeColors;
 
   const lineColor = propLineColor || themeColors.primary;
@@ -44,7 +43,6 @@ const LineChart: React.FC<LineChartProps> = ({
   if (!data || data.length < 2) {
     return (
       <View style={[{ height, width }, styles.centerContent]}>
-        {/* Use core Text with Tailwind classes */}
         <Text className="text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant">
           Not enough data
         </Text>

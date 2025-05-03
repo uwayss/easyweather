@@ -1,14 +1,18 @@
+// FILE: src/screens/SettingsScreen/Common.tsx
 import React from "react";
-import { Linking, TouchableOpacity, View, ViewStyle } from "react-native";
-import { Icon, Text, useTheme } from "react-native-paper";
+import { Linking, TouchableOpacity, View, ViewStyle, Text } from "react-native";
 import { getAnalytics } from "@react-native-firebase/analytics";
+// Removed Feather import
+import Icon from "../../components/Icon"; // Import custom Icon component
+import { useColorScheme } from "nativewind";
 
+// ... openLink function ...
 export const openLink = async (url: string, linkContext?: string) => {
-  // Add context param
+  // ... (implementation remains the same)
   if (linkContext) {
     getAnalytics().logEvent("open_external_link", {
       target_url: url,
-      link_context: linkContext, // e.g., 'privacy_policy', 'developer_github'
+      link_context: linkContext,
     });
   } else {
     getAnalytics().logEvent("open_external_link", {
@@ -17,17 +21,19 @@ export const openLink = async (url: string, linkContext?: string) => {
   }
   Linking.openURL(url).catch(err => console.error("An error occurred: ", err));
 };
+
+// ... ListSection function ...
 export function ListSection({ title, children }: { title: string; children: React.ReactNode }) {
-  const theme = useTheme();
   return (
     <View className="gap-6 py-3">
-      <Text style={{ color: theme.colors.onSurfaceVariant }} className="px-4">
+      <Text className="px-4 text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant">
         {title}
       </Text>
       {children}
     </View>
   );
 }
+
 export function Item({
   title,
   description,
@@ -37,14 +43,20 @@ export function Item({
 }: {
   title: string;
   description?: string;
-  left?: React.ReactNode;
-  right?: React.ReactNode;
+  left?: string; // Keep as string
+  right?: string; // Keep as string
   onPress?: () => void;
 }) {
+  const { colorScheme } = useColorScheme();
+  const iconColor = colorScheme === "dark" ? "#e1e1e1" : "#1f1f1f";
+  const descriptionColor =
+    colorScheme === "dark" ? "text-dark-onSurfaceVariant" : "text-light-onSurfaceVariant";
+
   const Wrapper = ({ children, style }: { children: React.ReactNode; style?: ViewStyle }) => {
+    // ... Wrapper component logic ...
     return onPress ? (
       <TouchableOpacity
-        className="flex-row gap-4 justify-between items-center px-4"
+        className="flex-row gap-4 justify-between items-center px-4 min-h-[48px] py-2"
         style={[style]}
         onPress={onPress}
         activeOpacity={0.5}
@@ -52,17 +64,21 @@ export function Item({
         {children}
       </TouchableOpacity>
     ) : (
-      <View className="flex-row gap-4 justify-between items-center px-4">{children}</View>
+      <View className="flex-row gap-4 justify-between items-center px-4 min-h-[48px] py-2">
+        {children}
+      </View>
     );
   };
   return (
     <Wrapper>
-      {left && <Icon source={left} size={24} />}
+      {/* Use custom Icon component */}
+      {left && <Icon name={left} size={24} color={iconColor} />}
       <View style={{ flex: 1, justifyContent: "center" }}>
-        <Text variant="titleMedium">{title}</Text>
-        {description && <Text>{description}</Text>}
+        <Text className="text-base text-light-onSurface dark:text-dark-onSurface">{title}</Text>
+        {description && <Text className={`text-sm ${descriptionColor}`}>{description}</Text>}
       </View>
-      {right && <Icon source={right} size={24} />}
+      {/* Use custom Icon component */}
+      {right && <Icon name={right} size={24} color={iconColor} />}
     </Wrapper>
   );
 }
