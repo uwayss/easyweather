@@ -33,6 +33,7 @@ const ThemedAppWithProviders = () => {
 
   // Removed Snackbar state
   const [adLoadAttempt, setAdLoadAttempt] = React.useState(0); // Use React.useState
+  const [adLoaded, setAdLoaded] = React.useState(false);
   const { error: weatherError, clearError: clearWeatherError } = useWeather();
   const { error: locationError, clearError: clearLocationError } = useLocationContext();
 
@@ -67,9 +68,10 @@ const ThemedAppWithProviders = () => {
     }, 30000);
   };
 
-  // const handleAdLoaded = () => {
-  //   console.log("Banner Ad loaded successfully");
-  // };
+  const handleAdLoaded = () => {
+    setAdLoaded(true);
+    console.log("Banner Ad loaded successfully");
+  };
 
   const onReady = () => {
     const currentRoute = navigationRef.getCurrentRoute();
@@ -104,7 +106,6 @@ const ThemedAppWithProviders = () => {
     }
     routeNameRef.current = currentRouteName || null;
   };
-
   return (
     <>
       <NavigationContainer ref={navigationRef} onReady={onReady} onStateChange={onStateChange}>
@@ -113,8 +114,9 @@ const ThemedAppWithProviders = () => {
           key={adLoadAttempt}
           unitId={adUnitId}
           size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-          // onAdLoaded={handleAdLoaded}
+          onAdLoaded={handleAdLoaded}
           onAdFailedToLoad={handleAdFailedToLoad}
+          style={{ opacity: adLoaded ? 1 : 0 }}
         />
       </NavigationContainer>
     </>

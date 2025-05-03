@@ -1,5 +1,5 @@
 // FILE: src/screens/HomeScreen/WeatherCard.tsx
-import React from "react";
+import React from "react"; // Removed useEffect
 import Card from "../../components/Common/Card";
 import { useWeather } from "../../context/WeatherContext";
 import backgroundMappings from "../../utils/backgroundMappings";
@@ -7,8 +7,10 @@ import { Details } from "./WeatherCard/WeatherDetails";
 import { MainInfo } from "./WeatherCard/MainInfo";
 
 export default function WeatherCard() {
+  console.log("LOG_MARKER: Rendering WeatherCard"); // Log component render start
   const { weather } = useWeather();
   const currentWeather = weather?.current;
+
   return (
     <Card
       className="flex-1 p-4 justify-around"
