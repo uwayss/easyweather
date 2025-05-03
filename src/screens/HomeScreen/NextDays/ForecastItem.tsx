@@ -1,18 +1,19 @@
-// FILE: src/screens/HomeScreen/ForecastItem.tsx
+// FILE: src/screens/HomeScreen/NextDays/ForecastItem.tsx
 import React from "react";
-import { View, TouchableOpacity, Image } from "react-native";
-import { useWeatherDescriptions } from "../../utils/descriptions";
-import { DayWeather } from "../../types/weather";
-import { useSettings } from "../../context/SettingsContext";
-import { convertTemperature, formatTemperature } from "../../utils/unitConversion";
-import { filterHourlyDataForDate } from "../../utils/weatherUtils";
-import { useWeather } from "../../context/WeatherContext";
+import { View, TouchableOpacity } from "react-native"; // Removed Image
+import FastImage from "react-native-fast-image"; // Import FastImage
+import { useWeatherDescriptions } from "../../../utils/descriptions";
+import { DayWeather } from "../../../types/weather";
+import { useSettings } from "../../../context/SettingsContext";
+import { convertTemperature, formatTemperature } from "../../../utils/unitConversion";
+import { filterHourlyDataForDate } from "../../../utils/weatherUtils";
+import { useWeather } from "../../../context/WeatherContext";
 import { useTranslation } from "react-i18next";
 import { getAnalytics } from "@react-native-firebase/analytics";
 import { useNavigation } from "@react-navigation/native";
-import { HomeNavigationProp } from "../Home";
-import Text from "../../components/Common/Text";
-import Card from "../../components/Common/Card";
+import { HomeNavigationProp } from "../../Home";
+import Text from "../../../components/Common/Text";
+import Card from "../../../components/Common/Card";
 
 interface ForecastItemProps {
   item: DayWeather;
@@ -48,16 +49,17 @@ const ForecastItem = React.memo(function ForecastItem({ item, index }: ForecastI
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.6}>
-      <Card
-        elevated
-        // bordered={false}
-        className={`mx-2 items-center justify-between p-3 gap-1.5 w-36 h-48`}
-      >
+      <Card elevated className={`mx-2 items-center justify-between p-3 gap-1.5 w-36 h-48`}>
         <Text numberOfLines={1} className="w-full text-center font-semibold">
           {dayName}
         </Text>
         {!item.empty ? (
-          <Image source={weatherDescription.image} className="size-16" resizeMode="contain" />
+          <FastImage
+            source={weatherDescription.image}
+            // className="size-16"
+            style={{ height: 64, width: 64 }}
+            resizeMode={FastImage.resizeMode.contain}
+          />
         ) : (
           <Card className="size-16 rounded-full" />
         )}

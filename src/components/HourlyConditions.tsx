@@ -1,5 +1,5 @@
 // FILE: src/components/HourlyConditions.tsx
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react"; // Removed useEffect
 import { StyleSheet, View, Dimensions, ScrollView } from "react-native";
 import { useSettings } from "../context/SettingsContext";
 import { getMetricDataForForecast, MetricType, GraphDataPoint } from "../utils/metricData";
@@ -29,6 +29,8 @@ export default function HourlyConditions({
 }: {
   selectedHoursData?: HourWeather[];
 }) {
+  console.log("LOG_MARKER: Rendering HourlyConditions"); // Log component render start
+
   const { weather } = useWeather();
   const hourlyWeather = weather?.hourly;
   const hourlyData =
@@ -42,10 +44,12 @@ export default function HourlyConditions({
 
   const weatherDescriptions = useWeatherDescriptions();
 
-  const graphData: GraphDataPoint[] | undefined = useMemo(
-    () => getMetricDataForForecast(currentMetric, hourlyData, settings.useImperialUnits),
-    [currentMetric, hourlyData, settings.useImperialUnits],
-  );
+  const graphData: GraphDataPoint[] | undefined = useMemo(() => {
+    // console.time("getMetricDataForForecast"); // Keep this if needed for calculation time
+    const result = getMetricDataForForecast(currentMetric, hourlyData, settings.useImperialUnits);
+    // console.timeEnd("getMetricDataForForecast");
+    return result;
+  }, [currentMetric, hourlyData, settings.useImperialUnits]);
 
   const numDataPoints = graphData?.length || 0;
   const availableScrollWidth = screenWidth - HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL * 2;
@@ -72,7 +76,7 @@ export default function HourlyConditions({
   const chartColor = graphData?.[0]?.color || theme.primary;
 
   return (
-    <Card className="mb-4 overflow-hidden" elevated>
+    <Card className="overflow-hidden" elevated>
       <View style={styles.headerSection}>
         <Text className="font-medium">{t("weather.hourly_title")}</Text>
       </View>

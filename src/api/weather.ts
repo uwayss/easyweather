@@ -26,5 +26,6 @@ export async function fetchWeather(latitude: number, longitude: number): Promise
     throw new Error("Failed to fetch weather data");
   }
   const apiResponse: WeatherResponseAPI = await response.json();
+  console.warn("THE DATA IS HERE");
   return processWeatherData(apiResponse);
 }
