@@ -13,13 +13,21 @@ interface ScreenHeaderProps {
 const ScreenHeader: React.FC<ScreenHeaderProps> = ({ title, showBackButton = true }) => {
   const navigation = useNavigation();
   return (
-    <View className={`flex-row items-center h-14 px-2 shadow-sm bg-light-surface dark:bg-dark-surface`}>
+    <View
+      className={`flex-row items-center h-14 px-2 shadow-sm bg-light-surface dark:bg-dark-surface`}
+    >
       {showBackButton && (
         <TouchableOpacity onPress={() => navigation.goBack()} className="p-2 rounded-full">
-          <Icon name="arrow-left" size={24}  />
+          <Icon name="arrow-left" size={24} />
         </TouchableOpacity>
       )}
-      <Text className={`text-xl font-medium text-light-onSurface dark:text-dark-onSurface ${showBackButton && 'ml-4'}`}>{title}</Text>
+      <Text
+        className={`text-xl font-medium text-light-onSurface dark:text-dark-onSurface ${
+          showBackButton && "ml-4"
+        }`}
+      >
+        {title}
+      </Text>
     </View>
   );
 };

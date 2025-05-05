@@ -1,10 +1,11 @@
 // FILE: index.js
+
 import { getAnalytics } from "@react-native-firebase/analytics";
 import { getApp } from "@react-native-firebase/app";
 import { NavigationContainer, useNavigationContainerRef } from "@react-navigation/native";
-import { colorScheme, useColorScheme } from "nativewind";
-import React, { useEffect, useRef } from "react";
-import { AppRegistry, StatusBar } from "react-native";
+import { useColorScheme as useColorSchemeNW } from "nativewind";
+import React, { useEffect, useMemo, useRef } from "react";
+import { AppRegistry, StatusBar, useColorScheme as useColorSchemeRN } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MobileAds, {
   BannerAd,
@@ -23,50 +24,65 @@ import { SettingsProvider, useSettings } from "./src/context/SettingsContext";
 import { WeatherProvider, useWeather } from "./src/context/WeatherContext";
 import "./services/i18next";
 
+// Configure Mobile Ads
 MobileAds().setRequestConfiguration({
   maxAdContentRating: MaxAdContentRating.G,
   tagForChildDirectedTreatment: true,
   tagForUnderAgeOfConsent: true,
 });
+
+// Determine Ad Unit ID
 const adUnitId = __DEV__ ? TestIds.BANNER : BANNER_AD_UNIT_ID;
 
+// Component that applies theme and includes providers needing settings/theme
 const ThemedAppWithProviders = () => {
-  const { activeTheme } = useSettings();
-  const navigationRef = useNavigationContainerRef();
-  const routeNameRef = useRef(null);
-  const { setColorScheme } = useColorScheme();
-
-  // Removed Snackbar state
-  const [adLoadAttempt, setAdLoadAttempt] = React.useState(0); // Use React.useState
-  const [adLoaded, setAdLoaded] = React.useState(false);
+  const { settings } = useSettings();
   const { error: weatherError, clearError: clearWeatherError } = useWeather();
   const { error: locationError, clearError: clearLocationError } = useLocationContext();
 
-  useEffect(() => {
-    setColorScheme(activeTheme);
-  }, [activeTheme, setColorScheme]);
+  const systemColorScheme = useColorSchemeRN();
+  const { setColorScheme: setNativeWindTheme, colorScheme: currentNativeWindTheme } =
+    useColorSchemeNW();
 
-  // Show Toast on error
+  const navigationRef = useNavigationContainerRef();
+  const routeNameRef = useRef(null);
+  const [adLoadAttempt, setAdLoadAttempt] = React.useState(0);
+  const [adLoaded, setAdLoaded] = React.useState(false);
+
+  const themeToApply = useMemo(() => {
+    return settings.theme === "system" ? systemColorScheme ?? "light" : settings.theme;
+  }, [settings.theme, systemColorScheme]);
+
+  useEffect(() => {
+    if (currentNativeWindTheme !== themeToApply) {
+      console.log(
+        `[Theme] Applying theme via NativeWind: ${themeToApply}. (System: ${systemColorScheme}, Setting: ${settings.theme})`,
+      );
+      setNativeWindTheme(themeToApply);
+    }
+  }, [themeToApply, setNativeWindTheme, currentNativeWindTheme]);
+
   useEffect(() => {
     const errorMessage = locationError || weatherError;
     if (errorMessage) {
       Toast.show({
-        type: "error", // 'success', 'error', 'info'
-        text1: "Error", // Optional title
+        type: "error",
+        text1: "Error",
         text2: errorMessage,
         position: "bottom",
-        visibilityTime: 4000, // Duration in ms
+        visibilityTime: 4000,
         autoHide: true,
         onHide: () => {
-          // Clear error state when toast hides
           if (locationError) clearLocationError();
           if (weatherError) clearWeatherError();
         },
       });
     }
-  }, [weatherError, locationError, clearWeatherError, clearLocationError]); // Added clear functions to deps
+  }, [weatherError, locationError, clearWeatherError, clearLocationError]);
 
-  const handleAdFailedToLoad = () => {
+  const handleAdFailedToLoad = error => {
+    console.error("Banner Ad failed to load: ", error);
+
     setTimeout(() => {
       console.log("Retrying ad load...");
       setAdLoadAttempt(prev => prev + 1);
@@ -88,50 +104,57 @@ const ThemedAppWithProviders = () => {
           screen_name: routeNameRef.current,
           screen_class: routeNameRef.current,
         });
+        console.log(`[Analytics] Logged initial screen view: ${routeNameRef.current}`);
       }
     } catch (error) {
-      console.error("[Analytics] Firebase not configured?", error);
+      console.error("[Analytics] Firebase not configured or error logging initial screen:", error);
     }
   };
 
   const onStateChange = async () => {
     const previousRouteName = routeNameRef.current;
-    const currentRouteName = navigationRef.getCurrentRoute()?.name;
+    const currentRoute = navigationRef.getCurrentRoute();
+    const currentRouteName = currentRoute?.name;
 
     if (previousRouteName !== currentRouteName && currentRouteName) {
+      console.log(`[Navigation] Navigated from ${previousRouteName} to ${currentRouteName}`);
       try {
         const app = getApp();
         await getAnalytics(app).logScreenView({
           screen_name: currentRouteName,
           screen_class: currentRouteName,
         });
+        console.log(`[Analytics] Logged screen view: ${currentRouteName}`);
       } catch (error) {
         console.error("[Analytics] Error logging screen view:", error);
       }
     }
+
     routeNameRef.current = currentRouteName || null;
   };
+
   return (
-    <>
-      <NavigationContainer ref={navigationRef} onReady={onReady} onStateChange={onStateChange}>
-        <App />
-        <StatusBar
-          barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
-          className="bg-light-surface dark:bg-dark-surface"
-        />
-        <BannerAd
-          key={adLoadAttempt}
-          unitId={adUnitId}
-          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-          onAdLoaded={handleAdLoaded}
-          onAdFailedToLoad={handleAdFailedToLoad}
-          style={{ opacity: adLoaded ? 1 : 0 }}
-        />
-      </NavigationContainer>
-    </>
+    <NavigationContainer ref={navigationRef} onReady={onReady} onStateChange={onStateChange}>
+      <App />
+      <StatusBar
+        barStyle={themeToApply === "dark" ? "light-content" : "dark-content"}
+        className="bg-light-surface dark:bg-dark-surface"
+      />
+      {/* Render Banner Ad */}
+      <BannerAd
+        key={`banner-${adLoadAttempt}`}
+        unitId={adUnitId}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        onAdLoaded={handleAdLoaded}
+        onAdFailedToLoad={handleAdFailedToLoad}
+        requestOptions={{ requestNonPersonalizedAdsOnly: true }}
+        style={{ opacity: adLoaded ? 1 : 0, alignSelf: "center" }}
+      />
+    </NavigationContainer>
   );
 };
 
+// Component grouping non-UI providers
 const AppWithProviders = () => {
   return (
     <LocationProvider>
@@ -142,6 +165,7 @@ const AppWithProviders = () => {
   );
 };
 
+// Root component with UI wrappers and SettingsProvider
 function AppRoot() {
   return (
     <SafeAreaProvider>
@@ -149,10 +173,12 @@ function AppRoot() {
         <SettingsProvider>
           <AppWithProviders />
         </SettingsProvider>
+        {/* Toast needs to be outside NavigationContainer typically, but after providers */}
         <Toast />
       </GestureHandlerRootView>
     </SafeAreaProvider>
   );
 }
 
+// Register the main component
 AppRegistry.registerComponent(appName, () => AppRoot);

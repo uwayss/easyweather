@@ -51,7 +51,6 @@ const LineChart: React.FC<LineChartProps> = ({
     );
   }
 
- 
   const chartHeight = height - paddingVertical * 2;
   const calculateY = (progress: number) => paddingVertical + chartHeight * (1 - progress);
 
@@ -116,6 +115,5 @@ const LineChart: React.FC<LineChartProps> = ({
     </Svg>
   );
 };
-
 
 export default LineChart;

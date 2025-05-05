@@ -22,7 +22,9 @@ export function Details({ current }: { current: CurrentWeather | undefined }) {
         <Text pop passive className="mb-1">
           {t("weather.humidity")}
         </Text>
-        <Text pop className="font-semibold">{current?.humidity ? current?.humidity + "%" : ""}</Text>
+        <Text pop className="font-semibold">
+          {current?.humidity ? current?.humidity + "%" : ""}
+        </Text>
       </View>
       <View className="w-px h-full bg-neutral-400 opacity-30 mx-4" />
       <View className="flex-1 items-center">

@@ -21,10 +21,7 @@ const SettingsScreen = () => {
     >
       <ScreenHeader title={t("settings.title")} />
 
-      <ScrollView
-        className="flex-1"
-        contentContainerClassName="py-2 px-0"
-      >
+      <ScrollView className="flex-1" contentContainerClassName="py-2 px-0">
         <AppearanceSection />
         <LanguageSection />
         <UnitsSection />

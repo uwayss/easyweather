@@ -19,7 +19,7 @@ export const THEME_COLORS_LIGHT = {
     level4: "#ebebeb",
     level5: "#e4e4e4",
   },
-}
+};
 export const THEME_COLORS_DARK = {
   primary: "#83c5be",
   secondary: "#006d77",
@@ -39,7 +39,7 @@ export const THEME_COLORS_DARK = {
     level4: "#292929",
     level5: "#2d2d2d",
   },
-}
+};
 export const TEMP_COLOR_STOPS_CELSIUS: [number, string][] = [
   [-30, "#e0f7fa"],
   [-25, "#b0f4e5"],

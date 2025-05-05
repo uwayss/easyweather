@@ -1,9 +1,12 @@
 // FILE: src/components/Icon.tsx
+import { useColorScheme } from "nativewind";
 import React from "react";
 import { StyleProp, TextProps, TextStyle } from "react-native";
 import { ColorValue } from "react-native";
 import Feather from "react-native-vector-icons/Feather";
 import Material from "react-native-vector-icons/MaterialCommunityIcons";
+
+import { THEME_COLORS_DARK, THEME_COLORS_LIGHT } from "../constants/colors";
 
 interface IconProps extends TextProps {
   name: string;
@@ -11,14 +14,30 @@ interface IconProps extends TextProps {
   color?: ColorValue;
   style?: StyleProp<TextStyle>;
   type?: "feather" | "material";
-  className?: string
+  className?: string;
 }
 
-const Icon: React.FC<IconProps> = ({ name, size = 24, color, style, type = "material", className}) => {
+const Icon: React.FC<IconProps> = ({
+  name,
+  size = 24,
+  color,
+  style,
+  type = "material",
+  className,
+}) => {
   const IconComponent = type === "feather" ? Feather : Material;
+  const { colorScheme } = useColorScheme();
+  const iconColor =
+    colorScheme === "dark" ? THEME_COLORS_DARK.onSurface : THEME_COLORS_LIGHT.onSurface;
   try {
     return (
-      <IconComponent name={name as never} size={size} color={color || undefined} style={style} className={`text-light-onsurface dark:text-dark-onsurface ${className}`} />
+      <IconComponent
+        name={name as never}
+        size={size}
+        color={color || iconColor}
+        style={style}
+        className={`${className || ""}`}
+      />
     );
   } catch (error) {
     console.error("An error occurred when rendering an Icon", error);
