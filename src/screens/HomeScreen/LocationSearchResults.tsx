@@ -1,5 +1,4 @@
 // FILE: src/screens/HomeScreen/LocationSearchResults.tsx
-import { useColorScheme } from "nativewind";
 import React from "react";
 import { ScrollView, View, Pressable } from "react-native";
 
@@ -13,14 +12,11 @@ function getLocationName(location: LocationResult): string {
 }
 
 function LocationItem({ result, onPress }: { result: LocationResult; onPress: () => void }) {
-  const { colorScheme } = useColorScheme();
-  const iconColor = colorScheme === "dark" ? "#aaaaaa" : "#666666";
-
   return (
     <Pressable onPress={onPress}>
       <View className="p-2 flex-row items-center bg-light-surface dark:bg-dark-surface border-b border-light-outline/20 dark:border-dark-outline/20">
         <View className="mr-4">
-          <Icon name="map-pin" size={18} color={iconColor} type="feather" />
+          <Icon name="map-pin" size={18} type="feather" />
         </View>
         <View className="flex-1">
           <Text className="font-medium">{getLocationName(result)}</Text>

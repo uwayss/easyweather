@@ -4,7 +4,7 @@ import { ActivityIndicator, View } from "react-native"; // Use core ActivityIndi
 
 export default function PlaceholderCard({ withoutContainer }: { withoutContainer?: boolean }) {
   const indicator = (
-    <ActivityIndicator size="small" color="#006d77" className="dark:text-dark-primary" />
+    <ActivityIndicator size="small" className="text-light-primary dark:text-dark-primary" />
   );
 
   return withoutContainer ? (

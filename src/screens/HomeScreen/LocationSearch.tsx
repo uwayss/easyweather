@@ -8,6 +8,7 @@ import { View, TextInput, TouchableOpacity, ActivityIndicator } from "react-nati
 import LocationSearchResults from "./LocationSearchResults";
 import { searchLocation, LocationResult } from "../../api/location";
 import Icon from "../../components/Icon";
+import { THEME_COLORS_DARK, THEME_COLORS_LIGHT } from "../../constants/colors";
 import { useLocationContext } from "../../context/LocationContext";
 
 type DebouncedSearchFunction = (query: string) => Promise<void> | void;
@@ -86,16 +87,17 @@ export const LocationSearch = () => {
       console.error("Geolocation button error:", error);
     }
   };
-
-  const placeholderTextColor = colorScheme === "dark" ? "#aaaaaa" : "#666666";
-  const iconColor = colorScheme === "dark" ? "#e1e1e1" : "#1f1f1f";
-  const indicatorColor = colorScheme === "dark" ? "#83c5be" : "#006d77";
+  const dark = THEME_COLORS_DARK;
+  const light = THEME_COLORS_LIGHT;
+  const placeholderTextColor =
+    colorScheme === "dark" ? dark.onSurfaceVariant : light.onSurfaceVariant;
+  const indicatorColor = colorScheme === "dark" ? dark.primary : light.primary;
 
   return (
     <View className="z-40 flex-1">
       <View className="flex-row items-center h-14 px-1 rounded-xl bg-light-elevation-level3 dark:bg-dark-elevation-level3">
         <TouchableOpacity onPress={handleGeolocationPress} className="p-2">
-          <Icon name="crosshairs-gps" size={22} color={iconColor} />
+          <Icon name="crosshairs-gps" size={22} />
         </TouchableOpacity>
         <TextInput
           placeholder={t("search.placeholder")}
@@ -112,7 +114,7 @@ export const LocationSearch = () => {
         ) : (
           searchQuery.length > 0 && (
             <TouchableOpacity onPress={() => handleSearchChange("")} className="p-2">
-              <Icon name="x" size={22} color={iconColor} type="feather" />
+              <Icon name="x" size={22} type="feather" />
             </TouchableOpacity>
           )
         )}

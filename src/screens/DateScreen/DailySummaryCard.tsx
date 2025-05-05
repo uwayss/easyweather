@@ -1,5 +1,4 @@
 // FILE: src/screens/DateScreen/DailySummaryCard.tsx
-import { useColorScheme } from "nativewind";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
@@ -22,12 +21,9 @@ interface DetailItemProps {
 }
 
 const DetailItem: React.FC<DetailItemProps> = ({ icon, label, value, unit, color }) => {
-  const { colorScheme } = useColorScheme();
-  const theme = colorScheme === "dark" ? darkThemeColors : lightThemeColors;
-  const finalIconColor = color || theme.onSurfaceVariant;
   return (
     <View className="flex-row items-center gap-2 flex-1">
-      <Icon name={icon} size={20} color={finalIconColor} type="feather" />
+      <Icon name={icon} size={20} color={color} type="feather" />
       <View className="items-start">
         <Text className="font-semibold text-sm">
           {value}
@@ -131,7 +127,3 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
     </View>
   );
 }
-
-// Temporary color objects
-const lightThemeColors = { primary: "#006d77", onSurface: "#1f1f1f", onSurfaceVariant: "#666666" };
-const darkThemeColors = { primary: "#83c5be", onSurface: "#e1e1e1", onSurfaceVariant: "#aaaaaa" };
