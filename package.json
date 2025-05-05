@@ -22,7 +22,7 @@
     "types": "tsc --noEmit",
     "checks": "npm run types && npm run lint && npm run format",
     "test": "jest",
-    "generate-icons": "python scripts/generate_icons.py"
+    "relgen": "python scripts/relgen.py"
   },
   "dependencies": {
     "@react-native-firebase/analytics": "^21.13.0",
