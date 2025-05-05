@@ -1,9 +1,8 @@
 // FILE: src/components/CustomSegmentedButtons.tsx
-import { useColorScheme } from "nativewind";
 import React from "react";
 import { View, Text, TouchableOpacity, ViewStyle, StyleProp } from "react-native";
 
-import Icon from "./Icon";
+import Icon from "./Icon"; // Assuming Icon component handles its own default theming
 
 interface SegmentButtonOption {
   value: string;
@@ -25,9 +24,6 @@ const CustomSegmentedButtons: React.FC<CustomSegmentedButtonsProps> = ({
   onValueChange,
   style,
 }) => {
-  const { colorScheme } = useColorScheme();
-  const theme = colorScheme === "dark" ? darkThemeColors : lightThemeColors;
-
   return (
     <View
       style={style}
@@ -43,8 +39,6 @@ const CustomSegmentedButtons: React.FC<CustomSegmentedButtonsProps> = ({
         const activeText = "text-light-primary dark:text-dark-primary";
         const inactiveText = "text-light-onSurface dark:text-dark-onSurface";
 
-        const iconColor = isActive ? theme.primary : theme.onSurface;
-
         return (
           <TouchableOpacity
             key={button.value}
@@ -59,15 +53,16 @@ const CustomSegmentedButtons: React.FC<CustomSegmentedButtonsProps> = ({
           >
             {button.icon && (
               <Icon
-                name={button.icon} // Pass string name
+                name={button.icon}
                 size={18}
-                color={iconColor}
-                style={{ marginRight: 6 }}
+                className={`mr-1.5 ${isActive ? activeText : inactiveText} ${
+                  button.disabled ? "opacity-50" : ""
+                }`}
               />
             )}
             <Text
               className={`
-                text-sm font-medium ml-1.5
+                text-sm font-medium
                 ${isActive ? activeText : inactiveText}
                 ${button.disabled ? "opacity-50" : ""}
               `}
@@ -81,8 +76,5 @@ const CustomSegmentedButtons: React.FC<CustomSegmentedButtonsProps> = ({
     </View>
   );
 };
-
-const lightThemeColors = { primary: "#006d77", onSurface: "#1f1f1f" };
-const darkThemeColors = { primary: "#83c5be", onSurface: "#e1e1e1" };
 
 export default React.memo(CustomSegmentedButtons);

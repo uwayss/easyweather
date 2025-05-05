@@ -19,7 +19,7 @@ type HomeProps = NativeStackScreenProps<RootStackParamList, "Home">;
 
 export default function Home({ navigation }: HomeProps) {
   const { colorScheme } = useColorScheme();
-  const { loading: weatherLoading, } = useWeather();
+  const { loading: weatherLoading } = useWeather();
   const { loading: locationLoading } = useLocationContext();
   const { refreshing, onRefresh } = useHomeRefresh();
   const isLoading = locationLoading || weatherLoading;

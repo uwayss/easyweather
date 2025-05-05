@@ -6,6 +6,7 @@ import { View, ActivityIndicator } from "react-native";
 
 import Card from "../../../components/Common/Card";
 import Text from "../../../components/Common/Text";
+import { THEME_COLORS_DARK, THEME_COLORS_LIGHT } from "../../../constants/colors";
 import { useLocationContext } from "../../../context/LocationContext";
 import { useSettings } from "../../../context/SettingsContext";
 import { CurrentWeather } from "../../../types/weather";
@@ -27,9 +28,8 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
   const description = current
     ? translatedDescriptions[current.weatherCode]?.[timeOfDay].description
     : null;
-
-  const indicatorColor = colorScheme === "dark" ? "#83c5be" : "#006d77";
-
+  
+  const indicatorColor = colorScheme === "dark" ? THEME_COLORS_DARK.primary : THEME_COLORS_LIGHT.primary;
   return (
     <Card className="h-48" elevated>
       {current ? (

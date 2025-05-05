@@ -23,6 +23,7 @@ import Text from "./Common/Text";
 import { filterHourlyWeatherForNext24HoursIncludingNow } from "../utils/weatherUtils";
 import Card from "./Common/Card";
 import Divider from "./Common/Divider";
+import { THEME_COLORS_DARK, THEME_COLORS_LIGHT } from "../constants/colors";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -39,7 +40,7 @@ export default function HourlyConditions({
   const [currentMetric, setCurrentMetric] = useState<MetricType>("temperature");
   const { settings, activeTheme } = useSettings();
   const { t } = useTranslation();
-  const theme = activeTheme === "dark" ? darkThemeColors : lightThemeColors;
+  const theme = activeTheme === "dark" ? THEME_COLORS_DARK : THEME_COLORS_LIGHT;
   const styles = hourlyStyles(theme);
 
   const weatherDescriptions = useWeatherDescriptions();
@@ -162,10 +163,8 @@ export default function HourlyConditions({
   );
 }
 
-const lightThemeColors = { primary: "#006d77", onSurface: "#1f1f1f", onSurfaceVariant: "#666666" };
-const darkThemeColors = { primary: "#83c5be", onSurface: "#e1e1e1", onSurfaceVariant: "#aaaaaa" };
 
-const hourlyStyles = (theme: typeof lightThemeColors | typeof darkThemeColors) =>
+const hourlyStyles = (theme: typeof THEME_COLORS_LIGHT | typeof THEME_COLORS_DARK) =>
   StyleSheet.create({
     headerSection: { paddingHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL, paddingTop: 16 },
     selectorSection: {

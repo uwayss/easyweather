@@ -1,10 +1,11 @@
 // FILE: src/components/Graph/LineChart.tsx
-import { useColorScheme } from "nativewind"; // Need this for theme colors
+import { useColorScheme } from "nativewind";
 import React from "react";
-import { View, Text } from "react-native"; // Import core Text
+import { View, Text } from "react-native";
 import Svg, { Path, Circle, Defs, LinearGradient, Stop } from "react-native-svg";
 
 // Removed Text import from paper
+import { THEME_COLORS_DARK, THEME_COLORS_LIGHT } from "../../constants/colors";
 import { GraphDataPoint } from "../../utils/metricData";
 
 interface LineChartProps {
@@ -35,7 +36,7 @@ const LineChart: React.FC<LineChartProps> = ({
   paddingVertical = 5,
 }) => {
   const { colorScheme } = useColorScheme();
-  const themeColors = colorScheme === "dark" ? darkThemeColors : lightThemeColors;
+  const themeColors = colorScheme === "dark" ? THEME_COLORS_DARK : THEME_COLORS_LIGHT;
 
   const lineColor = propLineColor || themeColors.primary;
   const gradientColor = propGradientColor || lineColor;
@@ -50,14 +51,14 @@ const LineChart: React.FC<LineChartProps> = ({
     );
   }
 
-  // Calculate Y based on chartHeight and bottom padding
+ 
   const chartHeight = height - paddingVertical * 2;
   const calculateY = (progress: number) => paddingVertical + chartHeight * (1 - progress);
 
   const points = data.map((point: GraphDataPoint, index: number) => ({
     x: index * itemWidth + itemWidth / 2,
     y: calculateY(point.progress),
-    fill: point.color || themeColors.primary, // Use theme color
+    fill: point.color || themeColors.primary,
   }));
 
   let linePath = "";
@@ -116,8 +117,5 @@ const LineChart: React.FC<LineChartProps> = ({
   );
 };
 
-// Temporary color objects (could centralize these later)
-const lightThemeColors = { primary: "#006d77", onSurfaceVariant: "#666666" };
-const darkThemeColors = { primary: "#83c5be", onSurfaceVariant: "#aaaaaa" };
 
 export default LineChart;

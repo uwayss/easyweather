@@ -3,7 +3,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useColorScheme } from "nativewind";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView, View, Text, TouchableOpacity, StatusBar } from "react-native";
+import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { formatForecastDate } from "../utils/timeUtils";
@@ -23,22 +23,15 @@ export default function DayDetailsScreen({ route, navigation }: DetailsScreenPro
 
   const headerBg = colorScheme === "dark" ? "bg-dark-surface" : "bg-light-surface";
   const headerText = colorScheme === "dark" ? "text-dark-onSurface" : "text-light-onSurface";
-  const iconColor = colorScheme === "dark" ? "#e1e1e1" : "#1f1f1f";
 
   return (
     <SafeAreaView
       edges={["top", "left", "right", "bottom"]}
       className="flex-1 bg-light-background dark:bg-dark-background"
     >
-      <StatusBar
-        barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
-        backgroundColor={
-          colorScheme === "dark" ? darkThemeColors.surface : lightThemeColors.surface
-        }
-      />
       <View className={`flex-row items-center h-14 px-2 shadow-sm ${headerBg}`}>
         <TouchableOpacity onPress={() => navigation.goBack()} className="p-2 rounded-full">
-          <Icon name="arrow-left" size={24} color={iconColor} />
+          <Icon name="arrow-left" size={24} />
         </TouchableOpacity>
         <Text className={`text-xl font-medium ml-4 ${headerText}`} numberOfLines={1}>
           {formattedTitle || t("weather.hourly_forecast")}
@@ -52,6 +45,3 @@ export default function DayDetailsScreen({ route, navigation }: DetailsScreenPro
     </SafeAreaView>
   );
 }
-
-const lightThemeColors = { surface: "#ffffff" };
-const darkThemeColors = { surface: "#1e1e1e" };

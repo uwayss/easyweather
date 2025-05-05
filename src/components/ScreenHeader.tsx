@@ -1,6 +1,5 @@
 // FILE: src/components/ScreenHeader.tsx
 import { useNavigation } from "@react-navigation/native";
-import { useColorScheme } from "nativewind";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -13,20 +12,14 @@ interface ScreenHeaderProps {
 
 const ScreenHeader: React.FC<ScreenHeaderProps> = ({ title, showBackButton = true }) => {
   const navigation = useNavigation();
-  const { colorScheme } = useColorScheme();
-
-  const headerBg = colorScheme === "dark" ? "bg-dark-surface" : "bg-light-surface";
-  const headerText = colorScheme === "dark" ? "text-dark-onSurface" : "text-light-onSurface";
-  const iconColor = colorScheme === "dark" ? "#e1e1e1" : "#1f1f1f";
-
   return (
-    <View className={`flex-row items-center h-14 px-2 shadow-sm ${headerBg}`}>
+    <View className={`flex-row items-center h-14 px-2 shadow-sm bg-light-surface dark:bg-dark-surface`}>
       {showBackButton && (
         <TouchableOpacity onPress={() => navigation.goBack()} className="p-2 rounded-full">
-          <Icon name="arrow-left" size={24} color={iconColor} />
+          <Icon name="arrow-left" size={24}  />
         </TouchableOpacity>
       )}
-      <Text className={`text-xl font-medium ${showBackButton ? 'ml-4' : ''} ${headerText}`}>{title}</Text>
+      <Text className={`text-xl font-medium text-light-onSurface dark:text-dark-onSurface ${showBackButton && 'ml-4'}`}>{title}</Text>
     </View>
   );
 };

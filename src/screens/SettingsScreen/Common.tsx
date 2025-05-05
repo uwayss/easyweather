@@ -47,7 +47,6 @@ export function Item({
   onPress?: () => void;
 }) {
   const { colorScheme } = useColorScheme();
-  const iconColor = colorScheme === "dark" ? "#e1e1e1" : "#1f1f1f";
   const descriptionColor =
     colorScheme === "dark" ? "text-dark-onSurfaceVariant" : "text-light-onSurfaceVariant";
 
@@ -69,14 +68,12 @@ export function Item({
   };
   return (
     <Wrapper>
-      {/* Use custom Icon component */}
-      {left && <Icon name={left} size={24} color={iconColor} />}
+      {left && <Icon name={left} size={24} />}
       <View style={{ flex: 1, justifyContent: "center" }}>
         <Text>{title}</Text>
         {description && <Text className={`text-sm ${descriptionColor}`}>{description}</Text>}
       </View>
-      {/* Use custom Icon component */}
-      {right && <Icon name={right} size={24} color={iconColor} />}
+      {right && <Icon name={right} size={24} />}
     </Wrapper>
   );
 }

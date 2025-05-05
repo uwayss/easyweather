@@ -2,9 +2,9 @@
 import { getAnalytics } from "@react-native-firebase/analytics";
 import { getApp } from "@react-native-firebase/app";
 import { NavigationContainer, useNavigationContainerRef } from "@react-navigation/native";
-import { useColorScheme } from "nativewind";
+import { colorScheme, useColorScheme } from "nativewind";
 import React, { useEffect, useRef } from "react";
-import { AppRegistry } from "react-native";
+import { AppRegistry, StatusBar } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import MobileAds, {
   BannerAd,
@@ -115,6 +115,10 @@ const ThemedAppWithProviders = () => {
     <>
       <NavigationContainer ref={navigationRef} onReady={onReady} onStateChange={onStateChange}>
         <App />
+        <StatusBar
+          barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
+          className="bg-light-surface dark:bg-dark-surface"
+        />
         <BannerAd
           key={adLoadAttempt}
           unitId={adUnitId}
