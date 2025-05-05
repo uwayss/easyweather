@@ -28,8 +28,9 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
   const description = current
     ? translatedDescriptions[current.weatherCode]?.[timeOfDay].description
     : null;
-  
-  const indicatorColor = colorScheme === "dark" ? THEME_COLORS_DARK.primary : THEME_COLORS_LIGHT.primary;
+
+  const indicatorColor =
+    colorScheme === "dark" ? THEME_COLORS_DARK.primary : THEME_COLORS_LIGHT.primary;
   return (
     <Card className="h-48" elevated>
       {current ? (

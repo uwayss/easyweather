@@ -163,7 +163,6 @@ export default function HourlyConditions({
   );
 }
 
-
 const hourlyStyles = (theme: typeof THEME_COLORS_LIGHT | typeof THEME_COLORS_DARK) =>
   StyleSheet.create({
     headerSection: { paddingHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL, paddingTop: 16 },
