@@ -12,7 +12,7 @@
     "diff_bypass": "python scripts/diff.py",
     "dump": "python scripts/codebase_dumper.py",
     "dump_lite": "python scripts/codebase_dumper_lite.py",
-    "bundle": "node scripts/react-native-bundle-visualizer.ts",
+    "bundle": "node scripts/react-native-bundle-visualizer.js",
     "apk": "react-native run-android --mode=release",
     "doctor": "react-native doctor",
     "arch-build": "cd android && gradlew.bat assembleRelease -PreactNativeArchitectures=armeabi-v7a",

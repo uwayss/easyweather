@@ -1,9 +1,8 @@
 // FILE: src/screens/Settings.tsx
-import { useNavigation } from "@react-navigation/native";
 import { useColorScheme } from "nativewind";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView, View, Text, TouchableOpacity, StatusBar } from "react-native";
+import { ScrollView, StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AboutSection } from "./SettingsScreen/AboutSection";
@@ -12,17 +11,11 @@ import AppearanceSection from "./SettingsScreen/AppearanceSection";
 import LanguageSection from "./SettingsScreen/LanguageSection";
 import { LegalSection } from "./SettingsScreen/LegalSection";
 import UnitsSection from "./SettingsScreen/UnitsSection";
-import Icon from "../components/Icon";
+import ScreenHeader from "../components/ScreenHeader";
 
 const SettingsScreen = () => {
-  const navigation = useNavigation();
   const { colorScheme } = useColorScheme();
   const { t } = useTranslation();
-
-  const headerBg = colorScheme === "dark" ? "bg-dark-surface" : "bg-light-surface";
-  const headerText = colorScheme === "dark" ? "text-dark-onSurface" : "text-light-onSurface";
-  const iconColor = colorScheme === "dark" ? "#e1e1e1" : "#1f1f1f";
-
   return (
     <SafeAreaView
       edges={["top", "left", "right", "bottom"]}
@@ -35,16 +28,11 @@ const SettingsScreen = () => {
         }
       />
 
-      <View className={`flex-row items-center h-14 px-2 shadow-sm ${headerBg}`}>
-        <TouchableOpacity onPress={() => navigation.goBack()} className="p-2 rounded-full">
-          <Icon name="arrow-left" size={24} color={iconColor} />
-        </TouchableOpacity>
-        <Text className={`text-xl font-medium ml-4 ${headerText}`}>{t("settings.title")}</Text>
-      </View>
+      <ScreenHeader title={t("settings.title")} />
 
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ paddingVertical: 8, paddingHorizontal: 0 }}
+        contentContainerClassName="py-2 px-0"
       >
         <AppearanceSection />
         <LanguageSection />
