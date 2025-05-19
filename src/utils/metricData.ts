@@ -1,11 +1,4 @@
 // FILE: src/utils/metricData.ts
-import { getTemperatureGradientColor } from "./colorUtils";
-import {
-  convertTemperature,
-  convertWindSpeed,
-  formatTemperature,
-  formatWindSpeed,
-} from "./unitConversion";
 import {
   HUMIDITY_COLOR_HIGH,
   HUMIDITY_COLOR_LOW,
@@ -20,6 +13,13 @@ import {
   WIND_COLOR_SEVERE,
 } from "../constants/colors";
 import { HourWeather } from "../types/weather";
+import { getTemperatureGradientColor } from "./colorUtils";
+import {
+  convertTemperature,
+  convertWindSpeed,
+  formatTemperature,
+  formatWindSpeed,
+} from "./unitConversion";
 
 export type MetricType = "temperature" | "precipitation" | "humidity" | "wind";
 
@@ -36,22 +36,26 @@ export interface GraphDataPoint {
 // Temperature specific calculations for a single hour
 const getTemperatureDataForHour = (
   item: HourWeather,
-  useImperialUnits: boolean,
+  useImperialUnits: boolean
 ): GraphDataPoint => {
   const tempCelsius: number = item.temp;
   const temp = convertTemperature(tempCelsius, useImperialUnits);
 
-  const minTempDisplay = useImperialUnits ? 14 : -10; // Adjusted range for display
+  const minTempDisplay = useImperialUnits ? 14 : -10;
   const maxTempDisplay = useImperialUnits ? 104 : 40;
   const tempProgress = Math.max(
     0,
-    Math.min(1, (temp - minTempDisplay) / (maxTempDisplay - minTempDisplay)),
+    Math.min(1, (temp - minTempDisplay) / (maxTempDisplay - minTempDisplay))
   );
 
-  // Min/max for color gradient is based on Celsius range defined in constants
   const minTempColor = TEMP_COLOR_STOPS_CELSIUS[0][0];
-  const maxTempColor = TEMP_COLOR_STOPS_CELSIUS[TEMP_COLOR_STOPS_CELSIUS.length - 1][0];
-  const color = getTemperatureGradientColor(tempCelsius, minTempColor, maxTempColor);
+  const maxTempColor =
+    TEMP_COLOR_STOPS_CELSIUS[TEMP_COLOR_STOPS_CELSIUS.length - 1][0];
+  const color = getTemperatureGradientColor(
+    tempCelsius,
+    minTempColor,
+    maxTempColor
+  );
 
   const hourTime = new Date(item.time).getHours();
   const formattedHour =
@@ -125,24 +129,30 @@ const getHumidityDataForHour = (item: HourWeather): GraphDataPoint => {
 };
 
 // Wind speed specific calculations for a single hour
-const getWindSpeedDataForHour = (item: HourWeather, useImperialUnits: boolean): GraphDataPoint => {
+const getWindSpeedDataForHour = (
+  item: HourWeather,
+  useImperialUnits: boolean
+): GraphDataPoint => {
   const windSpeed = item.windSpeed || 0;
   const convertedWindSpeed = convertWindSpeed(windSpeed, useImperialUnits);
 
-  // Constants for thresholds
   const WIND_THRESHOLDS_MPH = { yellow: 3, orange: 12, red: 25 };
   const WIND_THRESHOLDS_KMH = { yellow: 5, orange: 20, red: 40 };
   const MAX_WIND_SPEED_MPH = 37;
   const MAX_WIND_SPEED_KMH = 60;
 
   let color = WIND_COLOR_LOW;
-  const thresholds = useImperialUnits ? WIND_THRESHOLDS_MPH : WIND_THRESHOLDS_KMH;
+  const thresholds = useImperialUnits
+    ? WIND_THRESHOLDS_MPH
+    : WIND_THRESHOLDS_KMH;
 
   if (convertedWindSpeed >= thresholds.red) color = WIND_COLOR_SEVERE;
   else if (convertedWindSpeed >= thresholds.orange) color = WIND_COLOR_HIGH;
   else if (convertedWindSpeed >= thresholds.yellow) color = WIND_COLOR_MEDIUM;
 
-  const maxWindSpeed = useImperialUnits ? MAX_WIND_SPEED_MPH : MAX_WIND_SPEED_KMH;
+  const maxWindSpeed = useImperialUnits
+    ? MAX_WIND_SPEED_MPH
+    : MAX_WIND_SPEED_KMH;
   const progress = Math.min(1, Math.max(0, convertedWindSpeed / maxWindSpeed));
 
   const hourTime = new Date(item.time).getHours();
@@ -169,7 +179,7 @@ const getWindSpeedDataForHour = (item: HourWeather, useImperialUnits: boolean): 
 export const getMetricDataForForecast = (
   metricType: MetricType,
   forecastHours: HourWeather[] | undefined,
-  useImperialUnits: boolean,
+  useImperialUnits: boolean
 ): GraphDataPoint[] | undefined => {
   const metricDataArray = forecastHours?.map((hour): GraphDataPoint => {
     switch (metricType) {
@@ -187,8 +197,8 @@ export const getMetricDataForForecast = (
           progress: 0,
           color: "#cccccc",
           value: "N/A",
-          time: hour.time, // Use hour's time if available
-          label: "??", // Placeholder label
+          time: hour.time,
+          label: "??",
         };
     }
   });

@@ -1,31 +1,50 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Welcome to your Expo app 👋
 
-# EasyWeather
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-A beautiful and intuitive weather application that provides accurate forecasts based on your location. Features include:
+## Get started
 
-- Real-time weather conditions
-- Hourly and daily forecasts
-- Location-based weather data
-- Customizable units and themes
+1. Install dependencies
 
-### Installing
+   ```bash
+   npm install
+   ```
 
-1. Clone this repository
-2. Install dependencies: `npm install`
-3. Run the app: `npx react-native run-android` or `npx react-native run-ios`
+2. Start the app
 
-For development, ensure you have the React Native environment set up as per the [official documentation](https://reactnative.dev/docs/environment-setup).
+   ```bash
+   npx expo start
+   ```
 
-### Modifying
+In the output, you'll find options to open the app in a
 
-Now that you have successfully run the app, let's modify it.
+- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+## Get a fresh project
 
-### Troubleshooting
+When you're ready, run:
 
-If you can't get it to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+```bash
+npm run reset-project
+```
+
+This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+
+## Learn more
+
+To learn more about developing your project with Expo, look at the following resources:
+
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+
+## Join the community
+
+Join our community of developers creating universal apps.
+
+- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
+- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.

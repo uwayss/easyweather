@@ -23,7 +23,9 @@ export function processWeatherData(data: WeatherResponseAPI): Weather {
     rainProb: data.hourly.precipitation_probability[index],
     weatherCode: data.hourly.weather_code[index],
     isDay: data.hourly.is_day[index] === 1,
-    windSpeed: data.hourly.wind_speed_10m ? data.hourly.wind_speed_10m[index] : 0,
+    windSpeed: data.hourly.wind_speed_10m
+      ? data.hourly.wind_speed_10m[index]
+      : 0,
   }));
   const daily: DayWeather[] = data.daily.time.map((date, index) => ({
     date,
@@ -54,30 +56,31 @@ export function processWeatherData(data: WeatherResponseAPI): Weather {
  */
 export const filterHourlyDataForDate = (
   hourlyData: HourWeather[] | undefined,
-  date: string,
+  date: string
 ): HourWeather[] | undefined => {
   if (!hourlyData) return undefined;
-  return hourlyData.filter((hourData: HourWeather) => hourData.time.startsWith(date));
+  return hourlyData.filter((hourData: HourWeather) =>
+    hourData.time.startsWith(date)
+  );
 };
 
 export function filterHourlyWeatherForNext24HoursIncludingNow(
-  hourlyData?: HourWeather[],
+  hourlyData?: HourWeather[]
 ): HourWeather[] | undefined {
   if (!hourlyData) return undefined;
 
   const now = new Date();
-  // Create a date representing the START of the current hour
+
   const startOfCurrentHour = new Date(now);
-  startOfCurrentHour.setMinutes(0, 0, 0); // Set minutes, seconds, milliseconds to 0
+  startOfCurrentHour.setMinutes(0, 0, 0);
 
   const twentyFourHoursLater = new Date(now.getTime() + 24 * 60 * 60 * 1000);
 
   const filteredData = hourlyData.filter((hourData: HourWeather) => {
     const hourTime = new Date(hourData.time);
-    // Filter starts from the beginning of the current hour onwards
+
     return hourTime >= startOfCurrentHour && hourTime < twentyFourHoursLater;
   });
 
-  // Take only the first 24 items from the filtered list
   return filteredData.slice(0, 24);
 }

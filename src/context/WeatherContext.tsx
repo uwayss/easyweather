@@ -1,10 +1,16 @@
 // FILE: src\context\WeatherContext.tsx
 import { getAnalytics } from "@react-native-firebase/analytics";
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
-import { useLocationContext } from "./LocationContext";
 import { fetchWeather } from "../api/weather";
 import { Weather } from "../types/weather";
+import { useLocationContext } from "./LocationContext";
 
 interface WeatherContextProps {
   weather: Weather | null;
@@ -14,9 +20,13 @@ interface WeatherContextProps {
   clearError: () => void;
 }
 
-const WeatherContext = createContext<WeatherContextProps | undefined>(undefined);
+const WeatherContext = createContext<WeatherContextProps | undefined>(
+  undefined
+);
 
-export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [weather, setWeather] = useState<Weather | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -24,32 +34,38 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const clearError = () => setError(null);
 
-  const fetchWeatherData = async (latitude: number, longitude: number) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await fetchWeather(latitude, longitude);
-      setWeather(data);
-      getAnalytics().logEvent("fetch_weather_success", {
-        location: location?.displayName || "Unknown",
-      });
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "An unknown error occurred fetching weather";
-      setError(msg);
-      getAnalytics().logEvent("fetch_weather_failed", {
-        location: location?.displayName || "Unknown",
-        error: String(err),
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetchWeatherData = useCallback(
+    async (latitude: number, longitude: number) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await fetchWeather(latitude, longitude);
+        setWeather(data);
+        getAnalytics().logEvent("fetch_weather_success", {
+          location: location?.displayName || "Unknown",
+        });
+      } catch (err) {
+        const msg =
+          err instanceof Error
+            ? err.message
+            : "An unknown error occurred fetching weather";
+        setError(msg);
+        getAnalytics().logEvent("fetch_weather_failed", {
+          location: location?.displayName || "Unknown",
+          error: String(err),
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [location?.displayName]
+  );
 
   useEffect(() => {
     if (location) {
       fetchWeatherData(location.latitude, location.longitude);
     }
-  }, [location]);
+  }, [location, fetchWeatherData]);
 
   const value: WeatherContextProps = {
     weather,
@@ -59,7 +75,9 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({ child
     clearError,
   };
 
-  return <WeatherContext.Provider value={value}>{children}</WeatherContext.Provider>;
+  return (
+    <WeatherContext.Provider value={value}>{children}</WeatherContext.Provider>
+  );
 };
 
 export const useWeather = () => {

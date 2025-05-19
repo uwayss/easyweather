@@ -6,7 +6,7 @@ import { Linking, TouchableOpacity, View, ViewStyle } from "react-native";
 
 // Removed Feather import
 import Text from "../../components/Common/Text";
-import Icon from "../../components/Icon"; // Import custom Icon component
+import Icon from "../../components/Icon";
 
 export const openLink = async (url: string, linkContext?: string) => {
   if (linkContext) {
@@ -19,10 +19,18 @@ export const openLink = async (url: string, linkContext?: string) => {
       target_url: url,
     });
   }
-  Linking.openURL(url).catch(err => console.error("An error occurred: ", err));
+  Linking.openURL(url).catch((err) =>
+    console.error("An error occurred: ", err)
+  );
 };
 
-export function ListSection({ title, children }: { title: string; children: React.ReactNode }) {
+export function ListSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <View className="gap-6 py-3">
       <Text className="px-4 text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant">
@@ -42,15 +50,23 @@ export function Item({
 }: {
   title: string;
   description?: string;
-  left?: string; // Keep as string
-  right?: string; // Keep as string
+  left?: string;
+  right?: string;
   onPress?: () => void;
 }) {
   const { colorScheme } = useColorScheme();
   const descriptionColor =
-    colorScheme === "dark" ? "text-dark-onSurfaceVariant" : "text-light-onSurfaceVariant";
+    colorScheme === "dark"
+      ? "text-dark-onSurfaceVariant"
+      : "text-light-onSurfaceVariant";
 
-  const Wrapper = ({ children, style }: { children: React.ReactNode; style?: ViewStyle }) => {
+  const Wrapper = ({
+    children,
+    style,
+  }: {
+    children: React.ReactNode;
+    style?: ViewStyle;
+  }) => {
     return onPress ? (
       <TouchableOpacity
         className="flex-row gap-4 justify-between items-center px-4 min-h-[48px] py-2"
@@ -71,7 +87,9 @@ export function Item({
       {left && <Icon name={left} size={24} />}
       <View style={{ flex: 1, justifyContent: "center" }}>
         <Text>{title}</Text>
-        {description && <Text className={`text-sm ${descriptionColor}`}>{description}</Text>}
+        {description && (
+          <Text className={`text-sm ${descriptionColor}`}>{description}</Text>
+        )}
       </View>
       {right && <Icon name={right} size={24} />}
     </Wrapper>

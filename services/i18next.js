@@ -6,8 +6,14 @@ import { MMKV } from "react-native-mmkv";
 import ar from "../locales/ar.json";
 import en from "../locales/en.json";
 import tr from "../locales/tr.json";
-import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from "../src/constants/settings";
-import { MMKV_SETTINGS_INSTANCE_ID, STORAGE_KEY_APP_SETTINGS } from "../src/constants/storage";
+import {
+  DEFAULT_LANGUAGE,
+  SUPPORTED_LANGUAGES,
+} from "../src/constants/settings";
+import {
+  MMKV_SETTINGS_INSTANCE_ID,
+  STORAGE_KEY_APP_SETTINGS,
+} from "../src/constants/storage";
 
 const storage = new MMKV({ id: MMKV_SETTINGS_INSTANCE_ID });
 
@@ -16,14 +22,17 @@ try {
   const storedSettings = storage.getString(STORAGE_KEY_APP_SETTINGS);
   if (storedSettings) {
     const settings = JSON.parse(storedSettings);
-    // Validate if the saved language is still supported
-    if (settings.language && SUPPORTED_LANGUAGES.some(lang => lang.value === settings.language)) {
+
+    if (
+      settings.language &&
+      SUPPORTED_LANGUAGES.some((lang) => lang.value === settings.language)
+    ) {
       savedLanguage = settings.language;
     }
   }
 } catch (error) {
   console.error("Failed to load language setting:", error);
-  storage.delete(STORAGE_KEY_APP_SETTINGS); // Clear potentially corrupted settings
+  storage.delete(STORAGE_KEY_APP_SETTINGS);
 }
 
 const languageResources = {

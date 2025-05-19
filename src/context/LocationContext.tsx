@@ -1,13 +1,22 @@
 // FILE: src/context/LocationContext.tsx
 import { getAnalytics } from "@react-native-firebase/analytics";
-import React, { createContext, useState, useContext, useEffect, ReactNode } from "react";
+import * as LocationExpo from "expo-location";
+import React, {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useTranslation } from "react-i18next";
-import { Platform, PermissionsAndroid } from "react-native";
-import Geolocation from "react-native-geolocation-service";
 import { MMKV } from "react-native-mmkv";
 
 import { fetchCurrentLocation } from "../api/geolocation";
-import { MMKV_LOCATION_INSTANCE_ID, STORAGE_KEY_LOCATION } from "../constants/storage";
+import {
+  MMKV_LOCATION_INSTANCE_ID,
+  STORAGE_KEY_LOCATION,
+} from "../constants/storage";
 
 const storage = new MMKV({ id: MMKV_LOCATION_INSTANCE_ID });
 
@@ -28,9 +37,13 @@ interface LocationContextProps {
   setError: (message: string | null) => void;
 }
 
-const LocationContext = createContext<LocationContextProps | undefined>(undefined);
+const LocationContext = createContext<LocationContextProps | undefined>(
+  undefined
+);
 
-export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const LocationProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const { t } = useTranslation();
   const [location, setLocation] = useState<Location | null>(() => {
     const storedLocation = storage.getString(STORAGE_KEY_LOCATION);
@@ -56,7 +69,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     setError(null);
   };
 
-  const fetchInitialLocation = async () => {
+  const fetchInitialLocation = useCallback(async () => {
     if (location !== null) {
       return;
     }
@@ -69,57 +82,38 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
         const newLocation: Location = {
           latitude: geoData.lat,
           longitude: geoData.lon,
-          displayName: geoData.city ? `${geoData.city}, ${geoData.country}` : `${geoData.country}`,
+          displayName: geoData.city
+            ? `${geoData.city}, ${geoData.country}`
+            : `${geoData.country}`,
         };
         updateLocation(newLocation);
       } else {
         setError("Failed to retrieve coordinates from IP.");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to get location from IP");
+      setError(
+        err instanceof Error ? err.message : "Failed to get location from IP"
+      );
     } finally {
       setLoading(false);
     }
-  };
+  }, [location]);
 
   useEffect(() => {
     fetchInitialLocation();
-  }, []);
+  }, [fetchInitialLocation]);
 
   const getCurrentLocation = async () => {
     setLoading(true);
     setError(null);
     try {
-      if (Platform.OS === "android") {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          {
-            title: "Location Permission",
-            message: "This app needs access to your location",
-            buttonNeutral: "Ask Me Later",
-            buttonNegative: "Cancel",
-            buttonPositive: "OK",
-          },
-        );
-
-        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-          getAnalytics().logEvent("request_gps_location_permission_denied");
-          throw new Error("Location permission denied");
-        }
-      } else {
-        const status = await Geolocation.requestAuthorization("whenInUse");
-        if (status !== "granted") {
-          throw new Error("Location permission denied");
-        }
+      const { status } = await LocationExpo.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        getAnalytics().logEvent("request_gps_location_permission_denied");
+        throw new Error("Location permission denied by user.");
       }
 
-      const position = await new Promise<Geolocation.GeoPosition>((resolve, reject) => {
-        Geolocation.getCurrentPosition(resolve, error => reject(new Error(error.message)), {
-          enableHighAccuracy: true,
-          timeout: 15000,
-          maximumAge: 10000,
-        });
-      });
+      const position = await LocationExpo.getCurrentPositionAsync({});
       getAnalytics().logEvent("request_gps_location_success");
       updateLocation({
         latitude: position.coords.latitude,
@@ -127,9 +121,12 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
         displayName: t("weather.current_location"),
       });
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Failed to get current location";
+      const msg =
+        err instanceof Error ? err.message : "Failed to get current location";
       setError(msg);
-      getAnalytics().logEvent("request_gps_location_failed", { error: String(err) });
+      getAnalytics().logEvent("request_gps_location_failed", {
+        error: String(err),
+      });
     } finally {
       setLoading(false);
     }
@@ -146,13 +143,19 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
     setError,
   };
 
-  return <LocationContext.Provider value={value}>{children}</LocationContext.Provider>;
+  return (
+    <LocationContext.Provider value={value}>
+      {children}
+    </LocationContext.Provider>
+  );
 };
 
 export const useLocationContext = () => {
   const context = useContext(LocationContext);
   if (!context) {
-    throw new Error("useLocationContext must be used within a LocationProvider");
+    throw new Error(
+      "useLocationContext must be used within a LocationProvider"
+    );
   }
   return context;
 };

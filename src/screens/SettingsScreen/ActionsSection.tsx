@@ -2,26 +2,28 @@
 import { getAnalytics } from "@react-native-firebase/analytics";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Share, Platform, Alert } from "react-native";
+import { Alert, Platform, Share } from "react-native";
 
-import { Item, ListSection, openLink } from "./Common";
 import {
+  APP_SHARE_MESSAGE,
+  APP_SHARE_TITLE,
+  APP_SHARE_URL,
+  APP_STORE_URL_IOS,
   FEEDBACK_EMAIL,
   PLAY_STORE_URL_ANDROID,
-  APP_STORE_URL_IOS, // Assuming you might add this later
-  APP_SHARE_MESSAGE,
-  APP_SHARE_URL,
-  APP_SHARE_TITLE,
 } from "../../constants/config";
+import { Item, ListSection, openLink } from "./Common";
 
 const sendFeedback = () => {
-  openLink(`mailto:${FEEDBACK_EMAIL}?subject=Weather App Feedback`, "send_feedback_email");
+  openLink(
+    `mailto:${FEEDBACK_EMAIL}?subject=Weather App Feedback`,
+    "send_feedback_email"
+  );
 };
 
 const rateApp = () => {
-  // Use platform-specific URL or fallback
   const url = Platform.select({
-    ios: APP_STORE_URL_IOS || APP_SHARE_URL, // Fallback to share URL if iOS URL isn't set
+    ios: APP_STORE_URL_IOS || APP_SHARE_URL,
     android: PLAY_STORE_URL_ANDROID,
     default: APP_SHARE_URL,
   });
@@ -34,15 +36,15 @@ const shareApp = async () => {
     getAnalytics().logEvent("share_app_clicked");
     await Share.share({
       message: `${APP_SHARE_MESSAGE}\n${APP_SHARE_URL}`,
-      url: APP_SHARE_URL, // Included for platforms that use it
-      title: APP_SHARE_TITLE, // Optional title
+      url: APP_SHARE_URL,
+      title: APP_SHARE_TITLE,
     });
     getAnalytics().logEvent("share_app_success");
   } catch (error) {
     getAnalytics().logEvent("share_app_failure", { error: String(error) });
-    // Use console.error for non-user-facing errors
+
     console.error("Share app failed:", error);
-    // Keep Alert for user feedback if desired
+
     Alert.alert("Error", "Could not share the app at this time.");
   }
 };

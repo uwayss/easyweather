@@ -2,11 +2,11 @@
 import React from "react";
 import { FlatList, View, Image } from "react-native";
 
-import CustomVerticalProgressBar from "./CustomVerticalProgressBar";
 import Text from "../../components/Common/Text";
 import { HourWeather } from "../../types/weather";
 import weatherDescriptions from "../../utils/descriptions";
 import { GraphDataPoint } from "../../utils/metricData";
+import CustomVerticalProgressBar from "./CustomVerticalProgressBar";
 
 interface HourlyChartProps {
   data: GraphDataPoint[];

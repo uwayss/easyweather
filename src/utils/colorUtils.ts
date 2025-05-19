@@ -1,5 +1,5 @@
 // FILE: src/utils/colorUtils.ts
-import { TEMP_COLOR_STOPS_CELSIUS } from "../constants/colors"; // Import the constant
+import { TEMP_COLOR_STOPS_CELSIUS } from "../constants/colors";
 
 /**
  * Color utility functions for the weather app
@@ -10,11 +10,11 @@ import { TEMP_COLOR_STOPS_CELSIUS } from "../constants/colors"; // Import the co
  * @param hex - Hex color string (e.g. "#ff0000")
  * @returns RGB color object or null if invalid hex
  */
-export function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
-  // Remove # if present
+export function hexToRgb(
+  hex: string
+): { r: number; g: number; b: number } | null {
   hex = hex.replace(/^#/, "");
 
-  // Handle both 3-digit and 6-digit formats
   if (hex.length === 3) {
     hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
   }
@@ -47,18 +47,20 @@ export function rgbToHex(r: number, g: number, b: number): string {
  * @param progress - Progress between the two colors (0-1)
  * @returns Interpolated hex color
  */
-export function interpolateColor(color1: string, color2: string, progress: number): string {
+export function interpolateColor(
+  color1: string,
+  color2: string,
+  progress: number
+): string {
   const rgb1 = hexToRgb(color1);
   const rgb2 = hexToRgb(color2);
 
   if (!rgb1 || !rgb2) {
-    return color1; // Return first color if conversion fails
+    return color1;
   }
 
-  // Clamp progress between 0 and 1
   progress = Math.max(0, Math.min(1, progress));
 
-  // Interpolate between the RGB values
   const r = Math.round(rgb1.r + (rgb2.r - rgb1.r) * progress);
   const g = Math.round(rgb1.g + (rgb2.g - rgb1.g) * progress);
   const b = Math.round(rgb1.b + (rgb2.b - rgb1.b) * progress);
@@ -78,37 +80,30 @@ export function getTemperatureGradientColor(
   temperature: number,
   minTemp: number,
   maxTemp: number,
-  colorStops: [number, string][] = TEMP_COLOR_STOPS_CELSIUS, // Use the constant
+  colorStops: [number, string][] = TEMP_COLOR_STOPS_CELSIUS
 ): string {
-  // Ensure colorStops is sorted by temperature
   const sortedStops = [...colorStops].sort((a, b) => a[0] - b[0]);
 
-  // Clamp temperature to min/max range
   const clampedTemp = Math.max(minTemp, Math.min(maxTemp, temperature));
 
-  // If temperature is at or below the first stop, return the first color
   if (clampedTemp <= sortedStops[0][0]) {
     return sortedStops[0][1];
   }
 
-  // If temperature is at or above the last stop, return the last color
   if (clampedTemp >= sortedStops[sortedStops.length - 1][0]) {
     return sortedStops[sortedStops.length - 1][1];
   }
 
-  // Find the two color stops that the temperature falls between
   for (let i = 0; i < sortedStops.length - 1; i++) {
     const [temp1, color1] = sortedStops[i];
     const [temp2, color2] = sortedStops[i + 1];
 
     if (clampedTemp >= temp1 && clampedTemp <= temp2) {
-      // Calculate progress between the two temperature stops
       const progress = (clampedTemp - temp1) / (temp2 - temp1);
-      // Interpolate between the two colors
+
       return interpolateColor(color1, color2, progress);
     }
   }
 
-  // Fallback (should never reach here if input is valid)
   return sortedStops[0][1];
 }

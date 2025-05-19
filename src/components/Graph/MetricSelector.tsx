@@ -1,11 +1,11 @@
 // FILE: src/components/Graph/MetricSelector.tsx
 import { getAnalytics } from "@react-native-firebase/analytics";
-import React, { useCallback } from "react"; // Added useCallback
+import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
 
-import MetricButton from "./MetricButton"; // Import the memoized button
 import { MetricType } from "../../utils/metricData";
+import MetricButton from "./MetricButton";
 
 export default function MetricSelector({
   currentMetric,
@@ -23,20 +23,18 @@ export default function MetricSelector({
       { value: "humidity", label: t("metrics.humidity") },
       { value: "wind", label: t("metrics.wind") },
     ],
-    [t],
+    [t]
   );
 
-  // Memoize the handler function to ensure stability for MetricButton's onPress prop
   const handleMetricChange = useCallback(
     (newMetric: string) => {
-      // Use string type here as it comes from button value
       getAnalytics().logEvent("change_hourly_metric", {
         metric: newMetric,
         screen_context: "home_or_details",
       });
-      setCurrentMetric(newMetric as MetricType); // Cast back to MetricType
+      setCurrentMetric(newMetric as MetricType);
     },
-    [setCurrentMetric], // Dependency is stable
+    [setCurrentMetric]
   );
 
   return (
@@ -48,13 +46,13 @@ export default function MetricSelector({
         paddingVertical: 4,
       }}
     >
-      {metrics.map(button => (
+      {metrics.map((button) => (
         <MetricButton
           key={button.value}
           label={button.label}
           value={button.value}
           isActive={currentMetric === button.value}
-          onPress={handleMetricChange} // Pass the memoized handler
+          onPress={handleMetricChange}
         />
       ))}
     </ScrollView>

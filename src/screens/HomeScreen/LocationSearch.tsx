@@ -1,20 +1,28 @@
 // FILE: src/screens/HomeScreen/LocationSearch.tsx
 import { getAnalytics } from "@react-native-firebase/analytics";
 import { useColorScheme } from "nativewind";
-import React, { useState, useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { View, TextInput, TouchableOpacity, ActivityIndicator } from "react-native";
+import {
+  ActivityIndicator,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-import LocationSearchResults from "./LocationSearchResults";
-import { searchLocation, LocationResult } from "../../api/location";
+import { LocationResult, searchLocation } from "../../api/location";
 import Icon from "../../components/Icon";
 import { THEME_COLORS_DARK, THEME_COLORS_LIGHT } from "../../constants/colors";
 import { useLocationContext } from "../../context/LocationContext";
+import LocationSearchResults from "./LocationSearchResults";
 
 type DebouncedSearchFunction = (query: string) => Promise<void> | void;
 
-function debounce(func: DebouncedSearchFunction, wait: number): DebouncedSearchFunction {
-  let timeout: NodeJS.Timeout | null = null;
+function debounce(
+  func: DebouncedSearchFunction,
+  wait: number
+): DebouncedSearchFunction {
+  let timeout: number | null = null;
   return function (query: string) {
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => func(query), wait);
@@ -39,6 +47,7 @@ export const LocationSearch = () => {
     });
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
     debounce(async (query: string) => {
       if (query.trim()) {
@@ -47,11 +56,16 @@ export const LocationSearch = () => {
           const locationResults = await searchLocation(query);
           setResults(locationResults);
           setShowResults(true);
-          getAnalytics().logEvent("search_location_success", { query_length: query.length });
+          getAnalytics().logEvent("search_location_success", {
+            query_length: query.length,
+          });
         } catch (error) {
           const msg = `Error searching location: ${String(error)}`;
           setError(msg);
-          getAnalytics().logEvent("search_location_failed", { query: query, error: String(error) });
+          getAnalytics().logEvent("search_location_failed", {
+            query: query,
+            error: String(error),
+          });
         } finally {
           setIsLoading(false);
         }
@@ -60,7 +74,7 @@ export const LocationSearch = () => {
         setShowResults(false);
       }
     }, 500),
-    [setError, updateLocation],
+    [setError, updateLocation]
   );
 
   const handleSearchChange = (query: string) => {
@@ -110,10 +124,17 @@ export const LocationSearch = () => {
           onBlur={() => setTimeout(() => setShowResults(false), 150)}
         />
         {isLoading ? (
-          <ActivityIndicator size="small" color={indicatorColor} className="px-3" />
+          <ActivityIndicator
+            size="small"
+            color={indicatorColor}
+            className="px-3"
+          />
         ) : (
           searchQuery.length > 0 && (
-            <TouchableOpacity onPress={() => handleSearchChange("")} className="p-2">
+            <TouchableOpacity
+              onPress={() => handleSearchChange("")}
+              className="p-2"
+            >
               <Icon name="x" size={22} type="feather" />
             </TouchableOpacity>
           )

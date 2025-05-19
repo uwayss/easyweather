@@ -1,12 +1,13 @@
+// FILE: src/components/Common/Card.tsx
+import { Image as ExpoImage, ImageSource } from "expo-image";
 import React from "react";
-import { View, ViewProps } from "react-native";
-import FastImage, { Source } from "react-native-fast-image";
+import { StyleSheet, View, ViewProps } from "react-native";
 
 interface CardProps extends ViewProps {
   children?: React.ReactNode;
   className?: string;
   elevated?: boolean;
-  background?: Source;
+  background?: ImageSource;
   borderType?: "default" | "thin" | "hidden";
 }
 
@@ -19,26 +20,35 @@ export default function Card({
   ...props
 }: CardProps) {
   const cardBaseStyle = "overflow-hidden rounded-xl";
-  const elevationStyle = elevated ? `bg-light-outline/35 dark:bg-dark-outline/50` : "";
+  const elevationStyle = elevated
+    ? `bg-light-outline/35 dark:bg-dark-outline/50`
+    : "";
   let borderStyle =
     "border-light-outline dark:border-dark-outline border-b-2 border-r-2 border-t-hairline border-l-hairline";
-  if (borderType == "thin") {
+  if (borderType === "thin") {
     borderStyle =
       "border-light-outline dark:border-dark-outline border-b-hairline border-r-hairline";
-  } else if (borderType == "hidden") {
+  } else if (borderType === "hidden") {
     borderStyle = "";
   }
   const combinedClassName = `${cardBaseStyle} ${elevationStyle} ${borderStyle}`;
 
-  return background ? (
-    <View className={combinedClassName}>
-      <FastImage source={background} className="w-full flex-1" resizeMode="cover">
-        <View className={className} {...props}>
+  if (background) {
+    return (
+      <View className={combinedClassName} {...props}>
+        <ExpoImage
+          source={background}
+          style={StyleSheet.absoluteFill}
+          contentFit="cover"
+        />
+        <View className={className} style={{ flex: 1 }}>
           {children}
         </View>
-      </FastImage>
-    </View>
-  ) : (
+      </View>
+    );
+  }
+
+  return (
     <View className={`${combinedClassName} ${className}`} {...props}>
       {children}
     </View>

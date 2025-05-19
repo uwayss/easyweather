@@ -1,9 +1,10 @@
 // FILE: src/constants/api.ts
 export const GEOLOCATION_API_URL = "http://ip-api.com/json/";
-export const GEOLOCATION_API_FIELDS = "?fields=61433"; // status,country,countryCode,region,regionName,city,zip,lat,lon,timezone,isp,org,as,query
+export const GEOLOCATION_API_FIELDS = "?fields=61433";
 export const IP_FETCH_API_URL = "https://api.ipify.org?format=json";
 
-export const LOCATION_SEARCH_API_URL = "https://nominatim.openstreetmap.org/search";
+export const LOCATION_SEARCH_API_URL =
+  "https://nominatim.openstreetmap.org/search";
 export const LOCATION_SEARCH_PARAMS = "?format=json&addressdetails=1&limit=3";
 export const LOCATION_SEARCH_USER_AGENT = "EasyWeather by Uwayss/1.0";
 
