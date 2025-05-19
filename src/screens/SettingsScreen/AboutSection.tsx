@@ -3,9 +3,8 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
-import { Item, ListSection } from "./Common";
-import { openLink } from "./Common";
 import { APP_VERSION, DATA_SOURCE_URL, DEVELOPER_URL } from "../../constants/config";
+import { Item, ListSection , openLink } from "./Common";
 
 function AboutSectionComponent() {
   const { t } = useTranslation();

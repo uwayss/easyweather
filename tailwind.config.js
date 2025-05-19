@@ -1,11 +1,9 @@
 // FILE: tailwind.config.js
-/* eslint-disable @typescript-eslint/no-require-imports */
 /** @type {import('tailwindcss').Config} */
 
-const { THEME_COLORS_LIGHT, THEME_COLORS_DARK } = require("./src/constants/colors");
-
+import { THEME_COLORS_DARK, THEME_COLORS_LIGHT } from "./src/constants/colors";
 module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}", "./App.tsx", "./index.js"],
+  content: ["./app/**/*.{js,jsx,ts,tsx}", "./src/**/*.{js,jsx,ts,tsx}"],
   presets: [require("nativewind/preset")],
   theme: {
     extend: {

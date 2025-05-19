@@ -1,9 +1,0 @@
-<en-US>
-This update brings a smoother, faster, and more consistent user experience with improved visuals and performance. We've also fixed some bugs and made other behind-the-scenes improvements.
-</en-US>
-<ar>
-يُقدم هذا التحديث تجربة مستخدم أكثر سلاسة وسرعة واتساقًا مع واجهة مُحسّنة والأداء. لقد قمنا أيضًا بإصلاح بعض الأخطاء وإجراء تحسينات أخرى خلف الكواليس.
-</ar>
-<tr-TR>
-Bu güncelleme, geliştirilmiş görseller ve performansla daha sorunsuz, daha hızlı ve daha tutarlı bir kullanıcı deneyimi sunuyor. Ayrıca bazı hataları düzelttik ve perde arkasında başka iyileştirmeler yaptık.
-</tr-TR>

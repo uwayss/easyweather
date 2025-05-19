@@ -23,7 +23,7 @@ def generate_filename(prefix="diff"):
 def get_git_diff():
     """Executes git diff and returns the output as a string."""
     try:
-        result = subprocess.run(["git", "diff"], capture_output=True, text=True, check=True)
+        result = subprocess.run(["git", "diff"], capture_output=True, text=True, check=True, encoding='utf-8')
         return result.stdout
     except subprocess.CalledProcessError as e:
         raise  # Re-raise the subprocess error for the caller to handle

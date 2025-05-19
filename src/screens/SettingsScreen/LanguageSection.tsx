@@ -2,14 +2,14 @@
 import { Picker } from "@react-native-picker/picker";
 import i18next from "i18next";
 import { useColorScheme } from "nativewind";
-import React, { useCallback, memo } from "react";
+import React, { memo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
-import { ListSection } from "./Common";
 import Card from "../../components/Common/Card";
 import Divider from "../../components/Common/Divider";
 import { SUPPORTED_LANGUAGES } from "../../constants/settings";
 import { useSettings } from "../../context/SettingsContext";
+import { ListSection } from "./Common";
 
 function LanguageSection() {
   const { updateSetting } = useSettings();
@@ -21,10 +21,11 @@ function LanguageSection() {
 
   const handleLanguageChange = useCallback(
     (lang: string) => {
+      // eslint-disable-next-line import/no-named-as-default-member
       i18next.changeLanguage(lang);
       updateSetting("language", lang);
     },
-    [updateSetting],
+    [updateSetting]
   );
 
   return (
@@ -37,7 +38,7 @@ function LanguageSection() {
           style={{ color: pickerTextColor }}
           itemStyle={{ color: pickerTextColor }}
         >
-          {SUPPORTED_LANGUAGES.map(lang => (
+          {SUPPORTED_LANGUAGES.map((lang) => (
             <Picker.Item
               key={lang.value}
               label={lang.label}

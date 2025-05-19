@@ -1,29 +1,33 @@
 // FILE: src/components/HourlyConditions.tsx
-import React, { useMemo, useState } from "react";
+import { Image as ExpoImage } from "expo-image";
+import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { StyleSheet, View, Dimensions, ScrollView } from "react-native";
-import FastImage from "react-native-fast-image";
+import { Dimensions, ScrollView, StyleSheet, View } from "react-native";
 
-import { useSettings } from "../context/SettingsContext";
-import { getMetricDataForForecast, MetricType, GraphDataPoint } from "../utils/metricData";
-import LineChart from "./Graph/LineChart";
-import MetricSelector from "./Graph/MetricSelector";
-import PlaceholderCard from "./PlaceholderCard";
+import { THEME_COLORS_DARK, THEME_COLORS_LIGHT } from "../constants/colors";
 import {
-  HOURLY_CONDITIONS_POINT_ITEM_WIDTH,
-  HOURLY_CONDITIONS_CHART_HEIGHT,
-  HOURLY_CONDITIONS_VALUES_ROW_HEIGHT,
-  HOURLY_CONDITIONS_DETAILS_ROW_HEIGHT,
   HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL,
+  HOURLY_CONDITIONS_CHART_HEIGHT,
+  HOURLY_CONDITIONS_DETAILS_ROW_HEIGHT,
+  HOURLY_CONDITIONS_POINT_ITEM_WIDTH,
+  HOURLY_CONDITIONS_VALUES_ROW_HEIGHT,
 } from "../constants/ui";
+import { useSettings } from "../context/SettingsContext";
 import { useWeather } from "../context/WeatherContext";
 import { HourWeather } from "../types/weather";
 import { useWeatherDescriptions } from "../utils/descriptions";
-import Text from "./Common/Text";
+import {
+  GraphDataPoint,
+  MetricType,
+  getMetricDataForForecast,
+} from "../utils/metricData";
 import { filterHourlyWeatherForNext24HoursIncludingNow } from "../utils/weatherUtils";
 import Card from "./Common/Card";
 import Divider from "./Common/Divider";
-import { THEME_COLORS_DARK, THEME_COLORS_LIGHT } from "../constants/colors";
+import Text from "./Common/Text";
+import LineChart from "./Graph/LineChart";
+import MetricSelector from "./Graph/MetricSelector";
+import PlaceholderCard from "./PlaceholderCard";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -34,9 +38,16 @@ export default function HourlyConditions({
 }) {
   const { weather } = useWeather();
   const hourlyWeather = weather?.hourly;
-  const hourlyData =
-    selectedHoursData ||
-    useMemo(() => filterHourlyWeatherForNext24HoursIncludingNow(hourlyWeather), [hourlyWeather]);
+
+  const getHourlyData = useCallback(() => {
+    return (
+      selectedHoursData ||
+      filterHourlyWeatherForNext24HoursIncludingNow(hourlyWeather)
+    );
+  }, [selectedHoursData, hourlyWeather]);
+
+  const hourlyData = useMemo(() => getHourlyData(), [getHourlyData]);
+
   const [currentMetric, setCurrentMetric] = useState<MetricType>("temperature");
   const { settings, activeTheme } = useSettings();
   const { t } = useTranslation();
@@ -46,11 +57,16 @@ export default function HourlyConditions({
   const weatherDescriptions = useWeatherDescriptions();
 
   const graphData: GraphDataPoint[] | undefined = useMemo(() => {
-    return getMetricDataForForecast(currentMetric, hourlyData, settings.useImperialUnits);
+    return getMetricDataForForecast(
+      currentMetric,
+      hourlyData,
+      settings.useImperialUnits
+    );
   }, [currentMetric, hourlyData, settings.useImperialUnits]);
 
   const numDataPoints = graphData?.length || 0;
-  const availableScrollWidth = screenWidth - HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL * 2;
+  const availableScrollWidth =
+    screenWidth - HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL * 2;
 
   const internalContentWidth = useMemo(() => {
     if (numDataPoints < 1) return availableScrollWidth;
@@ -61,7 +77,9 @@ export default function HourlyConditions({
   const xStep = HOURLY_CONDITIONS_POINT_ITEM_WIDTH;
 
   const getIconForHour = (hour: HourWeather): number | undefined => {
-    const image = weatherDescriptions[hour.weatherCode]?.[hour.isDay ? "day" : "night"]?.image;
+    const image =
+      weatherDescriptions[hour.weatherCode]?.[hour.isDay ? "day" : "night"]
+        ?.image;
     return typeof image === "number" ? image : undefined;
   };
 
@@ -79,12 +97,19 @@ export default function HourlyConditions({
       </View>
 
       <View style={styles.selectorSection}>
-        <MetricSelector currentMetric={currentMetric} setCurrentMetric={setCurrentMetric} />
+        <MetricSelector
+          currentMetric={currentMetric}
+          setCurrentMetric={setCurrentMetric}
+        />
       </View>
 
-      <Divider style={{ marginHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL }} />
+      <Divider
+        style={{ marginHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL }}
+      />
 
-      <View style={[styles.chartOuterContainer, { minHeight: chartAreaMinHeight }]}>
+      <View
+        style={[styles.chartOuterContainer, { minHeight: chartAreaMinHeight }]}
+      >
         {graphData && numDataPoints > 0 ? (
           <ScrollView
             horizontal
@@ -94,14 +119,20 @@ export default function HourlyConditions({
               styles.chartScrollContent,
               { width: internalContentWidth },
               internalContentWidth < availableScrollWidth
-                ? { paddingLeft: (availableScrollWidth - internalContentWidth) / 2 }
+                ? {
+                    paddingLeft:
+                      (availableScrollWidth - internalContentWidth) / 2,
+                  }
                 : {},
             ]}
           >
             <View>
               <View style={styles.valuesRow}>
                 {graphData.map((pointData, index) => (
-                  <View key={`value-${index}`} style={[styles.hourItemContainer, { width: xStep }]}>
+                  <View
+                    key={`value-${index}`}
+                    style={[styles.hourItemContainer, { width: xStep }]}
+                  >
                     <Text style={styles.valueText} numberOfLines={1}>
                       {pointData.value}
                     </Text>
@@ -135,10 +166,10 @@ export default function HourlyConditions({
                       style={[styles.hourItemContainer, { width: xStep }]}
                     >
                       {iconSource ? (
-                        <FastImage
+                        <ExpoImage
                           source={iconSource}
                           style={styles.weatherIcon}
-                          resizeMode={FastImage.resizeMode.contain}
+                          contentFit="contain"
                         />
                       ) : (
                         <View style={styles.weatherIcon} />
@@ -154,7 +185,12 @@ export default function HourlyConditions({
             </View>
           </ScrollView>
         ) : (
-          <View style={[styles.placeholderWrapper, { minHeight: chartAreaMinHeight }]}>
+          <View
+            style={[
+              styles.placeholderWrapper,
+              { minHeight: chartAreaMinHeight },
+            ]}
+          >
             <PlaceholderCard withoutContainer />
           </View>
         )}
@@ -163,9 +199,14 @@ export default function HourlyConditions({
   );
 }
 
-const hourlyStyles = (theme: typeof THEME_COLORS_LIGHT | typeof THEME_COLORS_DARK) =>
+const hourlyStyles = (
+  theme: typeof THEME_COLORS_LIGHT | typeof THEME_COLORS_DARK
+) =>
   StyleSheet.create({
-    headerSection: { paddingHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL, paddingTop: 16 },
+    headerSection: {
+      paddingHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL,
+      paddingTop: 16,
+    },
     selectorSection: {
       paddingHorizontal: HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL,
       paddingVertical: 8,
@@ -188,7 +229,11 @@ const hourlyStyles = (theme: typeof THEME_COLORS_LIGHT | typeof THEME_COLORS_DAR
       height: HOURLY_CONDITIONS_DETAILS_ROW_HEIGHT,
       alignItems: "center",
     },
-    hourItemContainer: { height: "100%", alignItems: "center", justifyContent: "center" },
+    hourItemContainer: {
+      height: "100%",
+      alignItems: "center",
+      justifyContent: "center",
+    },
     valueText: {
       fontWeight: "600",
       fontSize: 13,

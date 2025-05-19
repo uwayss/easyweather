@@ -1,8 +1,8 @@
 // FILE: src/screens/DateScreen/DailySummaryCard.tsx
+import { Image as ExpoImage } from "expo-image";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
-import FastImage from "react-native-fast-image";
 
 import Text from "../../components/Common/Text";
 import Icon from "../../components/Icon";
@@ -10,17 +10,27 @@ import { useSettings } from "../../context/SettingsContext";
 import { DayWeather } from "../../types/weather";
 import { useWeatherDescriptions } from "../../utils/descriptions";
 import { formatTimeStringToHour } from "../../utils/timeUtils";
-import { convertTemperature, convertWindSpeed, formatWindSpeed } from "../../utils/unitConversion";
+import {
+  convertTemperature,
+  convertWindSpeed,
+  formatWindSpeed,
+} from "../../utils/unitConversion";
 
 interface DetailItemProps {
-  icon: string; // Feather icon name
+  icon: string;
   label: string;
   value: string;
   unit?: string;
   color?: string;
 }
 
-const DetailItem: React.FC<DetailItemProps> = ({ icon, label, value, unit, color }) => {
+const DetailItem: React.FC<DetailItemProps> = ({
+  icon,
+  label,
+  value,
+  unit,
+  color,
+}) => {
   return (
     <View className="flex-row items-center gap-2 flex-1">
       <Icon name={icon} size={20} color={color} type="feather" />
@@ -44,7 +54,11 @@ const DetailItem: React.FC<DetailItemProps> = ({ icon, label, value, unit, color
   );
 };
 
-export default function DailySummaryCard({ dayData }: { dayData: DayWeather | undefined }) {
+export default function DailySummaryCard({
+  dayData,
+}: {
+  dayData: DayWeather | undefined;
+}) {
   const { settings } = useSettings();
   const { t } = useTranslation();
   const translatedWeatherDescriptions = useWeatherDescriptions();
@@ -53,14 +67,20 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
 
   const weatherInfo = translatedWeatherDescriptions[dayData.weatherCode]?.day;
   const formattedHigh = Math.round(
-    convertTemperature(dayData.maxTemp, settings.useImperialUnits),
+    convertTemperature(dayData.maxTemp, settings.useImperialUnits)
   ).toString();
   const formattedLow = Math.round(
-    convertTemperature(dayData.minTemp, settings.useImperialUnits),
+    convertTemperature(dayData.minTemp, settings.useImperialUnits)
   ).toString();
   const tempUnit = settings.useImperialUnits ? "°F" : "°C";
-  const rawWindSpeed = convertWindSpeed(dayData.windSpeed, settings.useImperialUnits);
-  const formattedWind = formatWindSpeed(rawWindSpeed, settings.useImperialUnits);
+  const rawWindSpeed = convertWindSpeed(
+    dayData.windSpeed,
+    settings.useImperialUnits
+  );
+  const formattedWind = formatWindSpeed(
+    rawWindSpeed,
+    settings.useImperialUnits
+  );
   const [windValue, windUnit] = formattedWind.split(" ");
   const formattedSunrise = formatTimeStringToHour(dayData.sunrise);
   const formattedSunset = formatTimeStringToHour(dayData.sunset);
@@ -69,10 +89,10 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
     <View className="bg-light-surface dark:bg-dark-surface rounded-lg shadow-sm overflow-hidden p-4 gap-3">
       <View className="flex-row items-center gap-3">
         {weatherInfo?.image && (
-          <FastImage
+          <ExpoImage
             source={weatherInfo.image}
             style={{ width: 64, height: 64 }}
-            resizeMode={FastImage.resizeMode.contain}
+            contentFit="contain"
           />
         )}
         <View className="flex-1 items-start">
@@ -94,15 +114,14 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
       <View className="gap-3">
         <View className="flex-row justify-around items-center">
           <DetailItem
-            // Use Feather icon names
-            icon="cloud-drizzle" // Replaced weather-pouring
+            icon="cloud-drizzle"
             label={t("weather.max_precipitation")}
             value={`${Math.round(dayData.rainProb)}`}
             unit="%"
             color="#64B5F6"
           />
           <DetailItem
-            icon="wind" // Replaced weather-windy
+            icon="wind"
             label={t("weather.max_wind")}
             value={windValue}
             unit={windUnit}
@@ -111,13 +130,13 @@ export default function DailySummaryCard({ dayData }: { dayData: DayWeather | un
         </View>
         <View className="flex-row justify-around items-center">
           <DetailItem
-            icon="sunrise" // Replaced weather-sunset-up
+            icon="sunrise"
             color="#FFB74D"
             label={t("weather.sunrise")}
             value={formattedSunrise || "--:--"}
           />
           <DetailItem
-            icon="sunset" // Replaced weather-sunset-down
+            icon="sunset"
             label={t("weather.sunset")}
             value={formattedSunset || "--:--"}
             color="#BA68C8"

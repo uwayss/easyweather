@@ -3,10 +3,10 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
-import { ListSection } from "./Common";
 import Divider from "../../components/Common/Divider";
-import CustomSegmentedButtons from "../../components/CustomSegmentedButtons"; // Import custom component
+import CustomSegmentedButtons from "../../components/CustomSegmentedButtons";
 import { ThemePreference, useSettings } from "../../context/SettingsContext";
+import { ListSection } from "./Common";
 
 export default React.memo(function AppearanceSection() {
   const { settings, updateSetting } = useSettings();
@@ -21,7 +21,7 @@ export default React.memo(function AppearanceSection() {
         <CustomSegmentedButtons
           value={settings.theme}
           onValueChange={handleThemeChange}
-          style={{ marginHorizontal: 16, marginBottom: 8 }} // Apply margin here
+          style={{ marginHorizontal: 16, marginBottom: 8 }}
           buttons={[
             {
               value: "system",

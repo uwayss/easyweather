@@ -1,11 +1,11 @@
 // FILE: src/screens/HomeScreen/WeatherCard.tsx
 import React from "react";
 
-import { MainInfo } from "./WeatherCard/MainInfo";
-import { Details } from "./WeatherCard/WeatherDetails";
 import Card from "../../components/Common/Card";
 import { useWeather } from "../../context/WeatherContext";
 import backgroundMappings from "../../utils/backgroundMappings";
+import { MainInfo } from "./WeatherCard/MainInfo";
+import { Details } from "./WeatherCard/WeatherDetails";
 
 export default function WeatherCard() {
   const { weather } = useWeather();

@@ -1,10 +1,11 @@
 // FILE: src/components/Icon.tsx
+import {
+  Feather,
+  MaterialCommunityIcons as Material,
+} from "@expo/vector-icons";
 import { useColorScheme } from "nativewind";
 import React from "react";
-import { StyleProp, TextProps, TextStyle } from "react-native";
-import { ColorValue } from "react-native";
-import Feather from "react-native-vector-icons/Feather";
-import Material from "react-native-vector-icons/MaterialCommunityIcons";
+import { ColorValue, StyleProp, TextProps, TextStyle } from "react-native";
 
 import { THEME_COLORS_DARK, THEME_COLORS_LIGHT } from "../constants/colors";
 
@@ -28,7 +29,9 @@ const Icon: React.FC<IconProps> = ({
   const IconComponent = type === "feather" ? Feather : Material;
   const { colorScheme } = useColorScheme();
   const iconColor =
-    colorScheme === "dark" ? THEME_COLORS_DARK.onSurface : THEME_COLORS_LIGHT.onSurface;
+    colorScheme === "dark"
+      ? THEME_COLORS_DARK.onSurface
+      : THEME_COLORS_LIGHT.onSurface;
   try {
     return (
       <IconComponent

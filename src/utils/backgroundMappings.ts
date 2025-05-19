@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-import { Source } from "react-native-fast-image";
+// FILE: src/utils/backgroundMappings.ts
+import { ImageSource } from "expo-image";
 
 interface BackgroundMappings {
-  [key: number]: { day: Source; night: Source };
+  [key: number]: { day: ImageSource; night: ImageSource };
 }
 const backgroundMappings: BackgroundMappings = {
   0: {

@@ -3,10 +3,10 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
-import { ListSection } from "./Common";
 import Divider from "../../components/Common/Divider";
 import CustomSegmentedButtons from "../../components/CustomSegmentedButtons";
 import { useSettings } from "../../context/SettingsContext";
+import { ListSection } from "./Common";
 
 export default React.memo(function UnitsSection() {
   const { settings, updateSetting } = useSettings();

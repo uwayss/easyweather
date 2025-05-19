@@ -7,4 +7,4 @@ export const HOURLY_CONDITIONS_DETAILS_ROW_HEIGHT = 55;
 export const HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL = 16;
 
 // Snackbar
-export const SNACKBAR_DURATION_LONG = 3000; // Default paper duration might vary, standardizing
+export const SNACKBAR_DURATION_LONG = 3000;

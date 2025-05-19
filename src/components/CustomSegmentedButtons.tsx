@@ -1,8 +1,14 @@
 // FILE: src/components/CustomSegmentedButtons.tsx
 import React from "react";
-import { View, Text, TouchableOpacity, ViewStyle, StyleProp } from "react-native";
+import {
+  StyleProp,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 
-import Icon from "./Icon"; // Assuming Icon component handles its own default theming
+import Icon from "./Icon";
 
 interface SegmentButtonOption {
   value: string;
@@ -48,7 +54,11 @@ const CustomSegmentedButtons: React.FC<CustomSegmentedButtonsProps> = ({
             className={`
               flex-1 items-center justify-center flex-row py-2 px-3
               ${isActive ? activeBg : inactiveBg}
-              ${!isLast ? "border-r border-light-outline dark:border-dark-outline" : ""}
+              ${
+                !isLast
+                  ? "border-r border-light-outline dark:border-dark-outline"
+                  : ""
+              }
             `}
           >
             {button.icon && (
