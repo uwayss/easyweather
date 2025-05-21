@@ -6,16 +6,5 @@ module.exports = defineConfig([
   expoConfig,
   {
     ignores: ["dist/*", "node_modules/*", "android/*", "ios/*", ".bundle/*"],
-    rules: {
-      "import/order": [
-        "warn",
-        {
-          alphabetize: {
-            order: "asc",
-            caseInsensitive: true,
-          },
-        },
-      ],
-    },
   },
 ]);

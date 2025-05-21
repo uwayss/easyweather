@@ -9,12 +9,14 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint --fix",
-    "diff": "npm run types && python scripts/diff.py",
-    "diff_bypass": "python scripts/diff.py",
-    "dump": "python scripts/codebase_dumper.py",
-    "dump_lite": "python scripts/codebase_dumper_lite.py",
+    "diff": "npm run types && node scripts/diff.js",
+    "diff_bypass": "node scripts/diff.js",
+    "dump_full": "node scripts/codebaseDump.js --natives",
+    "dump": "node scripts/codebaseDump.js",
     "relgen": "python scripts/relgen.py",
-    "types": "tsc --noEmit"
+    "types": "tsc --noEmit",
+    "bundle": "node scripts/incrementAndBuild.js",
+    "bundleSize": "node scripts/react-native-bundle-visualizer.cjs"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
@@ -59,10 +61,15 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@google/genai": "^1.0.0",
+    "@google/generative-ai": "^0.24.1",
+    "@types/minimist": "^1.2.5",
     "@types/react": "~19.0.10",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
+    "minimist": "^1.2.8",
     "typescript": "~5.8.3"
   },
-  "private": true
+  "private": true,
+  "type": "module"
 }

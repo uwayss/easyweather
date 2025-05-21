@@ -1,0 +1,62 @@
+// app.config.js
+export default ({ config }) => {
+  const buildNumber = process.env.BUILD_NUMBER
+    ? parseInt(process.env.BUILD_NUMBER, 10)
+    : 1;
+
+  const appConfig = {
+    expo: {
+      name: "EasyWeather",
+      slug: "easyweather",
+      version: "1.0.0",
+      orientation: "portrait",
+      icon: "./assets/icon.png",
+      scheme: "easyweather",
+      userInterfaceStyle: "automatic",
+      newArchEnabled: true,
+      ios: {
+        supportsTablet: true,
+      },
+      android: {
+        adaptiveIcon: {
+          foregroundImage: "./assets/icon_fg.png",
+          backgroundImage: "./assets/icon_bg.png",
+        },
+        edgeToEdgeEnabled: true,
+        googleServicesFile: "./google-services.json",
+        package: "com.uwayss.easyweather",
+        versionCode: buildNumber,
+      },
+      web: {
+        bundler: "metro",
+        output: "static",
+        favicon: "./assets/icon.png",
+      },
+      plugins: [
+        "expo-router",
+        [
+          "expo-splash-screen",
+          {
+            image: "./assets/icon_fg.png",
+            imageWidth: 200,
+            resizeMode: "contain",
+            backgroundColor: "#ffffff",
+          },
+        ],
+        [
+          "react-native-google-mobile-ads",
+          {
+            androidAppId: "ca-app-pub-2933834243243547~1866423461",
+            iosAppId: "ca-app-pub-2933834243243547~1866423461",
+          },
+        ],
+        "@react-native-firebase/app",
+      ],
+      experiments: {
+        typedRoutes: true,
+      },
+    },
+  };
+
+  return appConfig;
+};
