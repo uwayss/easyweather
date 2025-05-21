@@ -1,3 +1,4 @@
+# FILE: scripts/codebase_dumper.py
 import os
 import datetime
 from pathlib import Path

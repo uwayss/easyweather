@@ -22,7 +22,7 @@ function debounce(
   func: DebouncedSearchFunction,
   wait: number
 ): DebouncedSearchFunction {
-  let timeout: number | null = null;
+  let timeout: NodeJS.Timeout | null = null;
   return function (query: string) {
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => func(query), wait);
