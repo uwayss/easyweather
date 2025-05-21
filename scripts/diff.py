@@ -1,3 +1,4 @@
+# FILE: scripts/diff.py
 import subprocess
 import os
 import time
