@@ -1,4 +1,4 @@
-// FILE: scripts/codebase_dumper_combined.js
+// FILE: scripts/codebaseDump.js
 import { program } from "commander";
 import { promises as fs } from "fs";
 import path from "path";
