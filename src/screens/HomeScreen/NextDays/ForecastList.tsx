@@ -28,24 +28,11 @@ export default function ForecastList() {
           initialNumToRender={5}
           maxToRenderPerBatch={5}
           windowSize={5}
-          contentContainerStyle={{
-            paddingVertical: 8,
-            paddingLeft: 0,
-            paddingRight: 8,
-          }}
           removeClippedSubviews={true}
           showsHorizontalScrollIndicator={false}
         />
       ) : (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingVertical: 8,
-            paddingLeft: 0,
-            paddingRight: 8,
-          }}
-        >
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <EmptyForecastList />
         </ScrollView>
       )}

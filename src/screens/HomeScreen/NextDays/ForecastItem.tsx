@@ -100,7 +100,7 @@ const ForecastItem = React.memo(function ForecastItem({
     <TouchableOpacity onPress={handlePress} activeOpacity={0.6}>
       <Card
         elevated
-        className={`mx-2 items-center justify-between p-3 gap-1.5 w-36 h-48`}
+        className={`mr-4 items-center justify-between p-3 gap-1.5 w-36 h-48`}
       >
         <Text numberOfLines={1} className="w-full text-center font-semibold">
           {dayName}
