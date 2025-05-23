@@ -21,11 +21,14 @@ export function processWeatherData(data: WeatherResponseAPI): Weather {
     temp: data.hourly.temperature_2m[index],
     humidity: data.hourly.relative_humidity_2m[index],
     rainProb: data.hourly.precipitation_probability[index],
+    apparentTemp: data.hourly.apparent_temperature
+      ? data.hourly.apparent_temperature[index]
+      : data.hourly.temperature_2m[index], // Fallback if not available
     weatherCode: data.hourly.weather_code[index],
     isDay: data.hourly.is_day[index] === 1,
     windSpeed: data.hourly.wind_speed_10m
       ? data.hourly.wind_speed_10m[index]
-      : 0,
+      : 0, // Fallback if not available
   }));
   const daily: DayWeather[] = data.daily.time.map((date, index) => ({
     date,
@@ -35,6 +38,7 @@ export function processWeatherData(data: WeatherResponseAPI): Weather {
     rainProb: data.daily.precipitation_probability_max[index],
     sunrise: data.daily.sunrise[index],
     sunset: data.daily.sunset[index],
+    uvIndexMax: data.daily.uv_index_max ? data.daily.uv_index_max[index] : -1, // Use -1 or similar to denote missing UV data
     windSpeed: data.daily.wind_speed_10m_max[index],
   }));
 

@@ -1,11 +1,18 @@
 // FILE: src/screens/DateScreen/DailySummaryCard.tsx
 import { Image as ExpoImage } from "expo-image";
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import Text from "../../components/Common/Text";
 import Icon from "../../components/Icon";
+import {
+  PRECIPITATION_COLOR_MEDIUM,
+  WIND_COLOR_HIGH,
+  WIND_COLOR_LOW,
+  WIND_COLOR_MEDIUM,
+  WIND_COLOR_SEVERE,
+} from "../../constants/colors";
 import { useSettings } from "../../context/SettingsContext";
 import { DayWeather } from "../../types/weather";
 import { useWeatherDescriptions } from "../../utils/descriptions";
@@ -33,7 +40,12 @@ const DetailItem: React.FC<DetailItemProps> = ({
 }) => {
   return (
     <View className="flex-row items-center gap-2 flex-1">
-      <Icon name={icon} size={20} color={color} type="feather" />
+      <Icon
+        name={icon}
+        size={20}
+        color={color}
+        type={icon === "shield-sun-outline" ? "material" : "feather"}
+      />
       <View className="items-start">
         <Text className="font-semibold text-sm">
           {value}
@@ -62,6 +74,34 @@ export default function DailySummaryCard({
   const { settings } = useSettings();
   const { t } = useTranslation();
   const translatedWeatherDescriptions = useWeatherDescriptions();
+
+  const getUvIndexDetails = (uvIndex: number | undefined) => {
+    if (uvIndex === undefined || uvIndex < 0)
+      return { text: "", color: WIND_COLOR_LOW, valueText: "--" };
+    const roundedUvIndex = Math.round(uvIndex);
+    let text = t("uv_index.low");
+    let color = WIND_COLOR_LOW;
+
+    if (roundedUvIndex >= 11) {
+      text = t("uv_index.extreme");
+      color = "#BA68C8";
+    } else if (roundedUvIndex >= 8) {
+      text = t("uv_index.very_high");
+      color = WIND_COLOR_SEVERE;
+    } else if (roundedUvIndex >= 6) {
+      text = t("uv_index.high");
+      color = WIND_COLOR_HIGH;
+    } else if (roundedUvIndex >= 3) {
+      text = t("uv_index.moderate");
+      color = WIND_COLOR_MEDIUM;
+    }
+    return { text, color, valueText: roundedUvIndex.toString() };
+  };
+
+  const uvDetails = useMemo(
+    () => getUvIndexDetails(dayData?.uvIndexMax),
+    [dayData?.uvIndexMax, getUvIndexDetails]
+  );
 
   if (!dayData) return null;
 
@@ -117,30 +157,40 @@ export default function DailySummaryCard({
             icon="cloud-drizzle"
             label={t("weather.max_precipitation")}
             value={`${Math.round(dayData.rainProb)}`}
-            unit="%"
-            color="#64B5F6"
+            unit=" %"
+            color={PRECIPITATION_COLOR_MEDIUM}
           />
           <DetailItem
             icon="wind"
             label={t("weather.max_wind")}
             value={windValue}
             unit={windUnit}
-            color="#81D4FA"
+            color={WIND_COLOR_MEDIUM}
           />
         </View>
         <View className="flex-row justify-around items-center">
+          <DetailItem
+            icon="shield-sun-outline"
+            label={t("weather.uv_index")}
+            value={uvDetails.valueText}
+            unit={` (${uvDetails.text})`}
+            color={uvDetails.color}
+          />
           <DetailItem
             icon="sunrise"
             color="#FFB74D"
             label={t("weather.sunrise")}
             value={formattedSunrise || "--:--"}
           />
+        </View>
+        <View className="flex-row justify-around items-center">
           <DetailItem
             icon="sunset"
             label={t("weather.sunset")}
             value={formattedSunset || "--:--"}
             color="#BA68C8"
           />
+          <View className="flex-1" />
         </View>
       </View>
     </View>

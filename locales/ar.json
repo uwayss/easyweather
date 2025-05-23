@@ -47,9 +47,9 @@
   "weather.max_precipitation": "أقصى هطول",
   "weather.max_wind": "أقصى سرعة رياح",
   "weather.sunrise": "شروق الشمس",
+  "weather.uv_index": "مؤشر الأشعة فوق البنفسجية",
   "weather.sunset": "غروب الشمس",
   "weather.current_location": "الموقع الحالي",
-
   "weather.condition.0.day": "مشمس",
   "weather.condition.0.night": "صافي",
   "weather.condition.1.day": "مشمس غالبًا",
@@ -105,5 +105,20 @@
   "weather.condition.96.day": "عاصفة رعدية خفيفة مع برد",
   "weather.condition.96.night": "عاصفة رعدية خفيفة مع برد",
   "weather.condition.99.day": "عاصفة رعدية مع برد",
-  "weather.condition.99.night": "عاصفة رعدية مع برد"
+  "weather.condition.99.night": "عاصفة رعدية مع برد",
+  "metrics.apparentTemperature": "الحرارة المحسوسة",
+  "uv_index.low": "منخفض",
+  "uv_index.moderate": "معتدل",
+  "uv_index.high": "مرتفع",
+  "uv_index.very_high": "مرتفع جدًا",
+  "uv_index.extreme": "شديد للغاية",
+  "location.saved_locations": "المواقع المحفوظة",
+  "location.save": "حفظ",
+  "location.saved": "محفوظ",
+  "location.delete": "حذف",
+  "location.view": "عرض",
+  "location.add_current": "إضافة الموقع الحالي",
+  "location.saved_toast": "تم حفظ الموقع.",
+  "location.removed_toast": "تم إزالة الموقع.",
+  "location.no_saved_locations": "لا توجد مواقع محفوظة بعد."
 }

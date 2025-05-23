@@ -19,6 +19,7 @@ export default function MetricSelector({
   const metrics = React.useMemo(
     () => [
       { value: "temperature", label: t("metrics.temperature") },
+      { value: "apparentTemperature", label: t("metrics.apparentTemperature") },
       { value: "precipitation", label: t("metrics.precipitation") },
       { value: "humidity", label: t("metrics.humidity") },
       { value: "wind", label: t("metrics.wind") },
@@ -48,6 +49,11 @@ export default function MetricSelector({
     >
       {metrics.map((button) => (
         <MetricButton
+          icon={
+            button.value === "apparentTemperature"
+              ? "thermometer-lines"
+              : undefined
+          }
           key={button.value}
           label={button.label}
           value={button.value}

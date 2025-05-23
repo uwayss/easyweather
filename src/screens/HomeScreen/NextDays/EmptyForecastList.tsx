@@ -14,6 +14,7 @@ export default function EmptyComponent() {
     windSpeed: 0,
     sunset: "",
     sunrise: "",
+    uvIndexMax: 0,
   }));
 
   return (
