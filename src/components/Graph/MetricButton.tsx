@@ -1,14 +1,14 @@
 // FILE: src/components/Graph/MetricButton.tsx
 import React from "react";
 import { Text, TouchableOpacity } from "react-native";
-// Icon import removed as it's no longer used
+import Icon from "../Icon";
 
 interface MetricButtonProps {
   label: string;
   value: string;
   isActive: boolean;
   onPress: (value: string) => void;
-  // icon prop removed
+  icon?: string;
 }
 
 const MetricButton: React.FC<MetricButtonProps> = ({
@@ -16,6 +16,7 @@ const MetricButton: React.FC<MetricButtonProps> = ({
   value,
   isActive,
   onPress,
+  icon,
 }) => {
   const activeBg = "bg-light-primary/20 dark:bg-dark-primary/20";
   const activeTextClass = "text-light-primary dark:text-dark-primary";
@@ -35,7 +36,14 @@ const MetricButton: React.FC<MetricButtonProps> = ({
       `}
       onPress={() => onPress(value)}
     >
-      {/* Icon rendering removed */}
+      {icon && (
+        <Icon
+          name={icon}
+          type="material"
+          size={16}
+          className={`mr-1.5 ${textStyle}`}
+        />
+      )}
       <Text className={`text-sm font-medium ${textStyle}`}>{label}</Text>
     </TouchableOpacity>
   );

@@ -14,6 +14,7 @@ export function processWeatherData(data: WeatherResponseAPI): Weather {
     isDay: data.current.is_day ? true : false,
     weatherCode: data.current.weather_code,
     windSpeed: data.current.wind_speed_10m,
+    uvIndex: data.current.uv_index ?? 0,
   };
 
   const hourly: HourWeather[] = data.hourly.time.map((time, index) => ({
