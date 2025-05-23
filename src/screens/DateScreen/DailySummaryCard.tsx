@@ -1,6 +1,6 @@
 // FILE: src/screens/DateScreen/DailySummaryCard.tsx
 import { Image as ExpoImage } from "expo-image";
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
@@ -75,28 +75,31 @@ export default function DailySummaryCard({
   const { t } = useTranslation();
   const translatedWeatherDescriptions = useWeatherDescriptions();
 
-  const getUvIndexDetails = (uvIndex: number | undefined) => {
-    if (uvIndex === undefined || uvIndex < 0)
-      return { text: "", color: WIND_COLOR_LOW, valueText: "--" };
-    const roundedUvIndex = Math.round(uvIndex);
-    let text = t("uv_index.low");
-    let color = WIND_COLOR_LOW;
+  const getUvIndexDetails = useCallback(
+    (uvIndex: number | undefined) => {
+      if (uvIndex === undefined || uvIndex < 0)
+        return { text: "", color: WIND_COLOR_LOW, valueText: "--" };
+      const roundedUvIndex = Math.round(uvIndex);
+      let text = t("uv_index.low");
+      let color = WIND_COLOR_LOW;
 
-    if (roundedUvIndex >= 11) {
-      text = t("uv_index.extreme");
-      color = "#BA68C8";
-    } else if (roundedUvIndex >= 8) {
-      text = t("uv_index.very_high");
-      color = WIND_COLOR_SEVERE;
-    } else if (roundedUvIndex >= 6) {
-      text = t("uv_index.high");
-      color = WIND_COLOR_HIGH;
-    } else if (roundedUvIndex >= 3) {
-      text = t("uv_index.moderate");
-      color = WIND_COLOR_MEDIUM;
-    }
-    return { text, color, valueText: roundedUvIndex.toString() };
-  };
+      if (roundedUvIndex >= 11) {
+        text = t("uv_index.extreme");
+        color = "#BA68C8";
+      } else if (roundedUvIndex >= 8) {
+        text = t("uv_index.very_high");
+        color = WIND_COLOR_SEVERE;
+      } else if (roundedUvIndex >= 6) {
+        text = t("uv_index.high");
+        color = WIND_COLOR_HIGH;
+      } else if (roundedUvIndex >= 3) {
+        text = t("uv_index.moderate");
+        color = WIND_COLOR_MEDIUM;
+      }
+      return { text, color, valueText: roundedUvIndex.toString() };
+    },
+    [t]
+  );
 
   const uvDetails = useMemo(
     () => getUvIndexDetails(dayData?.uvIndexMax),
