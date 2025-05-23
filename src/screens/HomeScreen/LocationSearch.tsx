@@ -22,7 +22,7 @@ function debounce(
   func: DebouncedSearchFunction,
   wait: number
 ): DebouncedSearchFunction {
-  let timeout: NodeJS.Timeout | null = null;
+  let timeout: any = null; // Changed NodeJS.Timeout to any
   return function (query: string) {
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => func(query), wait);
@@ -31,7 +31,8 @@ function debounce(
 
 export const LocationSearch = () => {
   const { colorScheme } = useColorScheme();
-  const { updateLocation, getCurrentLocation, setError } = useLocationContext();
+  const { setActiveLocation, getCurrentLocation, setError } =
+    useLocationContext();
   const { t } = useTranslation();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -40,7 +41,8 @@ export const LocationSearch = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const onLocationSelect = (selectedLocation: LocationResult) => {
-    updateLocation({
+    setActiveLocation({
+      // Use setActiveLocation
       latitude: parseFloat(selectedLocation.lat),
       longitude: parseFloat(selectedLocation.lon),
       displayName: selectedLocation.display_name,
@@ -74,7 +76,7 @@ export const LocationSearch = () => {
         setShowResults(false);
       }
     }, 500),
-    [setError, updateLocation]
+    [setError, setActiveLocation]
   );
 
   const handleSearchChange = (query: string) => {
@@ -106,6 +108,8 @@ export const LocationSearch = () => {
   const placeholderTextColor =
     colorScheme === "dark" ? dark.onSurfaceVariant : light.onSurfaceVariant;
   const indicatorColor = colorScheme === "dark" ? dark.primary : light.primary;
+  const textInputColor =
+    colorScheme === "dark" ? dark.onSurface : light.onSurface;
 
   return (
     <View className="z-40 flex-1">
@@ -119,6 +123,7 @@ export const LocationSearch = () => {
           onChangeText={handleSearchChange}
           value={searchQuery}
           className="flex-1 h-full px-3"
+          style={{ color: textInputColor }}
           returnKeyType="search"
           onFocus={() => searchQuery && setShowResults(true)}
           onBlur={() => setTimeout(() => setShowResults(false), 150)}

@@ -9,14 +9,15 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint --fix",
-    "diff": "npm run types && node scripts/diff.js",
+    "diff": "npm run checks && node scripts/diff.js",
     "diff_bypass": "node scripts/diff.js",
     "dump_full": "node scripts/codebaseDump.js --natives",
     "dump": "node scripts/codebaseDump.js",
     "relgen": "python scripts/relgen.py",
     "types": "tsc --noEmit",
     "bundle": "node scripts/incrementAndBuild.js",
-    "bundleSize": "node scripts/react-native-bundle-visualizer.cjs"
+    "bundleSize": "node scripts/react-native-bundle-visualizer.cjs",
+    "checks": "npm run types && npm run lint"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
@@ -70,6 +71,5 @@
     "minimist": "^1.2.8",
     "typescript": "~5.8.3"
   },
-  "private": true,
-  "type": "module"
+  "private": true
 }

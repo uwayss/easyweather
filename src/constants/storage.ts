@@ -6,3 +6,4 @@ export const MMKV_LOCATION_INSTANCE_ID = "location-storage";
 // Storage Keys
 export const STORAGE_KEY_APP_SETTINGS = "userAppSettings";
 export const STORAGE_KEY_LOCATION = "user-location";
+export const STORAGE_KEY_SAVED_LOCATIONS = "userSavedLocations_v1";

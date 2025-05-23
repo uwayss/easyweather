@@ -47,9 +47,9 @@
   "weather.max_precipitation": "Maksimum Yağış",
   "weather.max_wind": "Maksimum Rüzgar",
   "weather.sunrise": "Gün Doğumu",
+  "weather.uv_index": "UV İndeksi",
   "weather.sunset": "Gün Batımı",
   "weather.current_location": "Mevcut Konum",
-
   "weather.condition.0.day": "Güneşli",
   "weather.condition.0.night": "Açık",
   "weather.condition.1.day": "Çoğunlukla Güneşli",
@@ -105,5 +105,20 @@
   "weather.condition.96.day": "Hafif Dolu ile Gök Gürültülü Fırtına",
   "weather.condition.96.night": "Hafif Dolu ile Gök Gürültülü Fırtına",
   "weather.condition.99.day": "Dolu ile Gök Gürültülü Fırtına",
-  "weather.condition.99.night": "Dolu ile Gök Gürültülü Fırtına"
+  "weather.condition.99.night": "Dolu ile Gök Gürültülü Fırtına",
+  "metrics.apparentTemperature": "Hissedilen Sıcaklık",
+  "uv_index.low": "Düşük",
+  "uv_index.moderate": "Orta",
+  "uv_index.high": "Yüksek",
+  "uv_index.very_high": "Çok Yüksek",
+  "uv_index.extreme": "Aşırı",
+  "location.saved_locations": "Kaydedilmiş Konumlar",
+  "location.save": "Kaydet",
+  "location.saved": "Kaydedildi",
+  "location.delete": "Sil",
+  "location.view": "Görüntüle",
+  "location.add_current": "Mevcut Konumu Ekle",
+  "location.saved_toast": "Konum Kaydedildi.",
+  "location.removed_toast": "Konum Kaldırıldı.",
+  "location.no_saved_locations": "Henüz kaydedilmiş konum yok."
 }

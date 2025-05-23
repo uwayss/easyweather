@@ -18,6 +18,7 @@ export interface WeatherResponseAPI {
     time: string[];
     temperature_2m: number[];
     relative_humidity_2m: number[];
+    apparent_temperature?: number[];
     precipitation_probability: number[];
     weather_code: number[];
     is_day: number[];
@@ -25,13 +26,17 @@ export interface WeatherResponseAPI {
   };
   daily_units: Omit<
     WeatherUnitsAPI,
-    "interval" | "apparent_temperature" | "wind_speed_10m" | "relative_humidity_2m"
+    | "interval"
+    | "apparent_temperature"
+    | "wind_speed_10m"
+    | "relative_humidity_2m"
   >;
   daily: {
     time: string[];
     weather_code: number[];
     temperature_2m_max: number[];
     temperature_2m_min: number[];
+    uv_index_max?: number[];
     precipitation_probability_max: number[];
     sunset: string[];
     sunrise: string[];
@@ -54,6 +59,7 @@ export interface WeatherUnitsAPI {
 export interface HourWeather {
   time: string;
   temp: number;
+  apparentTemp: number;
   humidity: number;
   rainProb: number;
   weatherCode: number;
@@ -64,6 +70,7 @@ export interface DayWeather {
   date: string;
   maxTemp: number;
   minTemp: number;
+  uvIndexMax: number;
   weatherCode: number;
   rainProb: number;
   windSpeed: number;

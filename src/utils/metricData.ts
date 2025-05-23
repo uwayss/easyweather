@@ -21,7 +21,12 @@ import {
   formatWindSpeed,
 } from "./unitConversion";
 
-export type MetricType = "temperature" | "precipitation" | "humidity" | "wind";
+export type MetricType =
+  | "temperature"
+  | "precipitation"
+  | "humidity"
+  | "wind"
+  | "apparentTemperature";
 
 export interface GraphDataPoint {
   progress: number;
@@ -33,12 +38,55 @@ export interface GraphDataPoint {
 
 // --- Refactored Metric Calculation Functions ---
 
-// Temperature specific calculations for a single hour
+// Actual Temperature specific calculations for a single hour
 const getTemperatureDataForHour = (
   item: HourWeather,
   useImperialUnits: boolean
 ): GraphDataPoint => {
   const tempCelsius: number = item.temp;
+  const temp = convertTemperature(tempCelsius, useImperialUnits);
+
+  const minTempDisplay = useImperialUnits ? 14 : -10;
+  const maxTempDisplay = useImperialUnits ? 104 : 40;
+  const tempProgress = Math.max(
+    0,
+    Math.min(1, (temp - minTempDisplay) / (maxTempDisplay - minTempDisplay))
+  );
+
+  const minTempColor = TEMP_COLOR_STOPS_CELSIUS[0][0];
+  const maxTempColor =
+    TEMP_COLOR_STOPS_CELSIUS[TEMP_COLOR_STOPS_CELSIUS.length - 1][0];
+  const color = getTemperatureGradientColor(
+    tempCelsius,
+    minTempColor,
+    maxTempColor
+  );
+
+  const hourTime = new Date(item.time).getHours();
+  const formattedHour =
+    hourTime === 0
+      ? "12 AM"
+      : hourTime === 12
+      ? "12 PM"
+      : hourTime > 12
+      ? `${hourTime - 12} PM`
+      : `${hourTime} AM`;
+
+  return {
+    progress: tempProgress,
+    color,
+    value: formatTemperature(temp, useImperialUnits),
+    time: item.time,
+    label: formattedHour,
+  };
+};
+
+// Apparent Temperature specific calculations for a single hour
+const getApparentTemperatureDataForHour = (
+  item: HourWeather,
+  useImperialUnits: boolean
+): GraphDataPoint => {
+  const tempCelsius: number = item.apparentTemp;
   const temp = convertTemperature(tempCelsius, useImperialUnits);
 
   const minTempDisplay = useImperialUnits ? 14 : -10;
@@ -185,6 +233,8 @@ export const getMetricDataForForecast = (
     switch (metricType) {
       case "temperature":
         return getTemperatureDataForHour(hour, useImperialUnits);
+      case "apparentTemperature":
+        return getApparentTemperatureDataForHour(hour, useImperialUnits);
       case "precipitation":
         return getPrecipitationDataForHour(hour);
       case "humidity":
