@@ -49,11 +49,7 @@ export default function MetricSelector({
     >
       {metrics.map((button) => (
         <MetricButton
-          icon={
-            button.value === "apparentTemperature"
-              ? "thermometer-lines"
-              : undefined
-          }
+          // icon prop removed
           key={button.value}
           label={button.label}
           value={button.value}

@@ -1,15 +1,20 @@
 // FILE: src/screens/HomeScreen/SearchRow.tsx
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React from "react"; // Removed useState
 import { TouchableOpacity, View } from "react-native";
 
 import Icon from "../../components/Icon";
 import { LocationSearch } from "./LocationSearch";
-import SavedLocationsModal from "./SavedLocationsModal";
+// SavedLocationsModal import removed, as it's now handled by the parent screen
 
-const SearchRowComponent = () => {
+interface SearchRowProps {
+  onSavedLocationsPress: () => void; // Prop to handle modal visibility
+}
+
+const SearchRowComponent: React.FC<SearchRowProps> = ({
+  onSavedLocationsPress,
+}) => {
   const router = useRouter();
-  const [modalVisible, setModalVisible] = useState(false);
 
   const navigateToSettings = () => {
     router.push("/settings");
@@ -19,7 +24,7 @@ const SearchRowComponent = () => {
     <View className="flex-row items-center flex-1">
       <LocationSearch />
       <TouchableOpacity
-        onPress={() => setModalVisible(true)}
+        onPress={onSavedLocationsPress} // Use the passed prop
         className="p-2 ml-2"
       >
         <Icon name="playlist-star" size={26} />
@@ -30,10 +35,7 @@ const SearchRowComponent = () => {
       >
         <Icon name="settings" type="feather" />
       </TouchableOpacity>
-      <SavedLocationsModal
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-      />
+      {/* Modal is no longer rendered here */}
     </View>
   );
 };

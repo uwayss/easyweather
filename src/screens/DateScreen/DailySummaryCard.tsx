@@ -173,26 +173,27 @@ export default function DailySummaryCard({
         </View>
         <View className="flex-row justify-around items-center">
           <DetailItem
-            icon="shield-sun-outline"
-            label={t("weather.uv_index")}
-            value={uvDetails.valueText}
-            unit={` (${uvDetails.text})`}
-            color={uvDetails.color}
-          />
-          <DetailItem
             icon="sunrise"
             color="#FFB74D"
             label={t("weather.sunrise")}
             value={formattedSunrise || "--:--"}
           />
-        </View>
-        <View className="flex-row justify-around items-center">
           <DetailItem
             icon="sunset"
             label={t("weather.sunset")}
             value={formattedSunset || "--:--"}
             color="#BA68C8"
           />
+        </View>
+        <View className="flex-row justify-around items-center">
+          <DetailItem
+            icon="shield-sun-outline"
+            label={t("weather.uv_index")}
+            value={uvDetails.valueText}
+            unit={` (${uvDetails.text})`}
+            color={uvDetails.color}
+          />
+
           <View className="flex-1" />
         </View>
       </View>

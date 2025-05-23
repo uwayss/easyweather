@@ -1,4 +1,5 @@
 // FILE: src/screens/HomeScreen/SavedLocationsModal.tsx
+import Card from "@/src/components/Common/Card";
 import Text from "@/src/components/Common/Text";
 import Icon from "@/src/components/Icon";
 import {
@@ -6,13 +7,16 @@ import {
   useLocationContext,
 } from "@/src/context/LocationContext";
 import { useColorScheme } from "nativewind";
-import React from "react";
+import React, { useEffect, useRef, useState } from "react"; // Added useState
 import { useTranslation } from "react-i18next";
 import {
+  Animated,
+  BackHandler,
   FlatList,
-  Modal,
+  Platform,
   StyleSheet,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from "react-native";
 
@@ -31,10 +35,70 @@ const SavedLocationsModal: React.FC<SavedLocationsModalProps> = ({
     removeSavedLocation,
     addSavedLocation,
     isLocationSaved,
-    location: activeLocation, // current active location
+    location: activeLocation,
   } = useLocationContext();
   const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
+  const animatedValue = useRef(new Animated.Value(0)).current;
+  const [modalRendered, setModalRendered] = useState(false); // State to control rendering
+
+  useEffect(() => {
+    if (visible) {
+      setModalRendered(true); // Make it rendered before animating in
+      Animated.timing(animatedValue, {
+        toValue: 1,
+        duration: 250,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(animatedValue, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => {
+        setModalRendered(false); // Unrender after animating out
+      });
+    }
+
+    const backAction = () => {
+      if (visible) {
+        onClose();
+        return true;
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+    return () => backHandler.remove();
+  }, [visible, animatedValue, onClose]);
+
+  const backdropAnimatedStyle = {
+    opacity: animatedValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+    }),
+  };
+
+  const modalAnimatedStyle = {
+    opacity: animatedValue,
+    transform: [
+      {
+        scale: animatedValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0.9, 1],
+        }),
+      },
+      {
+        translateY: animatedValue.interpolate({
+          inputRange: [0, 0.5, 1],
+          outputRange: [50, 20, 0],
+        }),
+      },
+    ],
+  };
 
   const handleSelectLocation = (selectedLoc: SavedLocation) => {
     setActiveLocation(selectedLoc);
@@ -52,22 +116,22 @@ const SavedLocationsModal: React.FC<SavedLocationsModalProps> = ({
   };
 
   const renderItem = ({ item }: { item: SavedLocation }) => (
-    <View className="flex-row items-center justify-between p-3 border-b border-light-outline/30 dark:border-dark-outline/30">
-      <Text className="flex-1 text-base" numberOfLines={1}>
+    <View className="flex-row items-center justify-between py-3.5 px-4 border-b border-light-outline/20 dark:border-dark-outline/20">
+      <Text className="flex-1 text-base mr-3" numberOfLines={2}>
         {item.displayName}
       </Text>
       <View className="flex-row items-center">
         <TouchableOpacity
           onPress={() => handleSelectLocation(item)}
-          className="p-2 mx-1 bg-light-primary/10 dark:bg-dark-primary/10 rounded-md"
+          className="py-1.5 px-3 bg-light-primary/10 dark:bg-dark-primary/10 rounded-md mr-2"
         >
-          <Text className="text-light-primary dark:text-dark-primary font-medium">
+          <Text className="text-light-primary dark:text-dark-primary font-medium text-sm">
             {t("location.view")}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => handleDeleteLocation(item.id)}
-          className="p-2 ml-1"
+          className="p-1.5"
         >
           <Icon
             name="trash-can-outline"
@@ -82,68 +146,96 @@ const SavedLocationsModal: React.FC<SavedLocationsModalProps> = ({
   const isCurrentActiveLocationSavable =
     activeLocation &&
     !isLocationSaved(activeLocation) &&
-    activeLocation.displayName !== t("weather.current_location");
+    activeLocation.displayName !== t("weather.current_location") &&
+    activeLocation.displayName !== t("weather.loading_location") &&
+    activeLocation.displayName !== t("weather.unknown_location");
+
+  if (!modalRendered) {
+    return null;
+  }
 
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
+    <View
+      style={StyleSheet.absoluteFill}
+      pointerEvents={visible ? "auto" : "none"}
     >
-      <View style={styles.centeredView}>
-        <View className="w-11/12 max-h-[70%] bg-light-surface dark:bg-dark-surface rounded-xl shadow-lg overflow-hidden">
-          <View className="flex-row items-center justify-between p-4 border-b border-light-outline dark:border-dark-outline">
-            <Text className="text-xl font-semibold">
-              {t("location.saved_locations")}
-            </Text>
-            <TouchableOpacity onPress={onClose} className="p-1">
-              <Icon name="close" size={24} />
-            </TouchableOpacity>
-          </View>
+      <TouchableWithoutFeedback onPress={onClose}>
+        <Animated.View style={[styles.backdrop, backdropAnimatedStyle]} />
+      </TouchableWithoutFeedback>
 
-          {isCurrentActiveLocationSavable && (
-            <TouchableOpacity
-              onPress={handleAddCurrentLocation}
-              className="p-3 m-3 bg-light-primary dark:bg-dark-primary rounded-md items-center"
-            >
-              <Text className="text-white dark:text-black font-medium">
-                {t("location.add_current")}
+      <View style={styles.centeredView} pointerEvents="box-none">
+        <Animated.View
+          style={[styles.modalContentContainer, modalAnimatedStyle]}
+        >
+          <Card elevated className="overflow-hidden max-h-[75vh] w-full">
+            <View className="flex-row items-center justify-between p-4 border-b border-light-outline dark:border-dark-outline">
+              <Text className="text-xl font-semibold">
+                {t("location.saved_locations")}
               </Text>
-            </TouchableOpacity>
-          )}
-
-          {savedLocations.length > 0 ? (
-            <FlatList
-              data={savedLocations}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.id}
-              contentContainerStyle={{ paddingBottom: 10 }}
-            />
-          ) : (
-            <View className="p-10 items-center justify-center">
-              <Icon
-                name="information-outline"
-                size={48}
-                className="opacity-50 mb-3"
-              />
-              <Text className="text-lg opacity-70 text-center">
-                {t("location.no_saved_locations")}
-              </Text>
+              <TouchableOpacity
+                onPress={onClose}
+                className="p-1 rounded-full active:bg-black/10 dark:active:bg-white/10"
+              >
+                <Icon name="close" size={24} />
+              </TouchableOpacity>
             </View>
-          )}
-        </View>
+
+            {isCurrentActiveLocationSavable && (
+              <TouchableOpacity
+                onPress={handleAddCurrentLocation}
+                className="py-3 px-4 m-4 bg-light-primary dark:bg-dark-primary rounded-lg items-center shadow-md active:opacity-80"
+              >
+                <Text className="text-white dark:text-black font-semibold text-center text-sm">
+                  {t("location.add_current")}:{" "}
+                  {activeLocation?.displayName.length > 20
+                    ? activeLocation?.displayName.substring(0, 20) + "..."
+                    : activeLocation?.displayName}
+                </Text>
+              </TouchableOpacity>
+            )}
+
+            {savedLocations.length > 0 ? (
+              <FlatList
+                data={savedLocations}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id}
+                contentContainerStyle={{
+                  paddingBottom: Platform.OS === "ios" ? 20 : 10,
+                }}
+              />
+            ) : (
+              <View className="py-10 px-4 items-center justify-center flex-1 min-h-[150px]">
+                <Icon
+                  name="map-marker-multiple-outline"
+                  size={48}
+                  className="opacity-40 mb-3"
+                />
+                <Text className="text-lg opacity-60 text-center">
+                  {t("location.no_saved_locations")}
+                </Text>
+              </View>
+            )}
+          </Card>
+        </Animated.View>
       </View>
-    </Modal>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.9)",
+  },
   centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)", // Semi-transparent background
+    paddingHorizontal: 20,
+  },
+  modalContentContainer: {
+    width: "100%",
+    maxWidth: 450,
   },
 });
 
