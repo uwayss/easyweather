@@ -113,6 +113,7 @@ const ThemedAppWithProviders = () => {
           key={`banner-${adLoadAttempt}`}
           unitId={adUnitId}
           size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          //size={"0x0"} // TESTING
           onAdLoaded={handleAdLoaded}
           onAdFailedToLoad={handleAdFailedToLoad}
           requestOptions={{ requestNonPersonalizedAdsOnly: true }}

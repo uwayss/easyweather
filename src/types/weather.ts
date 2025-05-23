@@ -12,6 +12,7 @@ export interface WeatherResponseAPI {
     is_day: 0 | 1;
     weather_code: number;
     wind_speed_10m: number;
+    uv_index?: number;
   };
   hourly_units: WeatherUnitsAPI;
   hourly: {
@@ -54,6 +55,7 @@ export interface WeatherUnitsAPI {
   weather_code: string;
   wind_speed_10m: string;
   precipitation_probability?: string;
+  uv_index?: string;
 }
 
 export interface HourWeather {
@@ -85,6 +87,7 @@ export interface CurrentWeather {
   isDay: boolean;
   weatherCode: number;
   windSpeed: number;
+  uvIndex: number;
 }
 export interface Weather {
   current: CurrentWeather;
