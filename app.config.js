@@ -1,8 +1,28 @@
 // app.config.js
+import fs from "node:fs";
+
 export default ({ config }) => {
-  const buildNumber = process.env.BUILD_NUMBER
-    ? parseInt(process.env.BUILD_NUMBER, 10)
-    : 1;
+  const versionCodeFilePath = "versionCode.txt";
+  let versionCode;
+
+  try {
+    const versionCodeString = fs
+      .readFileSync(versionCodeFilePath, "utf8")
+      .trim();
+    versionCode = parseInt(versionCodeString, 10);
+    if (isNaN(versionCode)) {
+      console.warn(
+        `Warning: Invalid versionCode in ${versionCodeFilePath}. Using default of 1.`
+      );
+      versionCode = 1;
+    }
+  } catch (error) {
+    console.warn(
+      `Warning: Could not read ${versionCodeFilePath}. Using default versionCode of 1.`
+    );
+    console.error(error);
+    versionCode = 1;
+  }
 
   const appConfig = {
     expo: {
@@ -25,7 +45,7 @@ export default ({ config }) => {
         edgeToEdgeEnabled: true,
         googleServicesFile: "./google-services.json",
         package: "com.uwayss.easyweather",
-        versionCode: buildNumber,
+        versionCode: versionCode,
       },
       web: {
         bundler: "metro",
@@ -41,13 +61,6 @@ export default ({ config }) => {
             imageWidth: 200,
             resizeMode: "contain",
             backgroundColor: "#ffffff",
-          },
-        ],
-        [
-          "react-native-google-mobile-ads",
-          {
-            androidAppId: "ca-app-pub-2933834243243547~1866423461",
-            iosAppId: "ca-app-pub-2933834243243547~1866423461",
           },
         ],
         "@react-native-firebase/app",
