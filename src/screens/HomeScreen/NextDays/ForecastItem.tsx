@@ -112,7 +112,7 @@ const ForecastItem = React.memo(function ForecastItem({
             contentFit="contain"
           />
         ) : (
-          <Card className="size-16" />
+          <Card className="size-16" borderType="hidden" />
         )}
         <Text
           numberOfLines={1}
