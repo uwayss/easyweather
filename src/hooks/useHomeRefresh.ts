@@ -7,7 +7,7 @@ import { useWeather } from "../context/WeatherContext";
 
 export const useHomeRefresh = () => {
   const { location } = useLocationContext();
-  const { fetchWeatherData } = useWeather();
+  const { fetchWeatherDataAndAQI } = useWeather();
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(async () => {
@@ -18,13 +18,13 @@ export const useHomeRefresh = () => {
     setRefreshing(true);
     try {
       getAnalytics().logEvent("pull_to_refresh");
-      await fetchWeatherData(location.latitude, location.longitude);
+      await fetchWeatherDataAndAQI(location.latitude, location.longitude);
     } catch (e) {
       console.error("Refresh error:", e);
     } finally {
       setRefreshing(false);
     }
-  }, [location, fetchWeatherData]);
+  }, [location, fetchWeatherDataAndAQI]);
 
   return { refreshing, onRefresh };
 };
