@@ -90,7 +90,7 @@ export function Details({ current }: { current: CurrentWeather | undefined }) {
 
   return (
     <Card
-      className="flex-row justify-around items-center mt-5 rounded-xl p-4 w-full opacity-80"
+      className="flex-row justify-around items-center mt-5 p-4 w-full"
       elevated
     >
       <View className="flex-1 items-center">
