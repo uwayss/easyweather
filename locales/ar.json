@@ -120,5 +120,13 @@
   "location.add_current": "إضافة الموقع الحالي",
   "location.saved_toast": "تم حفظ الموقع.",
   "location.removed_toast": "تم إزالة الموقع.",
-  "location.no_saved_locations": "لا توجد مواقع محفوظة بعد."
+  "location.no_saved_locations": "لا توجد مواقع محفوظة بعد.",
+  "summary.today_will_be": "سيكون اليوم",
+  "summary.tomorrow_will_be": "سيكون الغد",
+  "summary.warmer_than": "أدفأ من",
+  "summary.colder_than": "أبرد من",
+  "summary.similar_to": "مشابهًا لـ",
+  "summary.yesterday": "الأمس",
+  "summary.today": "اليوم",
+  "summary.no_comparison_data": "بيانات مقارنة درجة الحرارة غير متوفرة."
 }

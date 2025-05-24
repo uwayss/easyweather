@@ -13,12 +13,14 @@ import {
 } from "../../../constants/colors";
 import { useLocationContext } from "../../../context/LocationContext";
 import { useSettings } from "../../../context/SettingsContext";
+import { useWeather } from "../../../context/WeatherContext"; // Import useWeather
 import { CurrentWeather } from "../../../types/weather";
 import { useWeatherDescriptions } from "../../../utils/descriptions";
 import {
   convertTemperature,
   formatTemperature,
 } from "../../../utils/unitConversion";
+import { generateWeatherSummaryLabel } from "../../../utils/weatherSummaryUtils"; // Import the new util
 
 export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
   const { settings } = useSettings();
@@ -29,6 +31,7 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
     addSavedLocation,
     isLocationSaved,
   } = useLocationContext();
+  const { yesterdaySummary, todaySummary, tomorrowSummary } = useWeather(); // Get day summaries
   const { colorScheme } = useColorScheme();
   const timeOfDay = current?.isDay ? "day" : "night";
   const translatedDescriptions = useWeatherDescriptions();
@@ -60,6 +63,20 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
       addSavedLocation(location);
     }
   };
+
+  const weatherSummaryLabel = React.useMemo(() => {
+    return generateWeatherSummaryLabel(
+      todaySummary,
+      tomorrowSummary,
+      yesterdaySummary,
+      settings.useImperialUnits
+    );
+  }, [
+    todaySummary,
+    tomorrowSummary,
+    yesterdaySummary,
+    settings.useImperialUnits,
+  ]);
 
   return (
     <Card className="h-48" elevated>
@@ -115,11 +132,20 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
             pop
           >
             {t("weather.feltTemperature")}
+            {": "}
             {formatTemperature(
               convertTemperature(current.feltTemp, settings.useImperialUnits),
               settings.useImperialUnits
-            ).replace(/°[CF]$/, "°")}
+            ).replace(/°[CF]$/, "")}
           </Text>
+          {weatherSummaryLabel && (
+            <Text
+              className="opacity-80 mt-1.5 text-xs text-center leading-snug"
+              pop
+            >
+              {weatherSummaryLabel}
+            </Text>
+          )}
         </View>
       ) : (
         <View className="self-center items-center justify-center h-48">
