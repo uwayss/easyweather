@@ -21,7 +21,7 @@ export default function Card({
 }: CardProps) {
   const cardBaseStyle = "overflow-hidden rounded-xl";
   const elevationStyle = elevated
-    ? `bg-light-outline/35 dark:bg-dark-outline/50`
+    ? `bg-light-outline/35 dark:bg-dark-outline/45`
     : "";
   let borderStyle =
     "border-light-outline dark:border-dark-outline border-b-2 border-r-2 border-t-hairline border-l-hairline";

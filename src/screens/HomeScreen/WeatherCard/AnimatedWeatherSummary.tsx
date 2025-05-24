@@ -1,6 +1,6 @@
 // FILE: src/screens/HomeScreen/WeatherCard/AnimatedWeatherSummary.tsx
 import React, { useEffect, useRef, useState } from "react";
-import { Animated, StyleSheet } from "react-native";
+import { Animated } from "react-native";
 import Card from "../../../components/Common/Card";
 import Text from "../../../components/Common/Text";
 
@@ -60,13 +60,9 @@ const AnimatedWeatherSummary: React.FC<AnimatedWeatherSummaryProps> = ({
   }
 
   return (
-    <Animated.View style={[styles.container, containerStyle]}>
+    <Animated.View style={containerStyle}>
       {isRendered && label && (
-        <Card
-          className="py-1.5 px-3 mt-2" // Added mt-2 for spacing from MainInfo
-          elevated
-          borderType="thin"
-        >
+        <Card className="py-1.5 px-3 mt-2" elevated>
           <Text className="text-xs text-center leading-snug" pop passive>
             {label}
           </Text>
@@ -75,12 +71,5 @@ const AnimatedWeatherSummary: React.FC<AnimatedWeatherSummaryProps> = ({
     </Animated.View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    alignSelf: "stretch",
-    marginHorizontal: 4,
-  },
-});
 
 export default React.memo(AnimatedWeatherSummary);
