@@ -7,6 +7,7 @@ import HourlyConditions from "@/src/components/HourlyConditions";
 import { useLocationContext } from "@/src/context/LocationContext";
 import { useWeather } from "@/src/context/WeatherContext";
 import { useHomeRefresh } from "@/src/hooks/useHomeRefresh";
+import AirQualityCard from "@/src/screens/HomeScreen/AirQualityCard";
 import ForecastList from "@/src/screens/HomeScreen/NextDays/ForecastList";
 import SavedLocationsModal from "@/src/screens/HomeScreen/SavedLocationsModal";
 import SearchRow from "@/src/screens/HomeScreen/SearchRow";
@@ -50,6 +51,7 @@ export default function Home() {
         <WeatherCard />
         <HourlyConditions />
         <ForecastList />
+        <AirQualityCard />
       </ScrollView>
       <SavedLocationsModal
         visible={isSavedLocationsModalVisible}

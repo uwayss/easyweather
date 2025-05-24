@@ -8,19 +8,25 @@ import React, {
   useState,
 } from "react";
 
+import { fetchAirQuality } from "../api/airQuality"; // Import new API call
 import { fetchWeather } from "../api/weather";
-import { DayWeather, Weather } from "../types/weather"; // Weather now might not include yesterday/today/tomorrow directly
-import { ProcessedWeatherData } from "../utils/weatherUtils"; // Import the extended type
+import { CurrentAirQualityData } from "../types/airQuality"; // Import AQI type
+import { DayWeather, Weather } from "../types/weather";
+import { ProcessedWeatherData } from "../utils/weatherUtils";
 import { useLocationContext } from "./LocationContext";
 
 interface WeatherContextProps {
-  weather: Weather | null; // Standard weather data (current, hourly, daily forecast from today)
+  weather: Weather | null;
+  currentAirQuality: CurrentAirQualityData | null; // New state for AQI
   yesterdaySummary: DayWeather | undefined;
   todaySummary: DayWeather | undefined;
   tomorrowSummary: DayWeather | undefined;
-  loading: boolean;
-  error: string | null;
-  fetchWeatherData: (latitude: number, longitude: number) => Promise<void>;
+  loading: boolean; // This will now represent combined loading for weather & AQI
+  error: string | null; // This can be an error from either weather or AQI fetch
+  fetchWeatherDataAndAQI: (
+    latitude: number,
+    longitude: number
+  ) => Promise<void>; // Renamed
   clearError: () => void;
 }
 
@@ -32,6 +38,8 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [weather, setWeather] = useState<Weather | null>(null);
+  const [currentAirQuality, setCurrentAirQuality] =
+    useState<CurrentAirQualityData | null>(null); // New AQI state
   const [yesterdaySummary, setYesterdaySummary] = useState<
     DayWeather | undefined
   >(undefined);
@@ -48,41 +56,57 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const clearError = () => setError(null);
 
-  const fetchWeatherData = useCallback(
+  const fetchWeatherDataAndAQI = useCallback(
     async (latitude: number, longitude: number) => {
       setLoading(true);
       setError(null);
       try {
-        const processedData: ProcessedWeatherData = await fetchWeather(
-          latitude,
-          longitude
-        );
+        // Fetch weather and AQI data concurrently
+        const [weatherData, airQualityData] = await Promise.all([
+          fetchWeather(latitude, longitude),
+          fetchAirQuality(latitude, longitude).catch((aqiError) => {
+            // Catch AQI specific error to allow weather data to still load
+            console.error(
+              "AQI Fetch Error (will attempt to show weather):",
+              aqiError
+            );
+            getAnalytics().logEvent("fetch_aqi_failed", {
+              location: location?.displayName || "Unknown",
+              error: String(aqiError),
+            });
+            return null; // Return null if AQI fetch fails
+          }),
+        ]);
 
-        // Set the main weather data (current, hourly, daily forecast from today)
+        const processedWeatherData = weatherData as ProcessedWeatherData;
+
         setWeather({
-          current: processedData.current,
-          hourly: processedData.hourly,
-          daily: processedData.daily, // This is already sliced to be from today onwards
-          timezone: processedData.timezone,
-          latitude: processedData.latitude,
-          longitude: processedData.longitude,
+          current: processedWeatherData.current,
+          hourly: processedWeatherData.hourly,
+          daily: processedWeatherData.daily,
+          timezone: processedWeatherData.timezone,
+          latitude: processedWeatherData.latitude,
+          longitude: processedWeatherData.longitude,
         });
+        setYesterdaySummary(processedWeatherData.yesterdaySummary);
+        setTodaySummary(processedWeatherData.todaySummary);
+        setTomorrowSummary(processedWeatherData.tomorrowSummary);
 
-        // Set specific day summaries
-        setYesterdaySummary(processedData.yesterdaySummary);
-        setTodaySummary(processedData.todaySummary);
-        setTomorrowSummary(processedData.tomorrowSummary);
+        setCurrentAirQuality(airQualityData); // Set AQI data (could be null if fetch failed)
 
-        getAnalytics().logEvent("fetch_weather_success", {
+        getAnalytics().logEvent("fetch_weather_aqi_success", {
           location: location?.displayName || "Unknown",
+          aqi_loaded: !!airQualityData,
         });
       } catch (err) {
+        // This catch block will primarily handle errors from fetchWeather
+        // or if Promise.all itself fails (e.g., network issue before individual catches)
         const msg =
           err instanceof Error
             ? err.message
-            : "An unknown error occurred fetching weather";
+            : "An unknown error occurred fetching data";
         setError(msg);
-        getAnalytics().logEvent("fetch_weather_failed", {
+        getAnalytics().logEvent("fetch_weather_aqi_failed", {
           location: location?.displayName || "Unknown",
           error: String(err),
         });
@@ -95,18 +119,19 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (location) {
-      fetchWeatherData(location.latitude, location.longitude);
+      fetchWeatherDataAndAQI(location.latitude, location.longitude);
     }
-  }, [location, fetchWeatherData]);
+  }, [location, fetchWeatherDataAndAQI]);
 
   const value: WeatherContextProps = {
     weather,
+    currentAirQuality,
     yesterdaySummary,
     todaySummary,
     tomorrowSummary,
     loading,
     error: error,
-    fetchWeatherData,
+    fetchWeatherDataAndAQI,
     clearError,
   };
 
