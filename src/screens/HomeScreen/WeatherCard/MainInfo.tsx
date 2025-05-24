@@ -79,7 +79,7 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
   ]);
 
   return (
-    <Card className="h-48" elevated>
+    <Card elevated>
       {current ? (
         <View className="p-4 w-full self-center items-center justify-center opacity-80 rounded-xl flex-1">
           <View className="p-3 self-center w-full bg-transparent flex-row items-center justify-center">
