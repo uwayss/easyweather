@@ -27,7 +27,7 @@ const AirQualityCard: React.FC = () => {
 
   if (weatherLoading && !currentAirQuality) {
     return (
-      <Card elevated className="p-4 items-center justify-center min-h-[200px]">
+      <Card elevated className="p-4 items-center justify-center min-h-[220px]">
         <ActivityIndicator color={indicatorColor} />
       </Card>
     );
@@ -35,13 +35,9 @@ const AirQualityCard: React.FC = () => {
 
   if (!currentAirQuality || currentAirQuality.usAqi === undefined) {
     return (
-      <Card elevated className="p-4 items-center justify-center min-h-[200px]">
-        <Icon
-          name="cloud-question-outline"
-          size={40}
-          className="mb-2 opacity-50"
-        />
-        <Text className="opacity-70 text-center">
+      <Card elevated className="p-4 items-center justify-center min-h-[220px]">
+        <Icon name="cloud-question" size={36} className="mb-2 opacity-50" />
+        <Text className="opacity-70 text-center text-xs px-2">
           {t("aqi.title")}: {t("aqi.level.unknown_desc")}
         </Text>
       </Card>
@@ -55,44 +51,40 @@ const AirQualityCard: React.FC = () => {
     value: string;
     iconName: string;
   }> = ({ labelKey, value, iconName }) => (
-    <View className="items-center flex-1 px-2 py-1">
-      <Icon name={iconName} type="material" size={28} color={iconColor} />
-      <Text className="text-xs opacity-80 mt-1.5 text-center" numberOfLines={1}>
-        {t(labelKey)}
-      </Text>
-      <Text
-        className="font-semibold text-base mt-0.5 text-center"
-        numberOfLines={1}
-      >
-        {value}
-      </Text>
+    <View className="items-center flex-1 flex-row gap-4">
+      <Icon name={iconName} type="material" size={26} color={iconColor} />
+      <View className="items-start">
+        <Text className="text-xs opacity-80 mt-1 text-center" numberOfLines={1}>
+          {t(labelKey)}
+        </Text>
+        <Text
+          className="font-semibold text-sm mt-0.5 text-center"
+          numberOfLines={1}
+        >
+          {value}
+        </Text>
+      </View>
     </View>
   );
 
   return (
-    <Card elevated className="p-4">
-      <Text className="text-xl font-semibold mb-3 text-center">
+    <Card elevated className="p-3.5">
+      <Text className="text-lg font-semibold mb-2 text-center">
         {t("aqi.title")}
       </Text>
-
       <AqiGauge
         aqiValue={currentAirQuality.usAqi}
         aqiInfo={aqiInfo}
         maxAqi={301}
+        descriptionKey={aqiInfo.descriptionKey}
       />
-
-      <Text
-        className="text-sm opacity-80 text-center mt-2 mb-4 px-1 leading-relaxed"
-        numberOfLines={3}
-      >
-        {t(aqiInfo.descriptionKey)}
-      </Text>
 
       {(currentAirQuality.pm2_5 !== undefined ||
         currentAirQuality.ozone !== undefined) && (
         <>
-          <View className="h-px bg-light-outline/40 dark:bg-dark-outline/40 my-2" />
-          <View className="flex-row justify-around items-start pt-2">
+          <View className="h-px bg-light-outline/30 dark:bg-dark-outline/30 mt-0.5 mb-2" />
+
+          <View className="flex-row justify-around items-start">
             {currentAirQuality.pm2_5 !== undefined && (
               <DetailItem
                 labelKey="aqi.pm2_5"
@@ -102,13 +94,13 @@ const AirQualityCard: React.FC = () => {
             )}
             {currentAirQuality.pm2_5 !== undefined &&
               currentAirQuality.ozone !== undefined && (
-                <View className="w-px bg-light-outline/40 dark:bg-dark-outline/40 self-stretch mx-1" />
+                <View className="w-px bg-light-outline/30 dark:bg-dark-outline/30 self-stretch mx-1" />
               )}
             {currentAirQuality.ozone !== undefined && (
               <DetailItem
                 labelKey="aqi.ozone"
                 value={formatOzone(currentAirQuality.ozone)}
-                iconName="molecule-ozone"
+                iconName="molecule"
               />
             )}
           </View>
