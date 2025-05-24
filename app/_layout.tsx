@@ -108,12 +108,11 @@ const ThemedAppWithProviders = () => {
         <Stack.Screen name="settings" />
         <Stack.Screen name="details" />
       </Stack>
-      <View style={{ opacity: adLoaded ? 1 : 0, alignSelf: "center" }}>
+      <View style={{ height: !adLoaded ? 0 : undefined, alignSelf: "center" }}>
         <BannerAd
           key={`banner-${adLoadAttempt}`}
           unitId={adUnitId}
           size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-          //size={"0x0"} // TESTING
           onAdLoaded={handleAdLoaded}
           onAdFailedToLoad={handleAdFailedToLoad}
           requestOptions={{ requestNonPersonalizedAdsOnly: true }}
