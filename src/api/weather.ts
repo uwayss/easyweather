@@ -9,7 +9,10 @@ import {
 import { Weather, WeatherResponseAPI } from "../types/weather";
 import { processWeatherData } from "../utils/weatherUtils";
 
-export async function fetchWeather(latitude: number, longitude: number): Promise<Weather> {
+export async function fetchWeather(
+  latitude: number,
+  longitude: number
+): Promise<Weather> {
   const params = new URLSearchParams({
     latitude: latitude.toString(),
     longitude: longitude.toString(),
@@ -18,6 +21,7 @@ export async function fetchWeather(latitude: number, longitude: number): Promise
     daily: WEATHER_API_DAILY_PARAMS,
     timezone: "auto",
     forecast_days: WEATHER_API_DEFAULT_FORECAST_DAYS,
+    past_days: "1",
   });
 
   const response = await fetch(`${WEATHER_API_BASE_URL}?${params}`);

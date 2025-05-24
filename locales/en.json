@@ -120,5 +120,13 @@
   "location.add_current": "Add Current Location",
   "location.saved_toast": "Location Saved.",
   "location.removed_toast": "Location Removed.",
-  "location.no_saved_locations": "No saved locations yet."
+  "location.no_saved_locations": "No saved locations yet.",
+  "summary.today_will_be": "Today will be",
+  "summary.tomorrow_will_be": "Tomorrow will be",
+  "summary.warmer_than": "warmer than",
+  "summary.colder_than": "colder than",
+  "summary.similar_to": "similar to",
+  "summary.yesterday": "yesterday",
+  "summary.today": "today",
+  "summary.no_comparison_data": "Temperature comparison data unavailable."
 }

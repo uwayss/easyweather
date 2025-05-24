@@ -120,5 +120,13 @@
   "location.add_current": "Mevcut Konumu Ekle",
   "location.saved_toast": "Konum Kaydedildi.",
   "location.removed_toast": "Konum Kaldırıldı.",
-  "location.no_saved_locations": "Henüz kaydedilmiş konum yok."
+  "location.no_saved_locations": "Henüz kaydedilmiş konum yok.",
+  "summary.today_will_be": "Bugün hava",
+  "summary.tomorrow_will_be": "Yarın hava",
+  "summary.warmer_than": "dünden daha sıcak olacak",
+  "summary.colder_than": "dünden daha soğuk olacak",
+  "summary.similar_to": "düne benzer olacak",
+  "summary.yesterday": "dün",
+  "summary.today": "bugün",
+  "summary.no_comparison_data": "Sıcaklık karşılaştırma verisi mevcut değil."
 }

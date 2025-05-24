@@ -1,4 +1,4 @@
-// FILE: src\context\WeatherContext.tsx
+// FILE: src/context/WeatherContext.tsx
 import { getAnalytics } from "@react-native-firebase/analytics";
 import React, {
   createContext,
@@ -9,11 +9,15 @@ import React, {
 } from "react";
 
 import { fetchWeather } from "../api/weather";
-import { Weather } from "../types/weather";
+import { DayWeather, Weather } from "../types/weather"; // Weather now might not include yesterday/today/tomorrow directly
+import { ProcessedWeatherData } from "../utils/weatherUtils"; // Import the extended type
 import { useLocationContext } from "./LocationContext";
 
 interface WeatherContextProps {
-  weather: Weather | null;
+  weather: Weather | null; // Standard weather data (current, hourly, daily forecast from today)
+  yesterdaySummary: DayWeather | undefined;
+  todaySummary: DayWeather | undefined;
+  tomorrowSummary: DayWeather | undefined;
   loading: boolean;
   error: string | null;
   fetchWeatherData: (latitude: number, longitude: number) => Promise<void>;
@@ -28,6 +32,16 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [weather, setWeather] = useState<Weather | null>(null);
+  const [yesterdaySummary, setYesterdaySummary] = useState<
+    DayWeather | undefined
+  >(undefined);
+  const [todaySummary, setTodaySummary] = useState<DayWeather | undefined>(
+    undefined
+  );
+  const [tomorrowSummary, setTomorrowSummary] = useState<
+    DayWeather | undefined
+  >(undefined);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { location } = useLocationContext();
@@ -39,8 +53,26 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({
       setLoading(true);
       setError(null);
       try {
-        const data = await fetchWeather(latitude, longitude);
-        setWeather(data);
+        const processedData: ProcessedWeatherData = await fetchWeather(
+          latitude,
+          longitude
+        );
+
+        // Set the main weather data (current, hourly, daily forecast from today)
+        setWeather({
+          current: processedData.current,
+          hourly: processedData.hourly,
+          daily: processedData.daily, // This is already sliced to be from today onwards
+          timezone: processedData.timezone,
+          latitude: processedData.latitude,
+          longitude: processedData.longitude,
+        });
+
+        // Set specific day summaries
+        setYesterdaySummary(processedData.yesterdaySummary);
+        setTodaySummary(processedData.todaySummary);
+        setTomorrowSummary(processedData.tomorrowSummary);
+
         getAnalytics().logEvent("fetch_weather_success", {
           location: location?.displayName || "Unknown",
         });
@@ -69,6 +101,9 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const value: WeatherContextProps = {
     weather,
+    yesterdaySummary,
+    todaySummary,
+    tomorrowSummary,
     loading,
     error: error,
     fetchWeatherData,

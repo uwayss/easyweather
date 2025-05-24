@@ -65,11 +65,11 @@ const UvIndexDetail = ({ uvIndexValue }: { uvIndexValue: number }) => {
           color={uvDetails.color}
           className="mr-1"
         />
-        <Text pop passive>
+        <Text pop passive className="text-center">
           {t("weather.uv_index")}
         </Text>
       </View>
-      <Text pop className="font-semibold">
+      <Text pop className="font-semibold text-center">
         {uvDetails.valueText}
         <Text pop passive className="text-xs">
           {` (${uvDetails.text})`}
@@ -102,11 +102,11 @@ export function Details({ current }: { current: CurrentWeather | undefined }) {
             color={iconColor}
             className="mr-1"
           />
-          <Text pop passive>
+          <Text pop passive className="text-center">
             {t("weather.humidity")}
           </Text>
         </View>
-        <Text pop className="font-semibold">
+        <Text pop className="font-semibold text-center">
           {current?.humidity !== undefined ? `${current.humidity}%` : "--"}
         </Text>
       </View>
@@ -120,11 +120,11 @@ export function Details({ current }: { current: CurrentWeather | undefined }) {
             color={iconColor}
             className="mr-1"
           />
-          <Text pop passive>
+          <Text pop passive className="text-center">
             {t("weather.wind_speed")}
           </Text>
         </View>
-        <Text pop className="font-semibold">
+        <Text pop className="font-semibold text-center">
           {current?.windSpeed !== undefined
             ? formatWindSpeed(
                 convertWindSpeed(current.windSpeed, settings.useImperialUnits),
@@ -146,11 +146,11 @@ export function Details({ current }: { current: CurrentWeather | undefined }) {
               color={iconColor}
               className="mr-1"
             />
-            <Text pop passive>
+            <Text pop passive className="text-center">
               {t("weather.uv_index")}
             </Text>
           </View>
-          <Text pop className="font-semibold">
+          <Text pop className="font-semibold text-center">
             --
           </Text>
         </View>

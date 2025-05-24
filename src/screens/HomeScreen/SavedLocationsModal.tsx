@@ -7,7 +7,7 @@ import {
   useLocationContext,
 } from "@/src/context/LocationContext";
 import { useColorScheme } from "nativewind";
-import React, { useEffect, useRef, useState } from "react"; // Added useState
+import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Animated,
@@ -40,11 +40,11 @@ const SavedLocationsModal: React.FC<SavedLocationsModalProps> = ({
   const { t } = useTranslation();
   const { colorScheme } = useColorScheme();
   const animatedValue = useRef(new Animated.Value(0)).current;
-  const [modalRendered, setModalRendered] = useState(false); // State to control rendering
+  const [modalRendered, setModalRendered] = useState(false);
 
   useEffect(() => {
     if (visible) {
-      setModalRendered(true); // Make it rendered before animating in
+      setModalRendered(true);
       Animated.timing(animatedValue, {
         toValue: 1,
         duration: 250,
@@ -56,7 +56,7 @@ const SavedLocationsModal: React.FC<SavedLocationsModalProps> = ({
         duration: 200,
         useNativeDriver: true,
       }).start(() => {
-        setModalRendered(false); // Unrender after animating out
+        setModalRendered(false);
       });
     }
 
@@ -88,13 +88,13 @@ const SavedLocationsModal: React.FC<SavedLocationsModalProps> = ({
       {
         scale: animatedValue.interpolate({
           inputRange: [0, 1],
-          outputRange: [0.9, 1],
+          outputRange: [0.95, 1],
         }),
       },
       {
         translateY: animatedValue.interpolate({
-          inputRange: [0, 0.5, 1],
-          outputRange: [50, 20, 0],
+          inputRange: [0, 1],
+          outputRange: [20, 0],
         }),
       },
     ],
@@ -167,7 +167,11 @@ const SavedLocationsModal: React.FC<SavedLocationsModalProps> = ({
         <Animated.View
           style={[styles.modalContentContainer, modalAnimatedStyle]}
         >
-          <Card elevated className="overflow-hidden max-h-[75vh] w-full">
+          <Card
+            elevated
+            className="overflow-hidden max-h-[75vh] w-full bg-light-surface dark:bg-dark-surface"
+            borderType="default"
+          >
             <View className="flex-row items-center justify-between p-4 border-b border-light-outline dark:border-dark-outline">
               <Text className="text-xl font-semibold">
                 {t("location.saved_locations")}
@@ -225,7 +229,7 @@ const SavedLocationsModal: React.FC<SavedLocationsModalProps> = ({
 const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.9)",
+    backgroundColor: "rgba(0,0,0,0.35)",
   },
   centeredView: {
     flex: 1,
