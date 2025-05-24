@@ -1,6 +1,7 @@
 // FILE: src/screens/HomeScreen/AqiGauge.tsx
 import Text from "@/src/components/Common/Text";
 import { AqiLevelInfo } from "@/src/utils/aqiUtils";
+import { t } from "i18next";
 import React from "react";
 import { View } from "react-native";
 
@@ -8,6 +9,7 @@ interface AqiGaugeProps {
   aqiValue?: number;
   aqiInfo: AqiLevelInfo;
   maxAqi?: number;
+  descriptionKey?: string;
 }
 
 const AQI_LEVELS_ORDERED = [
@@ -23,6 +25,7 @@ const AqiGauge: React.FC<AqiGaugeProps> = ({
   aqiValue,
   aqiInfo,
   maxAqi = 301,
+  descriptionKey,
 }) => {
   const validAqiValue =
     aqiValue !== undefined && aqiValue !== null && !isNaN(aqiValue)
@@ -79,16 +82,18 @@ const AqiGauge: React.FC<AqiGaugeProps> = ({
         )}
       </View>
 
-      <View className="mt-2.5 items-center">
-        <Text className="text-5xl font-bold" style={{ color: aqiInfo.color }}>
-          {validAqiValue >= 0 ? Math.round(validAqiValue) : "--"}
-        </Text>
-        <Text
-          className="text-base font-medium mt-0.5"
-          style={{ color: aqiInfo.color }}
-        >
-          {aqiInfo.level}
-        </Text>
+      <View className="mt-2.5 w-full px-3 gap-2">
+        <View className="gap-0.5 items-center">
+          <Text className="text-4xl font-bold">
+            {validAqiValue >= 0 ? Math.round(validAqiValue) : "--"}
+          </Text>
+          <Text className="text-base font-medium">{aqiInfo.level}</Text>
+        </View>
+        <View className="flex-1 mt-0.5">
+          <Text className="text-xs opacity-75 leading-snug text-wrap text-center">
+            {t(aqiInfo.descriptionKey)}
+          </Text>
+        </View>
       </View>
     </View>
   );
