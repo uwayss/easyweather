@@ -1,67 +1,88 @@
-# Project Title: My Awesome App
+# EasyWeather
 
-## Description
-This is a brief description of My Awesome App. It's designed to solve [problem] by [solution]. This application helps users to [user benefits].
+EasyWeather is a mobile weather application built with React Native and Expo. It provides current weather information, hourly and daily forecasts, and air quality data. Users can search for locations and save their favorite ones.
 
 ## Features
-- **Feature 1:** Description of feature 1.
-- **Feature 2:** Description of feature 2.
-- **Feature 3:** Description of feature 3.
-- **User Authentication:** Secure user login and registration.
-- **Responsive Design:** Works seamlessly on desktop and mobile devices.
+
+- Current weather conditions (temperature, humidity, wind speed, etc.)
+- Hourly and daily weather forecasts
+- Air quality index (AQI) display
+- Location search functionality
+- Ability to save and manage favorite locations
+- Dynamic backgrounds based on weather conditions
+- Customizable units (metric/imperial)
+- Multi-language support (English, Arabic, Turkish)
 
 ## Technologies Used
-- **Frontend:** React, Redux, HTML5, CSS3
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB
-- **Testing:** Jest, Enzyme
-- **Version Control:** Git
 
-## How to Run the App
-To run the app locally, follow these steps:
+- React Native
+- Expo
+- TypeScript
+- Tailwind CSS
+- i18next for internationalization
+- Expo Router for navigation
+- Open-Meteo API for weather data
+- Geolocation API for location services
 
-1. **Clone the repository:**
+## Getting Started
+
+### Prerequisites
+
+- Node.js (LTS version recommended)
+- npm (comes with Node.js) or Yarn
+- Expo CLI: `npm install -g expo-cli`
+
+### Installation
+
+1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/my-awesome-app.git
-   cd my-awesome-app
+   git clone https://github.com/your-username/easyweather.git
+   cd easyweather
    ```
-2. **Install dependencies:**
+2. Install dependencies:
    ```bash
    npm install
    ```
-3. **Set up environment variables:**
-   Create a `.env` file in the root directory and add the following:
-   ```
-   PORT=3000
-   MONGODB_URI=your_mongodb_connection_string
-   SECRET_KEY=your_secret_key
-   ```
-4. **Run the development server:**
-   ```bash
-   npm start
-   ```
-   The app will be available at `http://localhost:3000`.
 
-## How to Contribute
-We welcome contributions to My Awesome App! To contribute, please follow these steps:
+### Running the App
 
-1. **Fork the repository.**
-2. **Create a new branch:**
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-3. **Make your changes.**
-4. **Commit your changes:**
-   ```bash
-   git commit -m "Add your commit message"
-   ```
-5. **Push to the branch:**
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-6. **Create a Pull Request** on GitHub.
+- To start the development server:
+  ```bash
+  npx expo start
+  ```
+  This will provide options to open the app in an Android emulator, iOS simulator, or the Expo Go app.
 
-Please ensure your code follows our coding standards and includes tests for any new features or bug fixes.
----
+- To run directly on an Android emulator/device:
+  ```bash
+  npm run android
+  ```
 
-Thank you for using and contributing to My Awesome App!
+- To run directly on an iOS simulator/device (macOS only):
+  ```bash
+  npm run ios
+  ```
+
+## Project Structure
+
+- **/app**: Contains the screen components and navigation setup using Expo Router.
+- **/src**: Core application logic, including API services, components, contexts, hooks, utility functions, and type definitions.
+- **/assets**: Static assets like images, fonts, and background images.
+- **/locales**: JSON files for internationalization (i18n) support.
+- **/services**: Contains API service configurations (e.g., i18next setup).
+- **/scripts**: Utility scripts for development and build processes.
+
+## Contributing
+
+Contributions are welcome! If you'd like to contribute, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/your-feature-name`).
+3. Make your changes and commit them (`git commit -m 'Add some feature'`).
+4. Push to the branch (`git push origin feature/your-feature-name`).
+5. Open a Pull Request.
+
+Please ensure your code adheres to the existing coding style and includes tests where applicable.
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
