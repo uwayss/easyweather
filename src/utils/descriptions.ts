@@ -1,5 +1,5 @@
 // FILE: src/utils/descriptions.ts
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 interface weatherDescriptionsType {
@@ -9,60 +9,42 @@ interface weatherDescriptionsType {
   };
 }
 
-// --- And this one (if separate) ---
-// Type definitions for the structured weather descriptions
 export interface WeatherDescriptionInfo {
   description: string;
   image: number;
   translationKey: string;
 }
 
-// import { ImageSourcePropType } from "react-native";
-
-// This function returns the weather descriptions with translated text
 export function useWeatherDescriptions() {
   const { t } = useTranslation();
 
   const getTranslatedDescriptions = useCallback(() => {
-    const translatedDescriptions: weatherDescriptionsType = {};
+    const translatedDescriptionsResult: weatherDescriptionsType = {};
 
-    Object.keys(weatherDescriptions).forEach((code) => {
-      const numericCode = Number(code);
-      if (weatherDescriptions[numericCode]) {
-        translatedDescriptions[numericCode] = {
+    Object.keys(weatherDescriptions).forEach((codeStr) => {
+      const numericCode = Number(codeStr);
+      const baseDescription = weatherDescriptions[numericCode];
+
+      if (baseDescription) {
+        translatedDescriptionsResult[numericCode] = {
           day: {
-            ...weatherDescriptions[numericCode].day,
-            description: t(weatherDescriptions[numericCode].day.translationKey),
+            ...baseDescription.day,
+            description: t(baseDescription.day.translationKey),
           },
           night: {
-            ...weatherDescriptions[numericCode].night,
-            description: t(
-              weatherDescriptions[numericCode].night.translationKey
-            ),
-          },
-        };
-      } else {
-        console.warn(`Weather description missing for code: ${numericCode}`);
-
-        translatedDescriptions[numericCode] = {
-          day: {
-            description: "Unknown",
-            image: require("../../assets/conditions/cloudy.webp"),
-            translationKey: "",
-          },
-          night: {
-            description: "Unknown",
-            image: require("../../assets/conditions/cloudy.webp"),
-            translationKey: "",
+            ...baseDescription.night,
+            description: t(baseDescription.night.translationKey),
           },
         };
       }
     });
-
-    return translatedDescriptions;
+    return translatedDescriptionsResult;
   }, [t]);
 
-  return getTranslatedDescriptions();
+  return useMemo(
+    () => getTranslatedDescriptions(),
+    [getTranslatedDescriptions]
+  );
 }
 
 const weatherDescriptions: weatherDescriptionsType = {
@@ -408,5 +390,4 @@ const weatherDescriptions: weatherDescriptionsType = {
     },
   },
 };
-// Default export remains the same
 export default weatherDescriptions;
