@@ -1,7 +1,7 @@
 import { useColorScheme } from "nativewind";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import Card from "../../../components/Common/Card";
 import Text from "../../../components/Common/Text";
@@ -41,11 +41,6 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
   const description = current
     ? translatedDescriptions[current.weatherCode]?.[timeOfDay].description
     : null;
-
-  const indicatorColor =
-    colorScheme === "dark"
-      ? THEME_COLORS_DARK.primary
-      : THEME_COLORS_LIGHT.primary;
 
   const isCurrentLocSaved = isLocationSaved(location);
   const canBeSaved =
@@ -122,9 +117,7 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
           </Text>
         </View>
       ) : (
-        <View className="flex-1 items-center justify-center min-h-[180px]">
-          <ActivityIndicator color={indicatorColor} />
-        </View>
+        <View className="flex-1 items-center justify-center min-h-[180px]" />
       )}
     </Card>
   );

@@ -1,16 +1,20 @@
-// FILE: src/screens/HomeScreen/NextDays/ForecastList.tsx
 import React from "react";
-import { FlatList, ScrollView } from "react-native";
+import { FlatList } from "react-native";
 
 import Card from "../../../components/Common/Card";
 import { useWeather } from "../../../context/WeatherContext";
 import { DayWeather } from "../../../types/weather";
-import EmptyForecastList from "./EmptyForecastList";
 import ForecastItem from "./ForecastItem";
+import ForecastListSkeleton from "./ForecastListSkeleton";
 
 export default function ForecastList() {
-  const { weather } = useWeather();
+  const { weather, loading } = useWeather();
   const dailyWeather = weather?.daily;
+
+  if (loading && !dailyWeather) {
+    return <ForecastListSkeleton />;
+  }
+
   return (
     <Card borderType="hidden">
       {dailyWeather ? (
@@ -32,9 +36,7 @@ export default function ForecastList() {
           showsHorizontalScrollIndicator={false}
         />
       ) : (
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <EmptyForecastList />
-        </ScrollView>
+        <ForecastListSkeleton />
       )}
     </Card>
   );
