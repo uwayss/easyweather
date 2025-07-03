@@ -13,14 +13,13 @@ import {
 import { useLocationContext } from "../../../context/LocationContext";
 import { useSettings } from "../../../context/SettingsContext";
 import { CurrentWeather } from "../../../types/weather";
-import { useWeatherDescriptions } from "../../../utils/descriptions";
 import {
   convertTemperature,
   formatTemperature,
 } from "../../../utils/unitConversion";
 
 export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
-  const { settings } = useSettings();
+  const { settings, translatedWeatherDescriptions } = useSettings();
   const { t } = useTranslation();
   const {
     location,
@@ -30,7 +29,6 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
   } = useLocationContext();
   const { colorScheme } = useColorScheme();
   const timeOfDay = current?.isDay ? "day" : "night";
-  const translatedDescriptions = useWeatherDescriptions();
 
   const name = location
     ? location.displayName
@@ -39,7 +37,8 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
     : t("weather.unknown_location");
 
   const description = current
-    ? translatedDescriptions[current.weatherCode]?.[timeOfDay].description
+    ? translatedWeatherDescriptions[current.weatherCode]?.[timeOfDay]
+        .description
     : null;
 
   const isCurrentLocSaved = isLocationSaved(location);

@@ -37,10 +37,7 @@ export default function DayDetailsScreen() {
 
   if (!dayData) {
     return (
-      <View
-        // edges={["top", "left", "right", "bottom"]}
-        className="flex-1 bg-light-background dark:bg-dark-background items-center justify-center"
-      >
+      <View className="flex-1 bg-light-background dark:bg-dark-background items-center justify-center">
         <Text className="text-light-onSurface dark:text-dark-onSurface">
           Error: Weather data not found.
         </Text>
@@ -55,10 +52,7 @@ export default function DayDetailsScreen() {
   }
 
   return (
-    <View
-      // edges={["top", "left", "right", "bottom"]}
-      className="flex-1 bg-light-background dark:bg-dark-background"
-    >
+    <View className="flex-1 bg-light-background dark:bg-dark-background">
       <View className={`flex-row items-center h-14 px-2 shadow-sm ${headerBg}`}>
         <TouchableOpacity
           onPress={() => router.back()}

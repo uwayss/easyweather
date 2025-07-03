@@ -1,5 +1,4 @@
 /* eslint-disable import/no-named-as-default-member */
-// FILE: src/context/SettingsContext.tsx
 import i18next from "i18next";
 import React, {
   createContext,
@@ -21,7 +20,10 @@ import {
   MMKV_SETTINGS_INSTANCE_ID,
   STORAGE_KEY_APP_SETTINGS,
 } from "../constants/storage";
-
+import {
+  baseWeatherDescriptions,
+  WeatherDescriptionsType,
+} from "../utils/descriptions";
 export type ThemePreference = "system" | "light" | "dark";
 
 export interface AppSettings {
@@ -37,6 +39,7 @@ interface SettingsContextProps {
     value: AppSettings[K]
   ) => void;
   activeTheme: "light" | "dark";
+  translatedWeatherDescriptions: WeatherDescriptionsType;
 }
 
 const storage = new MMKV({ id: MMKV_SETTINGS_INSTANCE_ID });
@@ -89,23 +92,40 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({
     }
 
     if (i18next.language !== loadedSettings.language) {
-      console.log(
-        `[SettingsContext] Initializing language to: ${loadedSettings.language}`
-      );
       i18next.changeLanguage(loadedSettings.language);
     }
 
     return loadedSettings;
   });
 
+  const [translatedWeatherDescriptions, setTranslatedWeatherDescriptions] =
+    useState<WeatherDescriptionsType>(baseWeatherDescriptions);
+
+  useEffect(() => {
+    const newDescriptions: WeatherDescriptionsType = {};
+    for (const codeStr in baseWeatherDescriptions) {
+      const code = Number(codeStr);
+      const baseDesc = baseWeatherDescriptions[code];
+      if (baseDesc) {
+        newDescriptions[code] = {
+          day: {
+            ...baseDesc.day,
+            description: i18next.t(baseDesc.day.translationKey),
+          },
+          night: {
+            ...baseDesc.night,
+            description: i18next.t(baseDesc.night.translationKey),
+          },
+        };
+      }
+    }
+    setTranslatedWeatherDescriptions(newDescriptions);
+  }, [settings.language]);
+
   useEffect(() => {
     storage.set(STORAGE_KEY_APP_SETTINGS, JSON.stringify(settings));
-    console.log("[SettingsContext] Settings saved:", settings);
 
     if (settings.language !== i18next.language) {
-      console.log(
-        `[SettingsContext] Language changed in settings, updating i18next to: ${settings.language}`
-      );
       i18next.changeLanguage(settings.language);
     }
   }, [settings]);
@@ -114,30 +134,19 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({
     key: K,
     value: AppSettings[K]
   ) => {
-    setSettings((prevSettings) => {
-      console.log(`[SettingsContext] Updating setting ${key} to ${value}`);
-      return { ...prevSettings, [key]: value };
-    });
+    setSettings((prevSettings) => ({ ...prevSettings, [key]: value }));
   };
 
   const activeTheme = useMemo((): "light" | "dark" => {
     const { theme } = settings;
-    if (theme === "system") {
-      const determinedTheme = systemColorScheme ?? "light";
-      console.log(
-        `[SettingsContext] System theme selected. Detected: ${systemColorScheme}. Using: ${determinedTheme}`
-      );
-      return determinedTheme;
-    } else {
-      console.log(`[SettingsContext] Manual theme selected: ${theme}`);
-      return theme;
-    }
+    return theme === "system" ? systemColorScheme ?? "light" : theme;
   }, [systemColorScheme, settings]);
 
   const value: SettingsContextProps = {
     settings,
     updateSetting,
     activeTheme,
+    translatedWeatherDescriptions,
   };
 
   return (

@@ -36,9 +36,6 @@ const ThemedAppWithProviders = () => {
 
   useEffect(() => {
     if (currentNativeWindTheme !== themeToApply) {
-      console.log(
-        `[Theme] Applying theme via NativeWind: ${themeToApply}. (System: ${systemColorScheme}, Setting: ${settings.theme})`
-      );
       setNativeWindTheme(themeToApply);
     }
   }, [

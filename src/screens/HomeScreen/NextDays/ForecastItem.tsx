@@ -1,4 +1,3 @@
-// FILE: src/screens/HomeScreen/NextDays/ForecastItem.tsx
 import { getAnalytics } from "@react-native-firebase/analytics";
 import { Image as ExpoImage } from "expo-image";
 import { useRouter } from "expo-router";
@@ -11,7 +10,6 @@ import Text from "../../../components/Common/Text";
 import { useSettings } from "../../../context/SettingsContext";
 import { useWeather } from "../../../context/WeatherContext";
 import { DayWeather } from "../../../types/weather";
-import { useWeatherDescriptions } from "../../../utils/descriptions";
 import {
   convertTemperature,
   formatTemperature,
@@ -27,10 +25,9 @@ const ForecastItem = React.memo(function ForecastItem({
   item,
   index,
 }: ForecastItemProps) {
-  const { settings } = useSettings();
+  const { settings, translatedWeatherDescriptions } = useSettings();
   const { t, i18n } = useTranslation();
   const router = useRouter();
-  const translatedDescriptions = useWeatherDescriptions();
   const { weather } = useWeather();
   const hourlyWeather = weather?.hourly;
 
@@ -52,7 +49,7 @@ const ForecastItem = React.memo(function ForecastItem({
         dayNameStr = date.toLocaleDateString(locale, { weekday: "long" });
       }
 
-      const desc = translatedDescriptions[item.weatherCode]?.day;
+      const desc = translatedWeatherDescriptions[item.weatherCode]?.day;
       const maxT = formatTemperature(
         convertTemperature(item.maxTemp, settings.useImperialUnits),
         settings.useImperialUnits
@@ -73,7 +70,7 @@ const ForecastItem = React.memo(function ForecastItem({
       index,
       t,
       i18n.language,
-      translatedDescriptions,
+      translatedWeatherDescriptions,
       settings.useImperialUnits,
     ]);
 
