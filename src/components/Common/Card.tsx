@@ -1,4 +1,3 @@
-// FILE: src/components/Common/Card.tsx
 import { Image as ExpoImage, ImageSource } from "expo-image";
 import React from "react";
 import { StyleSheet, View, ViewProps } from "react-native";
@@ -40,6 +39,7 @@ export default function Card({
           source={background}
           style={StyleSheet.absoluteFill}
           contentFit="cover"
+          transition={600}
         />
         <View className={className} style={{ flex: 1 }}>
           {children}

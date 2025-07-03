@@ -1,4 +1,3 @@
-// FILE: src/screens/HomeScreen/SearchRow.tsx
 import { useRouter } from "expo-router";
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
@@ -6,24 +5,22 @@ import { TouchableOpacity, View } from "react-native";
 import Icon from "../../components/Icon";
 import { LocationSearch } from "./LocationSearch";
 
-interface SearchRowProps {
-  onSavedLocationsPress: () => void;
-}
-
-const SearchRowComponent: React.FC<SearchRowProps> = ({
-  onSavedLocationsPress,
-}) => {
+const SearchRowComponent: React.FC = () => {
   const router = useRouter();
 
   const navigateToSettings = () => {
     router.push("/settings");
   };
 
+  const navigateToLocations = () => {
+    router.push("/locations");
+  };
+
   return (
     <View className="flex-row items-center">
       <LocationSearch />
-      <TouchableOpacity onPress={onSavedLocationsPress} className="p-2 ml-2">
-        <Icon name="playlist-star" size={26} />
+      <TouchableOpacity onPress={navigateToLocations} className="p-2 ml-2">
+        <Icon name="bookmark-multiple-outline" size={26} />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={navigateToSettings}
