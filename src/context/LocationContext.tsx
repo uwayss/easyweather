@@ -1,4 +1,3 @@
-// FILE: src/context/LocationContext.tsx
 import { getAnalytics } from "@react-native-firebase/analytics";
 import * as LocationExpo from "expo-location";
 import React, {
@@ -29,11 +28,11 @@ export interface Location {
 }
 
 export interface SavedLocation extends Location {
-  id: string; // Unique ID, e.g., `${latitude}_${longitude}`
+  id: string;
 }
 
 interface LocationContextProps {
-  location: Location | null; // Currently active location
+  location: Location | null;
   savedLocations: SavedLocation[];
   loading: boolean;
   error: string | null;
@@ -88,7 +87,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
   const setActiveLocation = (newLocation: Location) => {
     setLocation(newLocation);
     storage.set(STORAGE_KEY_LOCATION, JSON.stringify(newLocation));
-    setError(null); // Clear error when a new location is set
+    setError(null);
     getAnalytics().logEvent("set_active_location", {
       name: newLocation.displayName,
     });
@@ -97,7 +96,6 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
   const addSavedLocation = (locationToSave: Location) => {
     const newId = `${locationToSave.latitude}_${locationToSave.longitude}`;
     if (savedLocations.some((loc) => loc.id === newId)) {
-      // Already saved
       return;
     }
     const newSavedLocation: SavedLocation = { ...locationToSave, id: newId };
@@ -114,6 +112,9 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const removeSavedLocation = (locationId: string) => {
+    const isRemovingActive =
+      location && `${location.latitude}_${location.longitude}` === locationId;
+
     const updatedSavedLocations = savedLocations.filter(
       (loc) => loc.id !== locationId
     );
@@ -123,6 +124,16 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
       JSON.stringify(updatedSavedLocations)
     );
     Toast.show({ type: "info", text1: t("location.removed_toast") });
+
+    if (isRemovingActive) {
+      if (updatedSavedLocations.length > 0) {
+        setActiveLocation(updatedSavedLocations[0]);
+      } else {
+        setLocation(null);
+        storage.delete(STORAGE_KEY_LOCATION);
+      }
+    }
+
     const removedLocation = savedLocations.find((l) => l.id === locationId);
     if (removedLocation) {
       getAnalytics().logEvent("remove_saved_location", {
@@ -139,16 +150,13 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
 
   const fetchInitialLocation = useCallback(async () => {
     if (location !== null) {
-      // If active location is already set (e.g. from storage)
       return;
     }
     if (savedLocations.length > 0) {
-      // If no active, but saved locations exist, set first as active
       setActiveLocation(savedLocations[0]);
       return;
     }
 
-    // If no active and no saved, fetch by IP
     setLoading(true);
     setError(null);
     try {
@@ -172,14 +180,13 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
     } finally {
       setLoading(false);
     }
-  }, [location, savedLocations]); // Added savedLocations dependency
+  }, [location, savedLocations]);
 
   useEffect(() => {
     fetchInitialLocation();
   }, [fetchInitialLocation]);
 
   const getCurrentLocation = async () => {
-    // Fetches GPS location
     setLoading(true);
     setError(null);
     try {
@@ -192,7 +199,6 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
       const position = await LocationExpo.getCurrentPositionAsync({});
       getAnalytics().logEvent("request_gps_location_success");
       setActiveLocation({
-        // Use setActiveLocation
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
         displayName: t("weather.current_location"),

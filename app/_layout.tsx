@@ -1,4 +1,3 @@
-// FILE: app/_layout.tsx
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useColorScheme as useColorSchemeNW } from "nativewind";
@@ -74,6 +73,7 @@ const ThemedAppWithProviders = () => {
         <Stack.Screen name="index" />
         <Stack.Screen name="settings" />
         <Stack.Screen name="details" />
+        <Stack.Screen name="locations" />
       </Stack>
       <StatusBar />
     </SafeAreaView>
