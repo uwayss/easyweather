@@ -48,6 +48,14 @@ export default ({ config }) => {
         versionCode: versionCode,
         compileSdkVersion: 35,
         targetSdkVersion: 35,
+        networkSecurityConfig: {
+          "domain-config": [
+            {
+              cleartextTrafficPermitted: true,
+              domain: "ip-api.com",
+            },
+          ],
+        },
       },
       web: {
         bundler: "metro",

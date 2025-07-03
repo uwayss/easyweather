@@ -1,4 +1,3 @@
-// FILE: src/screens/HomeScreen/WeatherCard/MainInfo.tsx
 import { useColorScheme } from "nativewind";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -12,16 +11,13 @@ import {
   THEME_COLORS_LIGHT,
 } from "../../../constants/colors";
 import { useLocationContext } from "../../../context/LocationContext";
-import {
-  useSettings, // No longer need useWeather or generateWeatherSummaryLabel here
-} from "../../../context/SettingsContext";
+import { useSettings } from "../../../context/SettingsContext";
 import { CurrentWeather } from "../../../types/weather";
 import { useWeatherDescriptions } from "../../../utils/descriptions";
 import {
   convertTemperature,
   formatTemperature,
 } from "../../../utils/unitConversion";
-// Removed generateWeatherSummaryLabel and AnimatedWeatherSummary imports
 
 export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
   const { settings } = useSettings();
@@ -32,7 +28,6 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
     addSavedLocation,
     isLocationSaved,
   } = useLocationContext();
-  // Removed: const { yesterdaySummary, todaySummary, tomorrowSummary } = useWeather();
   const { colorScheme } = useColorScheme();
   const timeOfDay = current?.isDay ? "day" : "night";
   const translatedDescriptions = useWeatherDescriptions();
@@ -65,12 +60,10 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
     }
   };
 
-  // Removed weatherSummaryLabel calculation
-
   return (
-    <Card elevated>
+    <Card elevated className="flex-1">
       {current ? (
-        <View className="p-4 w-full self-center items-center justify-center rounded-xl flex-1">
+        <View className="p-4 w-full items-center justify-center flex-1">
           <View className="p-3 self-center w-full bg-transparent flex-row items-center justify-center">
             <Text
               numberOfLines={1}
@@ -127,11 +120,9 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
               settings.useImperialUnits
             ).replace(/°[CF]$/, "")}
           </Text>
-
-          {/* AnimatedWeatherSummary is no longer rendered here */}
         </View>
       ) : (
-        <View className="self-center items-center justify-center min-h-[180px]">
+        <View className="flex-1 items-center justify-center min-h-[180px]">
           <ActivityIndicator color={indicatorColor} />
         </View>
       )}
