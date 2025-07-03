@@ -1,16 +1,16 @@
-// FILE: src/screens/HomeScreen/WeatherCard.tsx
-import React from "react"; // Added React import for useMemo
+import React from "react";
 import Card from "../../components/Common/Card";
-import { useSettings } from "../../context/SettingsContext"; // Import useSettings
+import { useSettings } from "../../context/SettingsContext";
 import { useWeather } from "../../context/WeatherContext";
 import backgroundMappings from "../../utils/backgroundMappings";
-import { generateWeatherSummaryLabel } from "../../utils/weatherSummaryUtils"; // Import util
-import AnimatedWeatherSummary from "./WeatherCard/AnimatedWeatherSummary"; // Import component
+import { generateWeatherSummaryLabel } from "../../utils/weatherSummaryUtils";
+import AnimatedWeatherSummary from "./WeatherCard/AnimatedWeatherSummary";
 import { MainInfo } from "./WeatherCard/MainInfo";
+import WeatherCardSkeleton from "./WeatherCard/WeatherCardSkeleton";
 import { Details } from "./WeatherCard/WeatherDetails";
 
 export default function WeatherCard() {
-  const { weather, yesterdaySummary, todaySummary, tomorrowSummary } =
+  const { weather, yesterdaySummary, todaySummary, tomorrowSummary, loading } =
     useWeather();
   const { settings } = useSettings();
   const currentWeather = weather?.current;
@@ -29,9 +29,13 @@ export default function WeatherCard() {
     settings.useImperialUnits,
   ]);
 
+  if (loading && !weather) {
+    return <WeatherCardSkeleton />;
+  }
+
   return (
     <Card
-      className="flex-1 p-4 justify-around" // Main card still handles overall padding and layout
+      className="flex-1 p-4 justify-around"
       elevated
       background={
         currentWeather

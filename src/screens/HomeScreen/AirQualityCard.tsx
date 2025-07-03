@@ -1,4 +1,3 @@
-// FILE: src/screens/HomeScreen/AirQualityCard.tsx
 import Card from "@/src/components/Common/Card";
 import Text from "@/src/components/Common/Text";
 import Icon from "@/src/components/Icon";
@@ -8,7 +7,8 @@ import { formatOzone, formatPm25, getUsAqiInfo } from "@/src/utils/aqiUtils";
 import { useColorScheme } from "nativewind";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { ActivityIndicator, View } from "react-native";
+import { View } from "react-native";
+import AirQualityCardSkeleton from "./AirQualityCardSkeleton";
 import AqiGauge from "./AqiGauge";
 
 const AirQualityCard: React.FC = () => {
@@ -20,17 +20,9 @@ const AirQualityCard: React.FC = () => {
     colorScheme === "dark"
       ? THEME_COLORS_DARK.onSurfaceVariant
       : THEME_COLORS_LIGHT.onSurfaceVariant;
-  const indicatorColor =
-    colorScheme === "dark"
-      ? THEME_COLORS_DARK.primary
-      : THEME_COLORS_LIGHT.primary;
 
   if (weatherLoading && !currentAirQuality) {
-    return (
-      <Card elevated className="p-4 items-center justify-center min-h-[220px]">
-        <ActivityIndicator color={indicatorColor} />
-      </Card>
-    );
+    return <AirQualityCardSkeleton />;
   }
 
   if (!currentAirQuality || currentAirQuality.usAqi === undefined) {

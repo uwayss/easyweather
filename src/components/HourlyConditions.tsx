@@ -1,4 +1,3 @@
-// FILE: src/components/HourlyConditions.tsx
 import { Image as ExpoImage } from "expo-image";
 import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -14,6 +13,7 @@ import {
 } from "../constants/ui";
 import { useSettings } from "../context/SettingsContext";
 import { useWeather } from "../context/WeatherContext";
+import HourlyConditionsSkeleton from "../screens/HomeScreen/HourlyConditionsSkeleton";
 import { HourWeather } from "../types/weather";
 import { useWeatherDescriptions } from "../utils/descriptions";
 import {
@@ -27,7 +27,6 @@ import Divider from "./Common/Divider";
 import Text from "./Common/Text";
 import LineChart from "./Graph/LineChart";
 import MetricSelector from "./Graph/MetricSelector";
-import PlaceholderCard from "./PlaceholderCard";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -36,7 +35,7 @@ export default function HourlyConditions({
 }: {
   selectedHoursData?: HourWeather[];
 }) {
-  const { weather } = useWeather();
+  const { weather, loading } = useWeather();
   const hourlyWeather = weather?.hourly;
 
   const getHourlyData = useCallback(() => {
@@ -88,6 +87,10 @@ export default function HourlyConditions({
     HOURLY_CONDITIONS_CHART_HEIGHT +
     HOURLY_CONDITIONS_DETAILS_ROW_HEIGHT +
     10;
+
+  if (loading && !hourlyWeather) {
+    return <HourlyConditionsSkeleton />;
+  }
 
   const chartColor = graphData?.[0]?.color || theme.primary;
   return (
@@ -191,7 +194,7 @@ export default function HourlyConditions({
               { minHeight: chartAreaMinHeight },
             ]}
           >
-            <PlaceholderCard withoutContainer />
+            <HourlyConditionsSkeleton />
           </View>
         )}
       </View>
