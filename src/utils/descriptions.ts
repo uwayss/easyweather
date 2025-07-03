@@ -1,53 +1,10 @@
-// FILE: src/utils/descriptions.ts
-import { useCallback, useMemo } from "react";
-import { useTranslation } from "react-i18next";
-
-interface weatherDescriptionsType {
+export interface WeatherDescriptionsType {
   [code: number]: {
     day: { description: string; image: number; translationKey: string };
     night: { description: string; image: number; translationKey: string };
   };
 }
-
-export interface WeatherDescriptionInfo {
-  description: string;
-  image: number;
-  translationKey: string;
-}
-
-export function useWeatherDescriptions() {
-  const { t } = useTranslation();
-
-  const getTranslatedDescriptions = useCallback(() => {
-    const translatedDescriptionsResult: weatherDescriptionsType = {};
-
-    Object.keys(weatherDescriptions).forEach((codeStr) => {
-      const numericCode = Number(codeStr);
-      const baseDescription = weatherDescriptions[numericCode];
-
-      if (baseDescription) {
-        translatedDescriptionsResult[numericCode] = {
-          day: {
-            ...baseDescription.day,
-            description: t(baseDescription.day.translationKey),
-          },
-          night: {
-            ...baseDescription.night,
-            description: t(baseDescription.night.translationKey),
-          },
-        };
-      }
-    });
-    return translatedDescriptionsResult;
-  }, [t]);
-
-  return useMemo(
-    () => getTranslatedDescriptions(),
-    [getTranslatedDescriptions]
-  );
-}
-
-const weatherDescriptions: weatherDescriptionsType = {
+export const baseWeatherDescriptions: WeatherDescriptionsType = {
   0: {
     day: {
       description: "Sunny",
@@ -180,7 +137,6 @@ const weatherDescriptions: weatherDescriptionsType = {
       image: require("../../assets/conditions/heavy_drizzle.webp"),
     },
   },
-
   61: {
     day: {
       description: "Light Rain",
@@ -241,7 +197,6 @@ const weatherDescriptions: weatherDescriptionsType = {
       image: require("../../assets/conditions/heavy_drizzle.webp"),
     },
   },
-
   71: {
     day: {
       description: "Light Snow",
@@ -290,7 +245,6 @@ const weatherDescriptions: weatherDescriptionsType = {
       image: require("../../assets/conditions/g1800.webp"),
     },
   },
-
   80: {
     day: {
       description: "Light Showers",
@@ -327,7 +281,6 @@ const weatherDescriptions: weatherDescriptionsType = {
       image: require("../../assets/conditions/heavy_drizzle.webp"),
     },
   },
-
   85: {
     day: {
       description: "Light Snow Showers",
@@ -352,7 +305,6 @@ const weatherDescriptions: weatherDescriptionsType = {
       image: require("../../assets/conditions/g2376.webp"),
     },
   },
-
   95: {
     day: {
       description: "Thunderstorm",
@@ -390,4 +342,3 @@ const weatherDescriptions: weatherDescriptionsType = {
     },
   },
 };
-export default weatherDescriptions;

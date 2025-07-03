@@ -146,22 +146,5 @@
   "aqi.level.unhealthy_desc": "قد يعاني بعض أفراد الجمهور العام من آثار صحية؛ وقد يعاني أفراد المجموعات الحساسة من آثار صحية أكثر خطورة.",
   "aqi.level.very_unhealthy_desc": "تنبيه صحي: يزداد خطر الآثار الصحية على الجميع.",
   "aqi.level.hazardous_desc": "تحذير صحي من ظروف طارئة: من المرجح أن يتأثر الجميع.",
-  "aqi.level.unknown_desc": "بيانات جودة الهواء غير متوفرة حاليًا.",
-  "pollen.title": "مستويات حبوب اللقاح",
-  "pollen.type.alder": "جار الماء",
-  "pollen.type.birch": "البتولا",
-  "pollen.type.grass": "العشب",
-  "pollen.type.mugwort": "الشيح",
-  "pollen.type.olive": "الزيتون",
-  "pollen.type.ragweed": "الرجيد",
-  "pollen.level.low": "منخفض",
-  "pollen.level.moderate": "متوسط",
-  "pollen.level.high": "مرتفع",
-  "pollen.level.very_high": "مرتفع جداً",
-  "pollen.level.unknown": "غير معروف",
-  "pollen.level.low_desc": "مستويات حبوب لقاح منخفضة، تأثير ضئيل متوقع.",
-  "pollen.level.moderate_desc": "مستويات حبوب لقاح متوسطة، قد يعاني بعض الأفراد من أعراض.",
-  "pollen.level.high_desc": "مستويات حبوب لقاح مرتفعة، من المرجح أن يعاني العديد من الأفراد من أعراض.",
-  "pollen.level.very_high_desc": "مستويات حبوب لقاح مرتفعة جداً، من المرجح أن يعاني معظم الأفراد من أعراض.",
-  "pollen.level.unknown_desc": "بيانات حبوب اللقاح غير متوفرة حاليًا."
+  "aqi.level.unknown_desc": "بيانات جودة الهواء غير متوفرة حاليًا."
 }

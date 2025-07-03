@@ -1,21 +1,13 @@
-// FILE: src/screens/DateScreen/DailySummaryCard.tsx
 import { Image as ExpoImage } from "expo-image";
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 
 import Text from "../../components/Common/Text";
 import Icon from "../../components/Icon";
-import {
-  PRECIPITATION_COLOR_MEDIUM,
-  WIND_COLOR_HIGH,
-  WIND_COLOR_LOW,
-  WIND_COLOR_MEDIUM,
-  WIND_COLOR_SEVERE,
-} from "../../constants/colors";
 import { useSettings } from "../../context/SettingsContext";
 import { DayWeather } from "../../types/weather";
-import { useWeatherDescriptions } from "../../utils/descriptions";
+import { getUvIndexInfo } from "../../utils/aqiUtils";
 import { formatTimeStringToHour } from "../../utils/timeUtils";
 import {
   convertTemperature,
@@ -71,39 +63,12 @@ export default function DailySummaryCard({
 }: {
   dayData: DayWeather | undefined;
 }) {
-  const { settings } = useSettings();
+  const { settings, translatedWeatherDescriptions } = useSettings();
   const { t } = useTranslation();
-  const translatedWeatherDescriptions = useWeatherDescriptions();
-
-  const getUvIndexDetails = useCallback(
-    (uvIndex: number | undefined) => {
-      if (uvIndex === undefined || uvIndex < 0)
-        return { text: "", color: WIND_COLOR_LOW, valueText: "--" };
-      const roundedUvIndex = Math.round(uvIndex);
-      let text = t("uv_index.low");
-      let color = WIND_COLOR_LOW;
-
-      if (roundedUvIndex >= 11) {
-        text = t("uv_index.extreme");
-        color = "#BA68C8";
-      } else if (roundedUvIndex >= 8) {
-        text = t("uv_index.very_high");
-        color = WIND_COLOR_SEVERE;
-      } else if (roundedUvIndex >= 6) {
-        text = t("uv_index.high");
-        color = WIND_COLOR_HIGH;
-      } else if (roundedUvIndex >= 3) {
-        text = t("uv_index.moderate");
-        color = WIND_COLOR_MEDIUM;
-      }
-      return { text, color, valueText: roundedUvIndex.toString() };
-    },
-    [t]
-  );
 
   const uvDetails = useMemo(
-    () => getUvIndexDetails(dayData?.uvIndexMax),
-    [dayData?.uvIndexMax, getUvIndexDetails]
+    () => getUvIndexInfo(dayData?.uvIndexMax),
+    [dayData?.uvIndexMax]
   );
 
   if (!dayData) return null;
@@ -161,14 +126,14 @@ export default function DailySummaryCard({
             label={t("weather.max_precipitation")}
             value={`${Math.round(dayData.rainProb)}`}
             unit=" %"
-            color={PRECIPITATION_COLOR_MEDIUM}
+            color="#f9c74f"
           />
           <DetailItem
             icon="wind"
             label={t("weather.max_wind")}
             value={windValue}
             unit={windUnit}
-            color={WIND_COLOR_MEDIUM}
+            color="#f9c74f"
           />
         </View>
         <View className="flex-row justify-around items-center">

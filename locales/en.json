@@ -146,22 +146,5 @@
   "aqi.level.unhealthy_desc": "Some members of the general public may experience health effects; members of sensitive groups may experience more serious health effects.",
   "aqi.level.very_unhealthy_desc": "Health alert: The risk of health effects is increased for everyone.",
   "aqi.level.hazardous_desc": "Health warning of emergency conditions: everyone is more likely to be affected.",
-  "aqi.level.unknown_desc": "Air quality data is currently unavailable.",
-  "pollen.title": "Pollen Levels",
-  "pollen.type.alder": "Alder",
-  "pollen.type.birch": "Birch",
-  "pollen.type.grass": "Grass",
-  "pollen.type.mugwort": "Mugwort",
-  "pollen.type.olive": "Olive",
-  "pollen.type.ragweed": "Ragweed",
-  "pollen.level.low": "Low",
-  "pollen.level.moderate": "Moderate",
-  "pollen.level.high": "High",
-  "pollen.level.very_high": "Very High",
-  "pollen.level.unknown": "Unknown",
-  "pollen.level.low_desc": "Low pollen levels, minimal impact expected.",
-  "pollen.level.moderate_desc": "Moderate pollen levels, some individuals may experience symptoms.",
-  "pollen.level.high_desc": "High pollen levels, many individuals likely to experience symptoms.",
-  "pollen.level.very_high_desc": "Very high pollen levels, most individuals likely to experience symptoms.",
-  "pollen.level.unknown_desc": "Pollen data is currently unavailable."
+  "aqi.level.unknown_desc": "Air quality data is currently unavailable."
 }

@@ -146,22 +146,5 @@
   "aqi.level.unhealthy_desc": "Genel halkın bazı üyeleri sağlık etkileri yaşayabilir; hassas grupların üyeleri daha ciddi sağlık etkileri yaşayabilir.",
   "aqi.level.very_unhealthy_desc": "Sağlık uyarısı: Herkes için sağlık etkileri riski artmıştır.",
   "aqi.level.hazardous_desc": "Acil durum sağlık uyarısı: herkesin etkilenme olasılığı daha yüksektir.",
-  "aqi.level.unknown_desc": "Hava kalitesi verileri şu anda mevcut değil.",
-  "pollen.title": "Polen Seviyeleri",
-  "pollen.type.alder": "Kızılağaç",
-  "pollen.type.birch": "Huş Ağacı",
-  "pollen.type.grass": "Çim",
-  "pollen.type.mugwort": "Misk Adaçayı",
-  "pollen.type.olive": "Zeytin",
-  "pollen.type.ragweed": "Kanarya Otu",
-  "pollen.level.low": "Düşük",
-  "pollen.level.moderate": "Orta",
-  "pollen.level.high": "Yüksek",
-  "pollen.level.very_high": "Çok Yüksek",
-  "pollen.level.unknown": "Bilinmiyor",
-  "pollen.level.low_desc": "Düşük polen seviyeleri, minimum etki bekleniyor.",
-  "pollen.level.moderate_desc": "Orta düzeyde polen seviyeleri, bazı kişilerde semptomlar görülebilir.",
-  "pollen.level.high_desc": "Yüksek polen seviyeleri, birçok kişide semptom görülmesi muhtemeldir.",
-  "pollen.level.very_high_desc": "Çok yüksek polen seviyeleri, çoğu kişide semptom görülmesi muhtemeldir.",
-  "pollen.level.unknown_desc": "Polen verileri şu anda mevcut değil."
+  "aqi.level.unknown_desc": "Hava kalitesi verileri şu anda mevcut değil."
 }

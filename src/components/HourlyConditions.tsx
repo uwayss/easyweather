@@ -15,7 +15,6 @@ import { useSettings } from "../context/SettingsContext";
 import { useWeather } from "../context/WeatherContext";
 import HourlyConditionsSkeleton from "../screens/HomeScreen/HourlyConditionsSkeleton";
 import { HourWeather } from "../types/weather";
-import { useWeatherDescriptions } from "../utils/descriptions";
 import {
   GraphDataPoint,
   MetricType,
@@ -48,12 +47,11 @@ export default function HourlyConditions({
   const hourlyData = useMemo(() => getHourlyData(), [getHourlyData]);
 
   const [currentMetric, setCurrentMetric] = useState<MetricType>("temperature");
-  const { settings, activeTheme } = useSettings();
+  const { settings, activeTheme, translatedWeatherDescriptions } =
+    useSettings();
   const { t } = useTranslation();
   const theme = activeTheme === "dark" ? THEME_COLORS_DARK : THEME_COLORS_LIGHT;
   const styles = hourlyStyles(theme);
-
-  const weatherDescriptions = useWeatherDescriptions();
 
   const graphData: GraphDataPoint[] | undefined = useMemo(() => {
     return getMetricDataForForecast(
@@ -77,8 +75,9 @@ export default function HourlyConditions({
 
   const getIconForHour = (hour: HourWeather): number | undefined => {
     const image =
-      weatherDescriptions[hour.weatherCode]?.[hour.isDay ? "day" : "night"]
-        ?.image;
+      translatedWeatherDescriptions[hour.weatherCode]?.[
+        hour.isDay ? "day" : "night"
+      ]?.image;
     return typeof image === "number" ? image : undefined;
   };
 
