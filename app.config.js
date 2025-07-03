@@ -46,6 +46,8 @@ export default ({ config }) => {
         googleServicesFile: "./google-services.json",
         package: "com.uwayss.easyweather",
         versionCode: versionCode,
+        compileSdkVersion: 35,
+        targetSdkVersion: 35,
       },
       web: {
         bundler: "metro",
