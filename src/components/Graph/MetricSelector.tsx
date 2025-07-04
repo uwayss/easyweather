@@ -1,5 +1,3 @@
-// FILE: src/components/Graph/MetricSelector.tsx
-import { getAnalytics } from "@react-native-firebase/analytics";
 import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
@@ -45,10 +43,6 @@ export default function MetricSelector({
 
   const handleMetricChange = useCallback(
     (newMetric: string) => {
-      getAnalytics().logEvent("change_hourly_metric", {
-        metric: newMetric,
-        screen_context: "home_or_details",
-      });
       setCurrentMetric(newMetric as MetricType);
     },
     [setCurrentMetric]

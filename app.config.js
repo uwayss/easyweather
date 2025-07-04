@@ -69,7 +69,6 @@ export default ({ config }) => {
           backgroundImage: "./assets/icon_bg.png",
         },
         edgeToEdgeEnabled: true,
-        googleServicesFile: "./google-services.json",
         package: "com.uwayss.easyweather",
         versionCode: versionCode,
         compileSdkVersion: 35,
@@ -99,7 +98,6 @@ export default ({ config }) => {
             backgroundColor: "#ffffff",
           },
         ],
-        "@react-native-firebase/app",
       ],
       experiments: {
         typedRoutes: true,

@@ -1,5 +1,3 @@
-// FILE: src/screens/SettingsScreen/ActionsSection.tsx
-import { getAnalytics } from "@react-native-firebase/analytics";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, Platform, Share } from "react-native";
@@ -27,24 +25,18 @@ const rateApp = () => {
     android: PLAY_STORE_URL_ANDROID,
     default: APP_SHARE_URL,
   });
-  getAnalytics().logEvent("rate_app_clicked");
   openLink(url, "rate_app_store");
 };
 
 const shareApp = async () => {
   try {
-    getAnalytics().logEvent("share_app_clicked");
     await Share.share({
       message: `${APP_SHARE_MESSAGE}\n${APP_SHARE_URL}`,
       url: APP_SHARE_URL,
       title: APP_SHARE_TITLE,
     });
-    getAnalytics().logEvent("share_app_success");
   } catch (error) {
-    getAnalytics().logEvent("share_app_failure", { error: String(error) });
-
     console.error("Share app failed:", error);
-
     Alert.alert("Error", "Could not share the app at this time.");
   }
 };

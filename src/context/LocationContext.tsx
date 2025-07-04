@@ -1,4 +1,3 @@
-import { getAnalytics } from "@react-native-firebase/analytics";
 import * as LocationExpo from "expo-location";
 import React, {
   createContext,
@@ -88,9 +87,6 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
     setLocation(newLocation);
     storage.set(STORAGE_KEY_LOCATION, JSON.stringify(newLocation));
     setError(null);
-    getAnalytics().logEvent("set_active_location", {
-      name: newLocation.displayName,
-    });
   };
 
   const addSavedLocation = (locationToSave: Location) => {
@@ -106,9 +102,6 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
       JSON.stringify(updatedSavedLocations)
     );
     Toast.show({ type: "success", text1: t("location.saved_toast") });
-    getAnalytics().logEvent("add_saved_location", {
-      name: locationToSave.displayName,
-    });
   };
 
   const removeSavedLocation = (locationId: string) => {
@@ -132,13 +125,6 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
         setLocation(null);
         storage.delete(STORAGE_KEY_LOCATION);
       }
-    }
-
-    const removedLocation = savedLocations.find((l) => l.id === locationId);
-    if (removedLocation) {
-      getAnalytics().logEvent("remove_saved_location", {
-        name: removedLocation.displayName,
-      });
     }
   };
 
@@ -192,12 +178,10 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
     try {
       const { status } = await LocationExpo.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        getAnalytics().logEvent("request_gps_location_permission_denied");
         throw new Error("Location permission denied by user.");
       }
 
       const position = await LocationExpo.getCurrentPositionAsync({});
-      getAnalytics().logEvent("request_gps_location_success");
       setActiveLocation({
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
@@ -207,9 +191,6 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
       const msg =
         err instanceof Error ? err.message : "Failed to get current location";
       setError(msg);
-      getAnalytics().logEvent("request_gps_location_failed", {
-        error: String(err),
-      });
     } finally {
       setLoading(false);
     }
