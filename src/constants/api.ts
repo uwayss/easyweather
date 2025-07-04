@@ -1,4 +1,3 @@
-// FILE: src/constants/api.ts
 export const GEOLOCATION_API_URL = "http://ip-api.com/json/";
 export const GEOLOCATION_API_FIELDS = "?fields=61433";
 export const IP_FETCH_API_URL = "https://api.ipify.org?format=json";

@@ -24,7 +24,7 @@ async function main() {
 
   console.log(`Running 'expo prebuild'...`);
   try {
-    execSync(`npx expo prebuild --platform android --clean`, {
+    execSync(`npx expo prebuild --platform android`, {
       stdio: "inherit",
     });
     console.log("Expo prebuild completed successfully!");
