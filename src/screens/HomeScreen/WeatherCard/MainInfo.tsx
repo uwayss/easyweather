@@ -25,6 +25,7 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
     location,
     loading: locationLoading,
     addSavedLocation,
+    removeSavedLocation,
     isLocationSaved,
   } = useLocationContext();
   const { colorScheme } = useColorScheme();
@@ -48,8 +49,13 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
     location.displayName !== t("weather.loading_location") &&
     location.displayName !== t("weather.unknown_location");
 
-  const handleSaveLocation = () => {
-    if (location && canBeSaved && !isCurrentLocSaved) {
+  const handleToggleSaveLocation = () => {
+    if (!location || !canBeSaved) return;
+
+    if (isCurrentLocSaved) {
+      const locationId = `${location.latitude}_${location.longitude}`;
+      removeSavedLocation(locationId);
+    } else {
       addSavedLocation(location);
     }
   };
@@ -69,7 +75,7 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
             </Text>
             {canBeSaved && (
               <TouchableOpacity
-                onPress={handleSaveLocation}
+                onPress={handleToggleSaveLocation}
                 className="ml-2 p-1"
               >
                 <Icon
