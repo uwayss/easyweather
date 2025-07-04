@@ -8,13 +8,13 @@ import React, {
   useState,
 } from "react";
 import { useTranslation } from "react-i18next";
-import Toast from "react-native-toast-message";
 
 import { fetchCurrentLocation } from "../api/geolocation";
 import {
   STORAGE_KEY_LOCATION,
   STORAGE_KEY_SAVED_LOCATIONS,
 } from "../constants/storage";
+import { useToast } from "./ToastContext";
 
 export interface Location {
   latitude: number;
@@ -48,6 +48,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const { t } = useTranslation();
+  const { showToast } = useToast();
 
   const [location, setLocation] = useState<Location | null>(null);
   const [savedLocations, setSavedLocations] = useState<SavedLocation[]>([]);
@@ -77,7 +78,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
     const newSavedLocation: SavedLocation = { ...locationToSave, id: newId };
     const updatedSavedLocations = [...savedLocations, newSavedLocation];
     setSavedLocations(updatedSavedLocations);
-    Toast.show({ type: "success", text1: t("location.saved_toast") });
+    showToast({ message: t("location.saved_toast"), type: "success" });
     try {
       await AsyncStorage.setItem(
         STORAGE_KEY_SAVED_LOCATIONS,
@@ -96,7 +97,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
       (loc) => loc.id !== locationId
     );
     setSavedLocations(updatedSavedLocations);
-    Toast.show({ type: "info", text1: t("location.removed_toast") });
+    showToast({ message: t("location.removed_toast"), type: "info" });
 
     if (isRemovingActive) {
       if (updatedSavedLocations.length > 0) {
