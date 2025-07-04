@@ -36,7 +36,7 @@ EasyWeather is a mobile weather application built with React Native and Expo. It
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/easyweather.git
+   git clone https://github.com/uwayss/easyweather.git
    cd easyweather
    ```
 2. Install dependencies:
