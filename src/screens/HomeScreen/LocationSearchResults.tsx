@@ -84,16 +84,22 @@ export default function LocationSearchResults({
   results,
   onSelectLocation,
   visible,
+  isLoading,
 }: {
   results: LocationResult[];
   onSelectLocation: (location: LocationResult) => void;
   visible: boolean;
+  isLoading: boolean;
 }) {
-  if (!visible) return null;
-
-  if (results.length === 0) {
-    return <NoResults />;
+  if (!visible || isLoading) {
+    return null;
   }
 
-  return <ResultsList results={results} onSelectLocation={onSelectLocation} />;
+  if (results.length > 0) {
+    return (
+      <ResultsList results={results} onSelectLocation={onSelectLocation} />
+    );
+  }
+
+  return <NoResults />;
 }

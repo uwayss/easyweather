@@ -1,5 +1,5 @@
 import { useColorScheme } from "nativewind";
-import React, { useCallback, useState, useMemo } from "react"; // Import useMemo
+import React, { useCallback, useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
@@ -140,6 +140,7 @@ export const LocationSearch = () => {
           results={results}
           onSelectLocation={handleSelectLocation}
           visible={showResults}
+          isLoading={isLoading}
         />
       </View>
     </View>
