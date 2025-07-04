@@ -1,4 +1,4 @@
-import { Image as ExpoImage } from "expo-image";
+import { ImageSource } from "expo-image";
 import React, { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dimensions, ScrollView, StyleSheet, View } from "react-native";
@@ -26,6 +26,8 @@ import Divider from "./Common/Divider";
 import Text from "./Common/Text";
 import LineChart from "./Graph/LineChart";
 import MetricSelector from "./Graph/MetricSelector";
+import HourDetail from "./Hourly/HourDetail";
+import HourValue from "./Hourly/HourValue";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -73,12 +75,12 @@ export default function HourlyConditions({
 
   const xStep = HOURLY_CONDITIONS_POINT_ITEM_WIDTH;
 
-  const getIconForHour = (hour: HourWeather): number | undefined => {
+  const getIconForHour = (hour: HourWeather): ImageSource | undefined => {
     const image =
       translatedWeatherDescriptions[hour.weatherCode]?.[
         hour.isDay ? "day" : "night"
       ]?.image;
-    return typeof image === "number" ? image : undefined;
+    return typeof image === "number" ? (image as ImageSource) : undefined;
   };
 
   const chartAreaMinHeight =
@@ -131,14 +133,11 @@ export default function HourlyConditions({
             <View>
               <View style={styles.valuesRow}>
                 {graphData.map((pointData, index) => (
-                  <View
+                  <HourValue
                     key={`value-${index}`}
-                    style={[styles.hourItemContainer, { width: xStep }]}
-                  >
-                    <Text style={styles.valueText} numberOfLines={1}>
-                      {pointData.value}
-                    </Text>
-                  </View>
+                    value={pointData.value}
+                    width={xStep}
+                  />
                 ))}
               </View>
 
@@ -161,26 +160,13 @@ export default function HourlyConditions({
               <View style={styles.detailsRow}>
                 {graphData.map((pointData, index) => {
                   const hour = hourlyData?.[index];
-                  const iconSource = hour ? getIconForHour(hour) : undefined;
                   return (
-                    <View
+                    <HourDetail
                       key={`detail-${index}`}
-                      style={[styles.hourItemContainer, { width: xStep }]}
-                    >
-                      {iconSource ? (
-                        <ExpoImage
-                          source={iconSource}
-                          style={styles.weatherIcon}
-                          contentFit="contain"
-                        />
-                      ) : (
-                        <View style={styles.weatherIcon} />
-                      )}
-
-                      <Text style={styles.labelText} numberOfLines={1}>
-                        {pointData.label}
-                      </Text>
-                    </View>
+                      label={pointData.label}
+                      iconSource={hour ? getIconForHour(hour) : undefined}
+                      width={xStep}
+                    />
                   );
                 })}
               </View>
@@ -230,23 +216,6 @@ const hourlyStyles = (
       flexDirection: "row",
       height: HOURLY_CONDITIONS_DETAILS_ROW_HEIGHT,
       alignItems: "center",
-    },
-    hourItemContainer: {
-      height: "100%",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    valueText: {
-      fontWeight: "600",
-      fontSize: 13,
-      color: theme.onSurface,
-      textAlign: "center",
-    },
-    weatherIcon: { width: 24, height: 24, marginBottom: 3 },
-    labelText: {
-      color: theme.onSurfaceVariant,
-      fontSize: 11,
-      textAlign: "center",
     },
     placeholderWrapper: { justifyContent: "center", alignItems: "center" },
   });
