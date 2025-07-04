@@ -39,7 +39,7 @@ export default function Card({
           source={background}
           style={StyleSheet.absoluteFill}
           contentFit="cover"
-          transition={600}
+          transition={500}
         />
         <View className={className} style={{ flex: 1 }}>
           {children}

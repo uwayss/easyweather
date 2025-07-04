@@ -1,24 +1,20 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as LocationExpo from "expo-location";
 import React, {
   createContext,
   ReactNode,
-  useCallback,
   useContext,
   useEffect,
   useState,
 } from "react";
 import { useTranslation } from "react-i18next";
-import { MMKV } from "react-native-mmkv";
 import Toast from "react-native-toast-message";
 
 import { fetchCurrentLocation } from "../api/geolocation";
 import {
-  MMKV_LOCATION_INSTANCE_ID,
   STORAGE_KEY_LOCATION,
   STORAGE_KEY_SAVED_LOCATIONS,
 } from "../constants/storage";
-
-const storage = new MMKV({ id: MMKV_LOCATION_INSTANCE_ID });
 
 export interface Location {
   latitude: number;
@@ -35,11 +31,10 @@ interface LocationContextProps {
   savedLocations: SavedLocation[];
   loading: boolean;
   error: string | null;
-  setActiveLocation: (newLocation: Location) => void;
-  fetchInitialLocation: () => Promise<void>;
+  setActiveLocation: (newLocation: Location) => Promise<void>;
   getCurrentLocation: () => Promise<void>;
-  addSavedLocation: (locationToSave: Location) => void;
-  removeSavedLocation: (locationId: string) => void;
+  addSavedLocation: (locationToSave: Location) => Promise<void>;
+  removeSavedLocation: (locationId: string) => Promise<void>;
   isLocationSaved: (locationToCheck: Location | null) => boolean;
   clearError: () => void;
   setError: (message: string | null) => void;
@@ -54,42 +49,27 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const { t } = useTranslation();
 
-  const [location, setLocation] = useState<Location | null>(() => {
-    const storedLocation = storage.getString(STORAGE_KEY_LOCATION);
-    if (storedLocation) {
-      try {
-        return JSON.parse(storedLocation) as Location;
-      } catch {
-        storage.delete(STORAGE_KEY_LOCATION);
-      }
-    }
-    return null;
-  });
-
-  const [savedLocations, setSavedLocations] = useState<SavedLocation[]>(() => {
-    const stored = storage.getString(STORAGE_KEY_SAVED_LOCATIONS);
-    if (stored) {
-      try {
-        return JSON.parse(stored) as SavedLocation[];
-      } catch {
-        storage.delete(STORAGE_KEY_SAVED_LOCATIONS);
-      }
-    }
-    return [];
-  });
-
-  const [loading, setLoading] = useState<boolean>(false);
+  const [location, setLocation] = useState<Location | null>(null);
+  const [savedLocations, setSavedLocations] = useState<SavedLocation[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const clearError = () => setError(null);
 
-  const setActiveLocation = (newLocation: Location) => {
+  const setActiveLocation = async (newLocation: Location) => {
     setLocation(newLocation);
-    storage.set(STORAGE_KEY_LOCATION, JSON.stringify(newLocation));
     setError(null);
+    try {
+      await AsyncStorage.setItem(
+        STORAGE_KEY_LOCATION,
+        JSON.stringify(newLocation)
+      );
+    } catch (e) {
+      console.error("Failed to save active location", e);
+    }
   };
 
-  const addSavedLocation = (locationToSave: Location) => {
+  const addSavedLocation = async (locationToSave: Location) => {
     const newId = `${locationToSave.latitude}_${locationToSave.longitude}`;
     if (savedLocations.some((loc) => loc.id === newId)) {
       return;
@@ -97,14 +77,18 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
     const newSavedLocation: SavedLocation = { ...locationToSave, id: newId };
     const updatedSavedLocations = [...savedLocations, newSavedLocation];
     setSavedLocations(updatedSavedLocations);
-    storage.set(
-      STORAGE_KEY_SAVED_LOCATIONS,
-      JSON.stringify(updatedSavedLocations)
-    );
     Toast.show({ type: "success", text1: t("location.saved_toast") });
+    try {
+      await AsyncStorage.setItem(
+        STORAGE_KEY_SAVED_LOCATIONS,
+        JSON.stringify(updatedSavedLocations)
+      );
+    } catch (e) {
+      console.error("Failed to save locations", e);
+    }
   };
 
-  const removeSavedLocation = (locationId: string) => {
+  const removeSavedLocation = async (locationId: string) => {
     const isRemovingActive =
       location && `${location.latitude}_${location.longitude}` === locationId;
 
@@ -112,19 +96,24 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
       (loc) => loc.id !== locationId
     );
     setSavedLocations(updatedSavedLocations);
-    storage.set(
-      STORAGE_KEY_SAVED_LOCATIONS,
-      JSON.stringify(updatedSavedLocations)
-    );
     Toast.show({ type: "info", text1: t("location.removed_toast") });
 
     if (isRemovingActive) {
       if (updatedSavedLocations.length > 0) {
-        setActiveLocation(updatedSavedLocations[0]);
+        await setActiveLocation(updatedSavedLocations[0]);
       } else {
         setLocation(null);
-        storage.delete(STORAGE_KEY_LOCATION);
+        await AsyncStorage.removeItem(STORAGE_KEY_LOCATION);
       }
+    }
+
+    try {
+      await AsyncStorage.setItem(
+        STORAGE_KEY_SAVED_LOCATIONS,
+        JSON.stringify(updatedSavedLocations)
+      );
+    } catch (e) {
+      console.error("Failed to save locations after removal", e);
     }
   };
 
@@ -134,43 +123,62 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
     return savedLocations.some((loc) => loc.id === checkId);
   };
 
-  const fetchInitialLocation = useCallback(async () => {
-    if (location !== null) {
-      return;
-    }
-    if (savedLocations.length > 0) {
-      setActiveLocation(savedLocations[0]);
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-    try {
-      const geoData = await fetchCurrentLocation();
-      if (geoData.lat && geoData.lon) {
-        const newLocation: Location = {
-          latitude: geoData.lat,
-          longitude: geoData.lon,
-          displayName: geoData.city
-            ? `${geoData.city}, ${geoData.country}`
-            : `${geoData.country}`,
-        };
-        setActiveLocation(newLocation);
-      } else {
-        setError("Failed to retrieve coordinates from IP.");
-      }
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to get location from IP"
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [location, savedLocations]);
-
   useEffect(() => {
+    const fetchInitialLocation = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const [storedLocation, storedSavedLocations] = await Promise.all([
+          AsyncStorage.getItem(STORAGE_KEY_LOCATION),
+          AsyncStorage.getItem(STORAGE_KEY_SAVED_LOCATIONS),
+        ]);
+
+        let activeLoc: Location | null = null;
+        let savedLocs: SavedLocation[] = [];
+
+        if (storedSavedLocations) {
+          savedLocs = JSON.parse(storedSavedLocations);
+          setSavedLocations(savedLocs);
+        }
+
+        if (storedLocation) {
+          activeLoc = JSON.parse(storedLocation);
+          setLocation(activeLoc);
+        }
+
+        if (activeLoc) {
+          return;
+        }
+
+        if (savedLocs.length > 0) {
+          await setActiveLocation(savedLocs[0]);
+          return;
+        }
+
+        const geoData = await fetchCurrentLocation();
+        if (geoData.lat && geoData.lon) {
+          const newLocation: Location = {
+            latitude: geoData.lat,
+            longitude: geoData.lon,
+            displayName: geoData.city
+              ? `${geoData.city}, ${geoData.country}`
+              : `${geoData.country}`,
+          };
+          await setActiveLocation(newLocation);
+        } else {
+          setError("Failed to retrieve coordinates from IP.");
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to get location from IP"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchInitialLocation();
-  }, [fetchInitialLocation]);
+  }, []);
 
   const getCurrentLocation = async () => {
     setLoading(true);
@@ -180,9 +188,8 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
       if (status !== "granted") {
         throw new Error("Location permission denied by user.");
       }
-
       const position = await LocationExpo.getCurrentPositionAsync({});
-      setActiveLocation({
+      await setActiveLocation({
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
         displayName: t("weather.current_location"),
@@ -202,7 +209,6 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({
     loading,
     error,
     setActiveLocation,
-    fetchInitialLocation,
     getCurrentLocation,
     addSavedLocation,
     removeSavedLocation,

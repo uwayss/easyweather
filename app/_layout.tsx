@@ -16,7 +16,7 @@ import { SettingsProvider, useSettings } from "../src/context/SettingsContext";
 import { useWeather, WeatherProvider } from "../src/context/WeatherContext";
 
 const ThemedAppWithProviders = () => {
-  const { settings } = useSettings();
+  const { settings, isLoading: isSettingsLoading } = useSettings();
   const { error: weatherError, clearError: clearWeatherError } = useWeather();
   const { error: locationError, clearError: clearLocationError } =
     useLocationContext();
@@ -63,6 +63,10 @@ const ThemedAppWithProviders = () => {
       });
     }
   }, [weatherError, locationError, clearWeatherError, clearLocationError]);
+
+  if (isSettingsLoading) {
+    return null;
+  }
 
   return (
     <SafeAreaView style={StyleSheet.absoluteFill}>

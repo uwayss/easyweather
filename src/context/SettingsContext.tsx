@@ -1,29 +1,24 @@
 /* eslint-disable import/no-named-as-default-member */
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import i18next from "i18next";
 import React, {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
 } from "react";
 import { useColorScheme } from "react-native";
-import { MMKV } from "react-native-mmkv";
 
-import {
-  DEFAULT_LANGUAGE,
-  DEFAULT_SETTINGS,
-  SUPPORTED_LANGUAGES,
-} from "../constants/settings";
-import {
-  MMKV_SETTINGS_INSTANCE_ID,
-  STORAGE_KEY_APP_SETTINGS,
-} from "../constants/storage";
+import { DEFAULT_SETTINGS } from "../constants/settings";
+import { STORAGE_KEY_APP_SETTINGS } from "../constants/storage";
 import {
   baseWeatherDescriptions,
   WeatherDescriptionsType,
 } from "../utils/descriptions";
+
 export type ThemePreference = "system" | "light" | "dark";
 
 export interface AppSettings {
@@ -40,27 +35,8 @@ interface SettingsContextProps {
   ) => void;
   activeTheme: "light" | "dark";
   translatedWeatherDescriptions: WeatherDescriptionsType;
+  isLoading: boolean;
 }
-
-const storage = new MMKV({ id: MMKV_SETTINGS_INSTANCE_ID });
-
-const getInitialLanguage = () => {
-  const storedSettings = storage.getString(STORAGE_KEY_APP_SETTINGS);
-  if (storedSettings) {
-    try {
-      const parsed = JSON.parse(storedSettings);
-      if (
-        parsed.language &&
-        SUPPORTED_LANGUAGES.some((lang) => lang.value === parsed.language)
-      ) {
-        return parsed.language;
-      }
-    } catch (e) {
-      console.error("Failed to parse stored settings for language:", e);
-    }
-  }
-  return DEFAULT_LANGUAGE;
-};
 
 const SettingsContext = createContext<SettingsContextProps | undefined>(
   undefined
@@ -70,33 +46,34 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const systemColorScheme = useColorScheme();
+  const [settings, setSettings] = useState<AppSettings>(DEFAULT_SETTINGS);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [settings, setSettings] = useState<AppSettings>(() => {
-    const storedSettings = storage.getString(STORAGE_KEY_APP_SETTINGS);
-    const initialLanguage = getInitialLanguage();
-    let loadedSettings = { ...DEFAULT_SETTINGS, language: initialLanguage };
-
-    if (storedSettings) {
+  useEffect(() => {
+    const loadSettings = async () => {
       try {
-        const parsed = JSON.parse(storedSettings);
-
-        loadedSettings = {
-          ...loadedSettings,
-          ...parsed,
-          language: initialLanguage,
-        };
-      } catch (e) {
-        console.error("Failed to parse stored settings:", e);
-        storage.delete(STORAGE_KEY_APP_SETTINGS);
+        const storedSettings = await AsyncStorage.getItem(
+          STORAGE_KEY_APP_SETTINGS
+        );
+        if (storedSettings) {
+          const parsedSettings = JSON.parse(storedSettings);
+          setSettings({ ...DEFAULT_SETTINGS, ...parsedSettings });
+          if (
+            parsedSettings.language &&
+            parsedSettings.language !== i18next.language
+          ) {
+            i18next.changeLanguage(parsedSettings.language);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load settings from storage:", error);
+      } finally {
+        setIsLoading(false);
       }
-    }
+    };
 
-    if (i18next.language !== loadedSettings.language) {
-      i18next.changeLanguage(loadedSettings.language);
-    }
-
-    return loadedSettings;
-  });
+    loadSettings();
+  }, []);
 
   const [translatedWeatherDescriptions, setTranslatedWeatherDescriptions] =
     useState<WeatherDescriptionsType>(baseWeatherDescriptions);
@@ -122,20 +99,24 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({
     setTranslatedWeatherDescriptions(newDescriptions);
   }, [settings.language]);
 
-  useEffect(() => {
-    storage.set(STORAGE_KEY_APP_SETTINGS, JSON.stringify(settings));
-
-    if (settings.language !== i18next.language) {
-      i18next.changeLanguage(settings.language);
-    }
-  }, [settings]);
-
-  const updateSetting = <K extends keyof AppSettings>(
-    key: K,
-    value: AppSettings[K]
-  ) => {
-    setSettings((prevSettings) => ({ ...prevSettings, [key]: value }));
-  };
+  const updateSetting = useCallback(
+    async <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => {
+      const newSettings = { ...settings, [key]: value };
+      setSettings(newSettings);
+      if (key === "language" && value !== i18next.language) {
+        i18next.changeLanguage(value as string);
+      }
+      try {
+        await AsyncStorage.setItem(
+          STORAGE_KEY_APP_SETTINGS,
+          JSON.stringify(newSettings)
+        );
+      } catch (error) {
+        console.error("Failed to save setting to storage:", error);
+      }
+    },
+    [settings]
+  );
 
   const activeTheme = useMemo((): "light" | "dark" => {
     const { theme } = settings;
@@ -147,6 +128,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({
     updateSetting,
     activeTheme,
     translatedWeatherDescriptions,
+    isLoading,
   };
 
   return (
