@@ -121,6 +121,7 @@
   "location.saved_toast": "Location Saved.",
   "location.removed_toast": "Location Removed.",
   "location.no_saved_locations": "No saved locations yet.",
+  "location.no_results": "No locations found.",
   "summary.today_will_be": "Today will be",
   "summary.tomorrow_will_be": "Tomorrow will be",
   "summary.warmer_than": "warmer than",
