@@ -18,7 +18,7 @@ const AnimatedWeatherSummary: React.FC<AnimatedWeatherSummaryProps> = ({
     if (label) {
       setIsRendered(true);
       Animated.sequence([
-        Animated.delay(1500), // 1.5 second delay
+        Animated.delay(500), // 1.5 second delay
         Animated.spring(animatedValue, {
           toValue: 1,
           friction: 7,
