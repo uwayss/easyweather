@@ -1,5 +1,3 @@
-// FILE: src/hooks/useHomeRefresh.ts
-import { getAnalytics } from "@react-native-firebase/analytics";
 import { useCallback, useState } from "react";
 
 import { useLocationContext } from "../context/LocationContext";
@@ -17,7 +15,6 @@ export const useHomeRefresh = () => {
     }
     setRefreshing(true);
     try {
-      getAnalytics().logEvent("pull_to_refresh");
       await fetchWeatherDataAndAQI(location.latitude, location.longitude);
     } catch (e) {
       console.error("Refresh error:", e);

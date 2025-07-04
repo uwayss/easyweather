@@ -1,5 +1,3 @@
-// FILE: src/context/WeatherContext.tsx
-import { getAnalytics } from "@react-native-firebase/analytics";
 import React, {
   createContext,
   useCallback,
@@ -8,25 +6,25 @@ import React, {
   useState,
 } from "react";
 
-import { fetchAirQuality } from "../api/airQuality"; // Import new API call
+import { fetchAirQuality } from "../api/airQuality";
 import { fetchWeather } from "../api/weather";
-import { CurrentAirQualityData } from "../types/airQuality"; // Import AQI type
+import { CurrentAirQualityData } from "../types/airQuality";
 import { DayWeather, Weather } from "../types/weather";
 import { ProcessedWeatherData } from "../utils/weatherUtils";
 import { useLocationContext } from "./LocationContext";
 
 interface WeatherContextProps {
   weather: Weather | null;
-  currentAirQuality: CurrentAirQualityData | null; // New state for AQI
+  currentAirQuality: CurrentAirQualityData | null;
   yesterdaySummary: DayWeather | undefined;
   todaySummary: DayWeather | undefined;
   tomorrowSummary: DayWeather | undefined;
-  loading: boolean; // This will now represent combined loading for weather & AQI
-  error: string | null; // This can be an error from either weather or AQI fetch
+  loading: boolean;
+  error: string | null;
   fetchWeatherDataAndAQI: (
     latitude: number,
     longitude: number
-  ) => Promise<void>; // Renamed
+  ) => Promise<void>;
   clearError: () => void;
 }
 
@@ -39,7 +37,7 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [weather, setWeather] = useState<Weather | null>(null);
   const [currentAirQuality, setCurrentAirQuality] =
-    useState<CurrentAirQualityData | null>(null); // New AQI state
+    useState<CurrentAirQualityData | null>(null);
   const [yesterdaySummary, setYesterdaySummary] = useState<
     DayWeather | undefined
   >(undefined);
@@ -61,20 +59,14 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({
       setLoading(true);
       setError(null);
       try {
-        // Fetch weather and AQI data concurrently
         const [weatherData, airQualityData] = await Promise.all([
           fetchWeather(latitude, longitude),
           fetchAirQuality(latitude, longitude).catch((aqiError) => {
-            // Catch AQI specific error to allow weather data to still load
             console.error(
               "AQI Fetch Error (will attempt to show weather):",
               aqiError
             );
-            getAnalytics().logEvent("fetch_aqi_failed", {
-              location: location?.displayName || "Unknown",
-              error: String(aqiError),
-            });
-            return null; // Return null if AQI fetch fails
+            return null;
           }),
         ]);
 
@@ -92,29 +84,18 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({
         setTodaySummary(processedWeatherData.todaySummary);
         setTomorrowSummary(processedWeatherData.tomorrowSummary);
 
-        setCurrentAirQuality(airQualityData); // Set AQI data (could be null if fetch failed)
-
-        getAnalytics().logEvent("fetch_weather_aqi_success", {
-          location: location?.displayName || "Unknown",
-          aqi_loaded: !!airQualityData,
-        });
+        setCurrentAirQuality(airQualityData);
       } catch (err) {
-        // This catch block will primarily handle errors from fetchWeather
-        // or if Promise.all itself fails (e.g., network issue before individual catches)
         const msg =
           err instanceof Error
             ? err.message
             : "An unknown error occurred fetching data";
         setError(msg);
-        getAnalytics().logEvent("fetch_weather_aqi_failed", {
-          location: location?.displayName || "Unknown",
-          error: String(err),
-        });
       } finally {
         setLoading(false);
       }
     },
-    [location?.displayName]
+    []
   );
 
   useEffect(() => {

@@ -1,7 +1,5 @@
-// FILE: src/screens/HomeScreen/LocationSearch.tsx
-import { getAnalytics } from "@react-native-firebase/analytics";
 import { useColorScheme } from "nativewind";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useMemo } from "react"; // Import useMemo
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
@@ -22,7 +20,7 @@ function debounce(
   func: DebouncedSearchFunction,
   wait: number
 ): DebouncedSearchFunction {
-  let timeout: any = null; // Changed NodeJS.Timeout to any
+  let timeout: any = null;
   return function (query: string) {
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => func(query), wait);
@@ -42,32 +40,23 @@ export const LocationSearch = () => {
 
   const onLocationSelect = (selectedLocation: LocationResult) => {
     setActiveLocation({
-      // Use setActiveLocation
       latitude: parseFloat(selectedLocation.lat),
       longitude: parseFloat(selectedLocation.lon),
       displayName: selectedLocation.display_name,
     });
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedSearch = useCallback(
-    debounce(async (query: string) => {
+  const performSearch = useCallback(
+    async (query: string) => {
       if (query.trim()) {
         try {
           setIsLoading(true);
           const locationResults = await searchLocation(query);
           setResults(locationResults);
           setShowResults(true);
-          getAnalytics().logEvent("search_location_success", {
-            query_length: query.length,
-          });
         } catch (error) {
           const msg = `Error searching location: ${String(error)}`;
           setError(msg);
-          getAnalytics().logEvent("search_location_failed", {
-            query: query,
-            error: String(error),
-          });
         } finally {
           setIsLoading(false);
         }
@@ -75,8 +64,13 @@ export const LocationSearch = () => {
         setResults([]);
         setShowResults(false);
       }
-    }, 500),
-    [setError, setActiveLocation]
+    },
+    [setError, setIsLoading, setResults, setShowResults]
+  );
+
+  const debouncedSearch = useMemo(
+    () => debounce(performSearch, 500),
+    [performSearch]
   );
 
   const handleSearchChange = (query: string) => {
@@ -85,10 +79,6 @@ export const LocationSearch = () => {
   };
 
   const handleSelectLocation = (locationResult: LocationResult) => {
-    getAnalytics().logEvent("select_location_result", {
-      selected_display_name: locationResult.display_name,
-    });
-
     onLocationSelect(locationResult);
     setShowResults(false);
     setSearchQuery("");

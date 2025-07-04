@@ -1,24 +1,11 @@
-// FILE: src/screens/SettingsScreen/Common.tsx
-import { getAnalytics } from "@react-native-firebase/analytics";
 import { useColorScheme } from "nativewind";
 import React from "react";
 import { Linking, TouchableOpacity, View, ViewStyle } from "react-native";
 
-// Removed Feather import
 import Text from "../../components/Common/Text";
 import Icon from "../../components/Icon";
 
 export const openLink = async (url: string, linkContext?: string) => {
-  if (linkContext) {
-    getAnalytics().logEvent("open_external_link", {
-      target_url: url,
-      link_context: linkContext,
-    });
-  } else {
-    getAnalytics().logEvent("open_external_link", {
-      target_url: url,
-    });
-  }
   Linking.openURL(url).catch((err) =>
     console.error("An error occurred: ", err)
   );

@@ -1,4 +1,3 @@
-import { getAnalytics } from "@react-native-firebase/analytics";
 import { Image as ExpoImage } from "expo-image";
 import { useRouter } from "expo-router";
 import React, { useCallback, useMemo } from "react";
@@ -76,10 +75,6 @@ const ForecastItem = React.memo(function ForecastItem({
 
   const handlePress = useCallback(() => {
     const hourly = filterHourlyDataForDate(hourlyWeather, item.date);
-    getAnalytics().logEvent("view_daily_details", {
-      date: item.date,
-      weather_code: item.weatherCode,
-    });
 
     const paramsForNavigation: Record<string, string> = {
       dayData: JSON.stringify(item),
