@@ -1,5 +1,5 @@
-// FILE: src/utils/weatherSummaryUtils.ts
-import { t } from "i18next";
+/* eslint-disable import/no-named-as-default-member */
+import i18next from "i18next";
 import { DayWeather } from "../types/weather";
 import { convertTemperature } from "./unitConversion";
 
@@ -27,7 +27,7 @@ export function generateWeatherSummaryLabel(
   const currentTime = new Date();
   const currentHour = currentTime.getHours();
 
-  const isEarlyDay = currentHour < 18; // Before 6 PM
+  const isEarlyDay = currentHour < 18;
 
   let referenceDay: DayWeather | undefined;
   let comparisonDay: DayWeather | undefined;
@@ -35,15 +35,13 @@ export function generateWeatherSummaryLabel(
   let comparisonTargetKey: string;
 
   if (isEarlyDay) {
-    // Focus on "Today vs Yesterday"
-    if (!yesterday) return t("summary.no_comparison_data");
+    if (!yesterday) return i18next.t("summary.no_comparison_data");
     referenceDay = today;
     comparisonDay = yesterday;
     baseSentenceKey = "summary.today_will_be";
     comparisonTargetKey = "summary.yesterday";
   } else {
-    // Focus on "Tomorrow vs Today"
-    if (!tomorrow) return t("summary.no_comparison_data"); // Or a message about tomorrow if today is also undefined
+    if (!tomorrow) return i18next.t("summary.no_comparison_data");
     referenceDay = tomorrow;
     comparisonDay = today;
     baseSentenceKey = "summary.tomorrow_will_be";
@@ -54,7 +52,7 @@ export function generateWeatherSummaryLabel(
   const avgCompTemp = getAverageTemp(comparisonDay, useImperial);
 
   if (avgRefTemp === undefined || avgCompTemp === undefined) {
-    return t("summary.no_comparison_data");
+    return i18next.t("summary.no_comparison_data");
   }
 
   const tempDiff = avgRefTemp - avgCompTemp;
@@ -71,7 +69,14 @@ export function generateWeatherSummaryLabel(
     trendKey = "summary.colder_than";
   }
 
-  // Example: "Today will be warmer than yesterday."
-  // Using i18n's interpolation or just simple string concatenation
-  return `${t(baseSentenceKey)} ${t(trendKey)} ${t(comparisonTargetKey)}.`;
+  if (i18next.language === "tr") {
+    const trend = trendKey.split(".")[1];
+    const comparisonTarget = comparisonTargetKey.split(".")[1];
+    const combinedKey = `summary.${trend}_${comparisonTarget}`;
+    return `${i18next.t(baseSentenceKey)} ${i18next.t(combinedKey)}.`;
+  }
+
+  return `${i18next.t(baseSentenceKey)} ${i18next.t(trendKey)} ${i18next.t(
+    comparisonTargetKey
+  )}.`;
 }
