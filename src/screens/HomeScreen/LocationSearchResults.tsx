@@ -1,6 +1,6 @@
-// FILE: src/screens/HomeScreen/LocationSearchResults.tsx
 import React from "react";
-import { ScrollView, View, Pressable } from "react-native";
+import { useTranslation } from "react-i18next";
+import { Pressable, ScrollView, View } from "react-native";
 
 import { LocationResult } from "../../api/location";
 import Text from "../../components/Common/Text";
@@ -8,10 +8,22 @@ import Icon from "../../components/Icon";
 
 function getLocationName(location: LocationResult): string {
   const { address } = location;
-  return address.city || address.town || address.village || address.state || address.country;
+  return (
+    address.city ||
+    address.town ||
+    address.village ||
+    address.state ||
+    address.country
+  );
 }
 
-function LocationItem({ result, onPress }: { result: LocationResult; onPress: () => void }) {
+function LocationItem({
+  result,
+  onPress,
+}: {
+  result: LocationResult;
+  onPress: () => void;
+}) {
   return (
     <Pressable onPress={onPress}>
       <View className="p-2 flex-row items-center bg-light-surface dark:bg-dark-surface border-b border-light-outline/20 dark:border-dark-outline/20">
@@ -42,9 +54,29 @@ function ResultsList({
       keyboardShouldPersistTaps="handled"
     >
       {results.slice(0, 3).map((result, index) => (
-        <LocationItem key={index} result={result} onPress={() => onSelectLocation(result)} />
+        <LocationItem
+          key={index}
+          result={result}
+          onPress={() => onSelectLocation(result)}
+        />
       ))}
     </ScrollView>
+  );
+}
+
+function NoResults() {
+  const { t } = useTranslation();
+  return (
+    <View className="absolute top-0 w-full rounded-b-lg overflow-hidden z-50 bg-light-surface dark:bg-dark-surface shadow-md">
+      <View className="p-4 flex-row items-center justify-center">
+        <Icon
+          name="alert-circle-outline"
+          size={20}
+          className="mr-2 opacity-60"
+        />
+        <Text className="opacity-60">{t("location.no_results")}</Text>
+      </View>
+    </View>
   );
 }
 
@@ -57,6 +89,11 @@ export default function LocationSearchResults({
   onSelectLocation: (location: LocationResult) => void;
   visible: boolean;
 }) {
-  if (!visible || results.length === 0) return null;
+  if (!visible) return null;
+
+  if (results.length === 0) {
+    return <NoResults />;
+  }
+
   return <ResultsList results={results} onSelectLocation={onSelectLocation} />;
 }
