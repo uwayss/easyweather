@@ -1,4 +1,3 @@
-// FILE: src/screens/HomeScreen/AqiGauge.tsx
 import Text from "@/src/components/Common/Text";
 import { AqiLevelInfo } from "@/src/utils/aqiUtils";
 import { t } from "i18next";
@@ -9,7 +8,6 @@ interface AqiGaugeProps {
   aqiValue?: number;
   aqiInfo: AqiLevelInfo;
   maxAqi?: number;
-  descriptionKey?: string;
 }
 
 const AQI_LEVELS_ORDERED = [
@@ -25,7 +23,6 @@ const AqiGauge: React.FC<AqiGaugeProps> = ({
   aqiValue,
   aqiInfo,
   maxAqi = 301,
-  descriptionKey,
 }) => {
   const validAqiValue =
     aqiValue !== undefined && aqiValue !== null && !isNaN(aqiValue)
@@ -35,8 +32,8 @@ const AqiGauge: React.FC<AqiGaugeProps> = ({
   const clampedAqiForDisplay = Math.min(
     validAqiValue,
     AQI_LEVELS_ORDERED[AQI_LEVELS_ORDERED.length - 1].max
-  ); // Clamp to the max of our defined levels for dot
-  const displayMax = AQI_LEVELS_ORDERED[AQI_LEVELS_ORDERED.length - 1].max; // Use the max of our levels for percentage calculation
+  );
+  const displayMax = AQI_LEVELS_ORDERED[AQI_LEVELS_ORDERED.length - 1].max;
 
   const percentage =
     validAqiValue >= 0 ? (clampedAqiForDisplay / displayMax) * 100 : 0;
@@ -46,7 +43,6 @@ const AqiGauge: React.FC<AqiGaugeProps> = ({
       <View className="flex-row w-full h-4 rounded-full overflow-hidden mb-1 bg-gray-300 dark:bg-gray-700 shadow">
         {AQI_LEVELS_ORDERED.map((level, index) => {
           let prevMax = index === 0 ? 0 : AQI_LEVELS_ORDERED[index - 1].max;
-          // Calculate width based on the proportion of this segment up to the defined max (e.g., 500)
           let widthPercentage = ((level.max - prevMax) / displayMax) * 100;
 
           return (
@@ -64,7 +60,7 @@ const AqiGauge: React.FC<AqiGaugeProps> = ({
           <View
             style={{
               position: "absolute",
-              left: `${Math.min(percentage, 97.5)}%`, // Cap to keep dot mostly within bounds
+              left: `${Math.min(percentage, 97.5)}%`,
               top: 0.5,
               width: 12,
               height: 12,

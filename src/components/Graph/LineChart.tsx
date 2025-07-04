@@ -1,10 +1,14 @@
-// FILE: src/components/Graph/LineChart.tsx
 import { useColorScheme } from "nativewind";
 import React from "react";
 import { View, Text } from "react-native";
-import Svg, { Path, Circle, Defs, LinearGradient, Stop } from "react-native-svg";
+import Svg, {
+  Path,
+  Circle,
+  Defs,
+  LinearGradient,
+  Stop,
+} from "react-native-svg";
 
-// Removed Text import from paper
 import { THEME_COLORS_DARK, THEME_COLORS_LIGHT } from "../../constants/colors";
 import { GraphDataPoint } from "../../utils/metricData";
 
@@ -16,7 +20,6 @@ interface LineChartProps {
   lineColor?: string;
   lineWidth?: number;
   showPoints?: boolean;
-  pointColor?: string;
   pointRadius?: number;
   showGradient?: boolean;
   gradientColor?: string;
@@ -36,7 +39,8 @@ const LineChart: React.FC<LineChartProps> = ({
   paddingVertical = 5,
 }) => {
   const { colorScheme } = useColorScheme();
-  const themeColors = colorScheme === "dark" ? THEME_COLORS_DARK : THEME_COLORS_LIGHT;
+  const themeColors =
+    colorScheme === "dark" ? THEME_COLORS_DARK : THEME_COLORS_LIGHT;
 
   const lineColor = propLineColor || themeColors.primary;
   const gradientColor = propGradientColor || lineColor;
@@ -52,7 +56,8 @@ const LineChart: React.FC<LineChartProps> = ({
   }
 
   const chartHeight = height - paddingVertical * 2;
-  const calculateY = (progress: number) => paddingVertical + chartHeight * (1 - progress);
+  const calculateY = (progress: number) =>
+    paddingVertical + chartHeight * (1 - progress);
 
   const points = data.map((point: GraphDataPoint, index: number) => ({
     x: index * itemWidth + itemWidth / 2,
@@ -77,7 +82,8 @@ const LineChart: React.FC<LineChartProps> = ({
     const bottomY = paddingVertical + chartHeight;
 
     if (points.length >= 2) {
-      gradientPath = linePath + ` L ${lastX} ${bottomY} L ${firstX} ${bottomY} Z`;
+      gradientPath =
+        linePath + ` L ${lastX} ${bottomY} L ${firstX} ${bottomY} Z`;
     } else {
       const pointY = points[0].y;
       const gradientBaseWidth = Math.min(itemWidth / 2, 10);
@@ -97,7 +103,9 @@ const LineChart: React.FC<LineChartProps> = ({
           </LinearGradient>
         </Defs>
       )}
-      {showGradient && gradientPath && <Path d={gradientPath} fill="url(#grad)" />}
+      {showGradient && gradientPath && (
+        <Path d={gradientPath} fill="url(#grad)" />
+      )}
       {linePath && (
         <Path
           d={linePath}
@@ -110,7 +118,13 @@ const LineChart: React.FC<LineChartProps> = ({
       )}
       {showPoints &&
         points.map((p, index: number) => (
-          <Circle key={`point-${index}`} cx={p.x} cy={p.y} r={pointRadius} fill={p.fill} />
+          <Circle
+            key={`point-${index}`}
+            cx={p.x}
+            cy={p.y}
+            r={pointRadius}
+            fill={p.fill}
+          />
         ))}
     </Svg>
   );

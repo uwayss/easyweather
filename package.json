@@ -45,13 +45,9 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@expo/config-plugins": "~10.1.1",
-    "@google/genai": "^1.0.0",
-    "@google/generative-ai": "^0.24.1",
-    "@types/minimist": "^1.2.5",
     "@types/react": "~19.0.10",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
-    "minimist": "^1.2.8",
     "typescript": "~5.8.3"
   },
   "private": true
