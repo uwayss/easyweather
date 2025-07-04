@@ -68,7 +68,6 @@ const AirQualityCard: React.FC = () => {
         aqiValue={currentAirQuality.usAqi}
         aqiInfo={aqiInfo}
         maxAqi={301}
-        descriptionKey={aqiInfo.descriptionKey}
       />
 
       {(currentAirQuality.pm2_5 !== undefined ||

@@ -1,109 +1,23 @@
-import { withAndroidManifest } from "@expo/config-plugins";
-import fs from "node:fs";
+import config from "./app.json";
 
-const withRemoveAdIdPermission = (config) => {
-  return withAndroidManifest(config, (config) => {
-    const { manifest } = config.modResults;
-
-    if (!manifest.$) manifest.$ = {};
-    manifest.$["xmlns:tools"] = "http://schemas.android.com/tools";
-
-    if (!Array.isArray(manifest["uses-permission"])) {
-      manifest["uses-permission"] = [];
-    }
-
-    manifest["uses-permission"] = manifest["uses-permission"].filter(
-      (p) => p.$["android:name"] !== "com.google.android.gms.permission.AD_ID"
-    );
-
-    manifest["uses-permission"].push({
-      $: {
-        "android:name": "com.google.android.gms.permission.AD_ID",
-        "tools:node": "remove",
-      },
-    });
-
-    return config;
-  });
-};
-
-export default ({ config }) => {
-  const versionCodeFilePath = "versionCode.txt";
-  let versionCode;
-
-  try {
-    const versionCodeString = fs
-      .readFileSync(versionCodeFilePath, "utf8")
-      .trim();
-    versionCode = parseInt(versionCodeString, 10);
-    if (isNaN(versionCode)) {
-      console.warn(
-        `Warning: Invalid versionCode in ${versionCodeFilePath}. Using default of 1.`
-      );
-      versionCode = 1;
-    }
-  } catch (error) {
-    console.warn(
-      `Warning: Could not read ${versionCodeFilePath}. Using default versionCode of 1.`
-    );
-    console.error(error);
-    versionCode = 1;
-  }
-
-  const appConfig = {
+export default ({ config: defaultConfig }) => {
+  const finalConfig = {
+    ...defaultConfig,
+    ...config,
     expo: {
-      name: "EasyWeather",
-      slug: "easyweather",
-      version: "1.0.0",
-      orientation: "portrait",
-      icon: "./assets/icon.png",
-      scheme: "easyweather",
-      userInterfaceStyle: "automatic",
-      newArchEnabled: true,
-      ios: {
-        supportsTablet: true,
-      },
-      android: {
-        adaptiveIcon: {
-          foregroundImage: "./assets/icon_fg.png",
-          backgroundImage: "./assets/icon_bg.png",
-        },
-        edgeToEdgeEnabled: true,
-        package: "com.uwayss.easyweather",
-        versionCode: versionCode,
-        compileSdkVersion: 35,
-        targetSdkVersion: 35,
-        networkSecurityConfig: {
-          "domain-config": [
-            {
-              cleartextTrafficPermitted: true,
-              domain: "ip-api.com",
-            },
-          ],
-        },
-      },
-      web: {
-        bundler: "metro",
-        output: "static",
-        favicon: "./assets/icon.png",
-      },
-      plugins: [
-        "expo-router",
-        [
-          "expo-splash-screen",
-          {
-            image: "./assets/icon_fg.png",
-            imageWidth: 200,
-            resizeMode: "contain",
-            backgroundColor: "#ffffff",
-          },
-        ],
-      ],
-      experiments: {
-        typedRoutes: true,
-      },
+      ...defaultConfig.expo,
+      ...config.expo,
     },
   };
 
-  return withRemoveAdIdPermission(appConfig);
+  finalConfig.expo.android.networkSecurityConfig = {
+    "domain-config": [
+      {
+        cleartextTrafficPermitted: true,
+        domain: "ip-api.com",
+      },
+    ],
+  };
+
+  return finalConfig;
 };

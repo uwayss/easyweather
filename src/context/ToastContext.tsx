@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { View } from "react-native";
 import Animated, {
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -56,7 +57,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const insets = useSafeAreaInsets();
   const [toastConfig, setToastConfig] = useState<ToastConfig | null>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const opacity = useSharedValue(0);
   const translateY = useSharedValue(100);
@@ -70,10 +71,12 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const hideToast = useCallback(() => {
     translateY.value = withTiming(100, { duration: 250 });
-    opacity.value = withTiming(0, { duration: 250 }, () => {
-      setToastConfig(null);
+    opacity.value = withTiming(0, { duration: 250 }, (isFinished) => {
+      if (isFinished) {
+        runOnJS(setToastConfig)(null);
+      }
     });
-  }, [opacity, translateY, setToastConfig]);
+  }, [opacity, translateY]);
 
   const showToast = useCallback(
     ({ message, type }: ToastConfig) => {
