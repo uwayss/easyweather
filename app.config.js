@@ -1,5 +1,31 @@
-// app.config.js
+import { withAndroidManifest } from "@expo/config-plugins";
 import fs from "node:fs";
+
+const withRemoveAdIdPermission = (config) => {
+  return withAndroidManifest(config, (config) => {
+    const { manifest } = config.modResults;
+
+    if (!manifest.$) manifest.$ = {};
+    manifest.$["xmlns:tools"] = "http://schemas.android.com/tools";
+
+    if (!Array.isArray(manifest["uses-permission"])) {
+      manifest["uses-permission"] = [];
+    }
+
+    manifest["uses-permission"] = manifest["uses-permission"].filter(
+      (p) => p.$["android:name"] !== "com.google.android.gms.permission.AD_ID"
+    );
+
+    manifest["uses-permission"].push({
+      $: {
+        "android:name": "com.google.android.gms.permission.AD_ID",
+        "tools:node": "remove",
+      },
+    });
+
+    return config;
+  });
+};
 
 export default ({ config }) => {
   const versionCodeFilePath = "versionCode.txt";
@@ -81,5 +107,5 @@ export default ({ config }) => {
     },
   };
 
-  return appConfig;
+  return withRemoveAdIdPermission(appConfig);
 };

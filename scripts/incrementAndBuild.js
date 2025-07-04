@@ -3,7 +3,6 @@ import { execSync } from "child_process";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 
 const VERSION_CODE_FILE = "versionCode.txt";
-
 function getNextVersionCode() {
   let currentVersionCode = 0;
   if (existsSync(VERSION_CODE_FILE)) {
@@ -23,7 +22,6 @@ function getNextVersionCode() {
       currentVersionCode = 0;
     }
   }
-
   const nextVersionCode = currentVersionCode + 1;
   writeFileSync(VERSION_CODE_FILE, nextVersionCode.toString(), "utf-8");
   console.log(
@@ -34,17 +32,16 @@ function getNextVersionCode() {
 
 async function main() {
   console.log("Starting local build preparation...");
-
   // 1. Get and increment the version code
   const newVersionCode = getNextVersionCode();
 
   // 2. Run expo prebuild with the new version code as an environment variable
   console.log(`Running 'expo prebuild' with BUILD_NUMBER=${newVersionCode}...`);
   try {
-    execSync(
-      `BUILD_NUMBER=${newVersionCode} npx expo prebuild --platform android --clean`,
-      { stdio: "inherit" }
-    );
+    execSync(`npx expo prebuild --platform android --clean`, {
+      stdio: "inherit",
+      env: { ...process.env, BUILD_NUMBER: newVersionCode.toString() },
+    });
     console.log("Expo prebuild completed successfully!");
   } catch (error) {
     console.error(`Error during expo prebuild: ${error.message}`);
@@ -53,7 +50,6 @@ async function main() {
     );
     process.exit(1);
   }
-
   // 3. Instruct the user on the next steps
   console.log(
     `\n---------------------------------------------------------------------`
