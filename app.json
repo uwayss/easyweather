@@ -13,8 +13,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/fg.png",
-        "backgroundColor": "#0C1C2E"
+        "foregroundImage": "./assets/adaptive-icon/foreground.png",
+        "backgroundImage": "./assets/adaptive-icon/background.png"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.uwayss.easyweather",
@@ -23,14 +23,14 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/icon.png"
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/fg.png",
+          "image": "./assets/splash.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#0C1C2E"
