@@ -80,7 +80,7 @@ export default function LocationsScreen() {
     activeLocation.displayName !== t("weather.unknown_location");
 
   return (
-    <View className="flex-1 bg-light-background dark:bg-dark-background">
+    <View className="flex-1 bg-light-background dark:bg-dark-background pt-10">
       <ScreenHeader title={t("location.saved_locations")} />
 
       {isCurrentActiveLocationSavable && (

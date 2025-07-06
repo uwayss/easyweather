@@ -56,69 +56,10 @@ def get_last_commits(n: int) -> list[str]:
         sys.exit(1)
 
 
-def increment_version_code(file_path: str) -> int:
-    """Increments the versionCode in the specified build.gradle file."""
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-
-        pattern = r'(\bversionCode\s+)(\d+)'
-        match = re.search(pattern, content)
-
-        if not match:
-            print(f"Error: Could not find 'versionCode' in {file_path}", file=sys.stderr)
-            sys.exit(1)
-
-        current_version_code = int(match.group(2))
-        new_version_code = current_version_code + 1
-
-        new_content = re.sub(pattern, rf'\g<1>{new_version_code}', content, count=1)
-
-        with open(file_path, 'w', encoding='utf-8') as f:
-            f.write(new_content)
-
-        print(f"Incremented versionCode in {file_path} from {current_version_code} to {new_version_code}")
-        return new_version_code
-
-    except FileNotFoundError:
-        print(f"Error: Gradle file not found at {file_path}", file=sys.stderr)
-        sys.exit(1)
-    except Exception as e:
-        print(f"Error processing gradle file: {e}", file=sys.stderr)
-        sys.exit(1)
-
 def generate_content(prompt: str) -> str: # Removed api_key argument here
     """Generates content using the Gemini API. Assumes genai is configured."""
-    try:
-        # genai.configure should be called once in main()
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(prompt)
-
-        # Robust text extraction
-        text_content = None
-        try:
-            if response.text:
-                 text_content = response.text.strip()
-        except ValueError:
-             print("Warning: Accessing response.text failed. Checking candidates.", file=sys.stderr)
-
-        if text_content is None and response.candidates:
-             candidate = response.candidates[0]
-             if candidate.content and candidate.content.parts:
-                 text_content = "".join(part.text for part in candidate.content.parts).strip()
-
-        if text_content is None:
-             print("Error: Could not extract text from Gemini response.", file=sys.stderr)
-             print(f"Prompt Feedback: {response.prompt_feedback}", file=sys.stderr)
-             if response.candidates:
-                 print(f"Finish Reason: {response.candidates[0].finish_reason}", file=sys.stderr)
-             return ""
-        else:
-             return text_content
-
-    except Exception as e:
-        print(f"Error during Gemini API call: {e}", file=sys.stderr)
-        return ""
+    print("ASK THIS:")
+    print(prompt)
 
 def generate_and_translate_notes(commits: list[str]) -> dict[str, str]: # Removed api_key arg
     """Generates and translates release notes in a single API call."""
@@ -237,7 +178,6 @@ def main():
         print("No commit messages found or fetched. Exiting.", file=sys.stderr)
         sys.exit(1)
 
-    increment_version_code(GRADLE_FILE_PATH)
 
     # Single call to generate and translate
     notes = generate_and_translate_notes(commits) # Removed api_key arg

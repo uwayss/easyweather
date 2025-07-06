@@ -14,7 +14,8 @@
     "bundle": "node scripts/incrementAndBuild.js",
     "bundleSize": "node scripts/react-native-bundle-visualizer.cjs",
     "checks": "npm run types && npm run lint",
-    "apk": "expo run:android --variant=release"
+    "apk": "expo run:android --variant=release",
+    "prebuild": "expo prebuild"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",

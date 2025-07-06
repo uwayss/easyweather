@@ -13,8 +13,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon_fg.png",
-        "backgroundImage": "./assets/icon_bg.png"
+        "foregroundImage": "./assets/fg.png",
+        "backgroundColor": "#0C1C2E"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.uwayss.easyweather",
@@ -30,10 +30,10 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/icon_fg.png",
+          "image": "./assets/fg.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#0C1C2E"
         }
       ],
       [
