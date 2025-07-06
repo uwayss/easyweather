@@ -16,9 +16,7 @@ const ScreenHeader: React.FC<ScreenHeaderProps> = ({
 }) => {
   const router = useRouter();
   return (
-    <View
-      className={`flex-row items-center h-14 px-2 shadow-sm bg-light-surface dark:bg-dark-surface`}
-    >
+    <View className="flex-row items-center h-14 px-2 bg-light-background dark:bg-dark-background">
       {showBackButton && (
         <TouchableOpacity
           onPress={() => router.back()}

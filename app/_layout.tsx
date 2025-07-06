@@ -1,10 +1,9 @@
 import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import { useColorScheme as useColorSchemeNW } from "nativewind";
 import React, { useEffect, useMemo } from "react";
-import { StyleSheet, useColorScheme } from "react-native";
+import { useColorScheme, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../global.css";
 import "../services/i18next";
 import {
@@ -67,15 +66,18 @@ const ThemedAppWithProviders = () => {
   }
 
   return (
-    <SafeAreaView style={StyleSheet.absoluteFill}>
-      <Stack screenOptions={{ headerShown: false }}>
+    <View style={{ flex: 1 }}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
         <Stack.Screen name="index" />
         <Stack.Screen name="settings" />
         <Stack.Screen name="details" />
         <Stack.Screen name="locations" />
       </Stack>
-      <StatusBar />
-    </SafeAreaView>
+    </View>
   );
 };
 

@@ -1,6 +1,6 @@
 import { useColorScheme } from "nativewind";
 import React from "react";
-import { RefreshControl, ScrollView, View } from "react-native";
+import { RefreshControl, ScrollView } from "react-native";
 
 import HourlyConditions from "@/src/components/HourlyConditions";
 import { useLocationContext } from "@/src/context/LocationContext";
@@ -24,28 +24,26 @@ export default function Home() {
     colorScheme === "dark" ? "#83c5be" : "#006d77";
 
   return (
-    <View className="flex-1 bg-light-background dark:bg-dark-background">
-      <ScrollView
-        className="flex-1"
-        contentContainerClassName="p-4 gap-5"
-        showsVerticalScrollIndicator={false}
-        contentInsetAdjustmentBehavior="automatic"
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={refreshControlColors}
-            tintColor={refreshControlTintColor}
-            enabled={!isLoading}
-          />
-        }
-      >
-        <SearchRow />
-        <WeatherCard />
-        <HourlyConditions />
-        <ForecastList />
-        <AirQualityCard />
-      </ScrollView>
-    </View>
+    <ScrollView
+      className="flex-1 bg-light-background dark:bg-dark-background"
+      contentContainerClassName="pt-10 px-4 pb-4 gap-5"
+      showsVerticalScrollIndicator={false}
+      contentInsetAdjustmentBehavior="automatic"
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={refreshControlColors}
+          tintColor={refreshControlTintColor}
+          enabled={!isLoading}
+        />
+      }
+    >
+      <SearchRow />
+      <WeatherCard />
+      <HourlyConditions />
+      <ForecastList />
+      <AirQualityCard />
+    </ScrollView>
   );
 }
