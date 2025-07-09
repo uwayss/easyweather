@@ -1,0 +1,18 @@
+<en-US>
+✨ Introducing a fresh new look for the app!
+🎨 We've updated our app icon and splash screen for a modern feel.
+📱 Enjoy a more immersive, full-screen experience with our new edge-to-edge design.
+🖌️ The user interface has been polished for a cleaner and more consistent layout.
+</en-US>
+<ar>
+✨ نقدم لكم تصميمًا جديدًا ومنعشًا للتطبيق!
+🎨 لقد قمنا بتحديث أيقونة التطبيق وشاشة البداية لإضفاء طابع عصري.
+📱 استمتع بتجربة غامرة أكثر بملء الشاشة مع تصميمنا الجديد من الحافة إلى الحافة.
+🖌️ تم تحسين واجهة المستخدم لتصميم أنظف وأكثر تناسقًا.
+</ar>
+<tr-TR>
+✨ Uygulama için yepyeni bir görünüm sunuyoruz!
+🎨 Modern bir his için uygulama simgemizi ve açılış ekranımızı güncelledik.
+📱 Yeni uçtan uca tasarımımızla daha sürükleyici, tam ekran bir deneyimin keyfini çıkarın.
+🖌️ Kullanıcı arayüzü, daha temiz ve daha tutarlı bir düzen için iyileştirildi.
+</tr-TR>

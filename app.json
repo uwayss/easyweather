@@ -18,12 +18,12 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.uwayss.easyweather",
-      "versionCode": 36
+      "versionCode": 37
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.ico"
     },
     "plugins": [
       "expo-router",
