@@ -1,7 +1,5 @@
-import { ImageSource } from "expo-image";
-import React, { useCallback, useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { Dimensions, ScrollView, StyleSheet, View } from "react-native";
+import React from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 import { THEME_COLORS_DARK, THEME_COLORS_LIGHT } from "../constants/colors";
 import {
@@ -11,16 +9,9 @@ import {
   HOURLY_CONDITIONS_POINT_ITEM_WIDTH,
   HOURLY_CONDITIONS_VALUES_ROW_HEIGHT,
 } from "../constants/ui";
-import { useSettings } from "../context/SettingsContext";
-import { useWeather } from "../context/WeatherContext";
+import { useHourlyConditions } from "../hooks/useHourlyConditions";
 import HourlyConditionsSkeleton from "../screens/HomeScreen/HourlyConditionsSkeleton";
 import { HourWeather } from "../types/weather";
-import {
-  GraphDataPoint,
-  MetricType,
-  getMetricDataForForecast,
-} from "../utils/metricData";
-import { filterHourlyWeatherForNext24HoursIncludingNow } from "../utils/weatherUtils";
 import Card from "./Common/Card";
 import Divider from "./Common/Divider";
 import Text from "./Common/Text";
@@ -29,59 +20,28 @@ import MetricSelector from "./Graph/MetricSelector";
 import HourDetail from "./Hourly/HourDetail";
 import HourValue from "./Hourly/HourValue";
 
-const screenWidth = Dimensions.get("window").width;
-
 export default function HourlyConditions({
   selectedHoursData,
 }: {
   selectedHoursData?: HourWeather[];
 }) {
-  const { weather, loading } = useWeather();
-  const hourlyWeather = weather?.hourly;
+  const {
+    t,
+    loading,
+    hourlyWeather,
+    hourlyData,
+    currentMetric,
+    setCurrentMetric,
+    graphData,
+    numDataPoints,
+    internalContentWidth,
+    availableScrollWidth,
+    getIconForHour,
+    theme,
+    chartColor,
+  } = useHourlyConditions(selectedHoursData);
 
-  const getHourlyData = useCallback(() => {
-    return (
-      selectedHoursData ||
-      filterHourlyWeatherForNext24HoursIncludingNow(hourlyWeather)
-    );
-  }, [selectedHoursData, hourlyWeather]);
-
-  const hourlyData = useMemo(() => getHourlyData(), [getHourlyData]);
-
-  const [currentMetric, setCurrentMetric] = useState<MetricType>("temperature");
-  const { settings, activeTheme, translatedWeatherDescriptions } =
-    useSettings();
-  const { t } = useTranslation();
-  const theme = activeTheme === "dark" ? THEME_COLORS_DARK : THEME_COLORS_LIGHT;
   const styles = hourlyStyles(theme);
-
-  const graphData: GraphDataPoint[] | undefined = useMemo(() => {
-    return getMetricDataForForecast(
-      currentMetric,
-      hourlyData,
-      settings.useImperialUnits
-    );
-  }, [currentMetric, hourlyData, settings.useImperialUnits]);
-
-  const numDataPoints = graphData?.length || 0;
-  const availableScrollWidth =
-    screenWidth - HOURLY_CONDITIONS_CARD_PADDING_HORIZONTAL * 2;
-
-  const internalContentWidth = useMemo(() => {
-    if (numDataPoints < 1) return availableScrollWidth;
-    const calculatedWidth = numDataPoints * HOURLY_CONDITIONS_POINT_ITEM_WIDTH;
-    return Math.max(calculatedWidth, availableScrollWidth);
-  }, [numDataPoints, availableScrollWidth]);
-
-  const xStep = HOURLY_CONDITIONS_POINT_ITEM_WIDTH;
-
-  const getIconForHour = (hour: HourWeather): ImageSource | undefined => {
-    const image =
-      translatedWeatherDescriptions[hour.weatherCode]?.[
-        hour.isDay ? "day" : "night"
-      ]?.image;
-    return typeof image === "number" ? (image as ImageSource) : undefined;
-  };
 
   const chartAreaMinHeight =
     HOURLY_CONDITIONS_VALUES_ROW_HEIGHT +
@@ -93,7 +53,8 @@ export default function HourlyConditions({
     return <HourlyConditionsSkeleton />;
   }
 
-  const chartColor = graphData?.[0]?.color || theme.primary;
+  const xStep = HOURLY_CONDITIONS_POINT_ITEM_WIDTH;
+
   return (
     <Card className="overflow-hidden" elevated>
       <View style={styles.headerSection}>
