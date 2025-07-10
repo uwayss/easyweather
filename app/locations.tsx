@@ -1,4 +1,3 @@
-import { useRouter } from "expo-router";
 import { useColorScheme } from "nativewind";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -7,10 +6,8 @@ import { FlatList, Platform, TouchableOpacity, View } from "react-native";
 import Text from "@/src/components/Common/Text";
 import Icon from "@/src/components/Icon";
 import ScreenHeader from "@/src/components/ScreenHeader";
-import {
-  SavedLocation,
-  useLocationContext,
-} from "@/src/context/LocationContext";
+import { SavedLocation } from "@/src/context/LocationContext";
+import { useLocationsScreen } from "@/src/hooks/useLocationsScreen";
 
 const LocationItem = ({
   item,
@@ -50,34 +47,14 @@ const LocationItem = ({
 };
 
 export default function LocationsScreen() {
-  const router = useRouter();
   const {
+    t,
     savedLocations,
-    setActiveLocation,
     removeSavedLocation,
-    addSavedLocation,
-    isLocationSaved,
-    location: activeLocation,
-  } = useLocationContext();
-  const { t } = useTranslation();
-
-  const handleSelectLocation = (selectedLoc: SavedLocation) => {
-    setActiveLocation(selectedLoc);
-    router.back();
-  };
-
-  const handleAddCurrentLocation = () => {
-    if (activeLocation && !isLocationSaved(activeLocation)) {
-      addSavedLocation(activeLocation);
-    }
-  };
-
-  const isCurrentActiveLocationSavable =
-    activeLocation &&
-    !isLocationSaved(activeLocation) &&
-    activeLocation.displayName !== t("weather.current_location") &&
-    activeLocation.displayName !== t("weather.loading_location") &&
-    activeLocation.displayName !== t("weather.unknown_location");
+    handleSelectLocation,
+    handleAddCurrentLocation,
+    isCurrentActiveLocationSavable,
+  } = useLocationsScreen();
 
   return (
     <View className="flex-1 bg-light-background dark:bg-dark-background pt-10">

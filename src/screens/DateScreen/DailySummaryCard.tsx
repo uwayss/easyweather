@@ -1,19 +1,11 @@
 import { Image as ExpoImage } from "expo-image";
-import React, { useMemo } from "react";
-import { useTranslation } from "react-i18next";
+import React from "react";
 import { View } from "react-native";
 
 import Text from "../../components/Common/Text";
 import Icon from "../../components/Icon";
-import { useSettings } from "../../context/SettingsContext";
+import { useDailySummaryCard } from "../../hooks/useDailySummaryCard";
 import { DayWeather } from "../../types/weather";
-import { getUvIndexInfo } from "../../utils/aqiUtils";
-import { formatTimeStringToHour } from "../../utils/timeUtils";
-import {
-  convertTemperature,
-  convertWindSpeed,
-  formatWindSpeed,
-} from "../../utils/unitConversion";
 
 interface DetailItemProps {
   icon: string;
@@ -63,35 +55,21 @@ export default function DailySummaryCard({
 }: {
   dayData: DayWeather | undefined;
 }) {
-  const { settings, translatedWeatherDescriptions } = useSettings();
-  const { t } = useTranslation();
-
-  const uvDetails = useMemo(
-    () => getUvIndexInfo(dayData?.uvIndexMax),
-    [dayData?.uvIndexMax]
-  );
+  const {
+    t,
+    weatherInfo,
+    uvDetails,
+    formattedHigh,
+    formattedLow,
+    tempUnit,
+    formattedWind,
+    formattedSunrise,
+    formattedSunset,
+  } = useDailySummaryCard(dayData);
 
   if (!dayData) return null;
 
-  const weatherInfo = translatedWeatherDescriptions[dayData.weatherCode]?.day;
-  const formattedHigh = Math.round(
-    convertTemperature(dayData.maxTemp, settings.useImperialUnits)
-  ).toString();
-  const formattedLow = Math.round(
-    convertTemperature(dayData.minTemp, settings.useImperialUnits)
-  ).toString();
-  const tempUnit = settings.useImperialUnits ? "°F" : "°C";
-  const rawWindSpeed = convertWindSpeed(
-    dayData.windSpeed,
-    settings.useImperialUnits
-  );
-  const formattedWind = formatWindSpeed(
-    rawWindSpeed,
-    settings.useImperialUnits
-  );
-  const [windValue, windUnit] = formattedWind.split(" ");
-  const formattedSunrise = formatTimeStringToHour(dayData.sunrise);
-  const formattedSunset = formatTimeStringToHour(dayData.sunset);
+  const [windValue, windUnit] = formattedWind;
 
   return (
     <View className="bg-light-surface dark:bg-dark-surface rounded-lg shadow-sm overflow-hidden p-4 gap-3">

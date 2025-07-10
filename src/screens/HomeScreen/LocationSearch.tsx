@@ -1,5 +1,5 @@
 import { useColorScheme } from "nativewind";
-import React, { useCallback, useState, useMemo } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
@@ -8,91 +8,36 @@ import {
   View,
 } from "react-native";
 
-import { LocationResult, searchLocation } from "../../api/location";
 import Icon from "../../components/Icon";
 import { THEME_COLORS_DARK, THEME_COLORS_LIGHT } from "../../constants/colors";
 import { useLocationContext } from "../../context/LocationContext";
+import { useLocationSearch } from "../../hooks/useLocationSearch";
 import LocationSearchResults from "./LocationSearchResults";
-
-type DebouncedSearchFunction = (query: string) => Promise<void> | void;
-
-function debounce(
-  func: DebouncedSearchFunction,
-  wait: number
-): DebouncedSearchFunction {
-  let timeout: any = null;
-  return function (query: string) {
-    if (timeout) clearTimeout(timeout);
-    timeout = setTimeout(() => func(query), wait);
-  };
-}
 
 export const LocationSearch = () => {
   const { colorScheme } = useColorScheme();
-  const { setActiveLocation, getCurrentLocation, setError } =
-    useLocationContext();
+  const { getCurrentLocation } = useLocationContext();
   const { t } = useTranslation();
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const [results, setResults] = useState<LocationResult[]>([]);
-  const [showResults, setShowResults] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const onLocationSelect = (selectedLocation: LocationResult) => {
-    setActiveLocation({
-      latitude: parseFloat(selectedLocation.lat),
-      longitude: parseFloat(selectedLocation.lon),
-      displayName: selectedLocation.display_name,
-    });
-  };
-
-  const performSearch = useCallback(
-    async (query: string) => {
-      if (query.trim()) {
-        try {
-          setIsLoading(true);
-          const locationResults = await searchLocation(query);
-          setResults(locationResults);
-          setShowResults(true);
-        } catch (error) {
-          const msg = `Error searching location: ${String(error)}`;
-          setError(msg);
-        } finally {
-          setIsLoading(false);
-        }
-      } else {
-        setResults([]);
-        setShowResults(false);
-      }
-    },
-    [setError, setIsLoading, setResults, setShowResults]
-  );
-
-  const debouncedSearch = useMemo(
-    () => debounce(performSearch, 500),
-    [performSearch]
-  );
-
-  const handleSearchChange = (query: string) => {
-    setSearchQuery(query);
-    debouncedSearch(query);
-  };
-
-  const handleSelectLocation = (locationResult: LocationResult) => {
-    onLocationSelect(locationResult);
-    setShowResults(false);
-    setSearchQuery("");
-  };
+  const {
+    searchQuery,
+    results,
+    showResults,
+    isLoading,
+    handleSearchChange,
+    handleSelectLocation,
+    setShowResults,
+  } = useLocationSearch();
 
   const handleGeolocationPress = async () => {
     try {
       await getCurrentLocation();
-      setSearchQuery("");
+      handleSearchChange("");
       setShowResults(false);
     } catch (error) {
       console.error("Geolocation button error:", error);
     }
   };
+
   const dark = THEME_COLORS_DARK;
   const light = THEME_COLORS_LIGHT;
   const placeholderTextColor =

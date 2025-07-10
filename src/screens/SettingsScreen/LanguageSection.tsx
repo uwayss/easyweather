@@ -1,14 +1,13 @@
-import React, { memo, useCallback, useState } from "react";
-import { useTranslation } from "react-i18next";
+import React, { memo } from "react";
 import { FlatList, Modal, TouchableOpacity, View } from "react-native";
 
 import Card from "../../components/Common/Card";
 import Divider from "../../components/Common/Divider";
 import Text from "../../components/Common/Text";
 import Icon from "../../components/Icon";
-import { SUPPORTED_LANGUAGES } from "../../constants/settings";
-import { useSettings } from "../../context/SettingsContext";
+import { useLanguageSettings } from "../../hooks/useLanguageSettings";
 import { ListSection } from "./Common";
+import { SUPPORTED_LANGUAGES } from "../../constants/settings";
 
 const LanguageOption = ({
   item,
@@ -41,21 +40,14 @@ const LanguageOption = ({
 );
 
 function LanguageSection() {
-  const { settings, updateSetting } = useSettings();
-  const { t } = useTranslation();
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const handleLanguageChange = useCallback(
-    (lang: string) => {
-      updateSetting("language", lang);
-      setModalVisible(false);
-    },
-    [updateSetting]
-  );
-
-  const currentLanguageLabel =
-    SUPPORTED_LANGUAGES.find((lang) => lang.value === settings.language)
-      ?.label || settings.language;
+  const {
+    t,
+    settings,
+    modalVisible,
+    setModalVisible,
+    handleLanguageChange,
+    currentLanguageLabel,
+  } = useLanguageSettings();
 
   const renderItem = ({ item }: { item: { value: string; label: string } }) => (
     <LanguageOption
