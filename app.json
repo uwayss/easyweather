@@ -3,7 +3,7 @@
     "name": "EasyWeather",
     "slug": "easyweather",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "scheme": "easyweather",
     "userInterfaceStyle": "automatic",
@@ -18,7 +18,7 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.uwayss.easyweather",
-      "versionCode": 37
+      "versionCode": 38
     },
     "web": {
       "bundler": "metro",
@@ -42,7 +42,9 @@
           "android": {
             "usesCleartextTraffic": true,
             "compileSdkVersion": 35,
-            "targetSdkVersion": 35
+            "targetSdkVersion": 35,
+            "enableProguardInReleaseBuilds": true,
+            "enableShrinkResourcesInReleaseBuilds": true
           }
         }
       ]

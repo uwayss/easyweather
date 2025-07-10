@@ -9,9 +9,10 @@
  * @returns Temperature in the preferred unit
  */
 export function convertTemperature(
-  tempCelsius: number,
+  tempCelsius: number | undefined,
   useImperial: boolean
 ): number {
+  if (!tempCelsius) return 0;
   if (useImperial) {
     return (tempCelsius * 9) / 5 + 32;
   }

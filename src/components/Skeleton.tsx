@@ -14,6 +14,7 @@ interface SkeletonProps {
   width?: DimensionValue;
   style?: StyleProp<ViewStyle>;
   className?: string;
+  children?: React.ReactNode;
 }
 
 const Skeleton: React.FC<SkeletonProps> = ({
@@ -21,6 +22,7 @@ const Skeleton: React.FC<SkeletonProps> = ({
   width,
   style,
   className = "",
+  children,
 }) => {
   const { colorScheme } = useColorScheme();
   const progress = useSharedValue(0.5);
@@ -48,7 +50,9 @@ const Skeleton: React.FC<SkeletonProps> = ({
     <Animated.View
       style={[{ height, width }, animatedStyle, style]}
       className={`${baseColor} ${className}`}
-    />
+    >
+      {children}
+    </Animated.View>
   );
 };
 

@@ -18,11 +18,10 @@ const AnimatedWeatherSummary: React.FC<AnimatedWeatherSummaryProps> = ({
     if (label) {
       setIsRendered(true);
       Animated.sequence([
-        Animated.delay(500), // 1.5 second delay
         Animated.spring(animatedValue, {
           toValue: 1,
           friction: 7,
-          tension: 80,
+          tension: 40,
           useNativeDriver: true,
         }),
       ]).start();
@@ -38,18 +37,15 @@ const AnimatedWeatherSummary: React.FC<AnimatedWeatherSummaryProps> = ({
   }, [label, animatedValue]);
 
   const containerStyle = {
-    opacity: animatedValue,
+    opacity: animatedValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 1],
+    }),
     transform: [
-      {
-        translateY: animatedValue.interpolate({
-          inputRange: [0, 1],
-          outputRange: [10, 0],
-        }),
-      },
       {
         scale: animatedValue.interpolate({
           inputRange: [0, 1],
-          outputRange: [0.97, 1],
+          outputRange: [0, 1],
         }),
       },
     ],
@@ -62,8 +58,8 @@ const AnimatedWeatherSummary: React.FC<AnimatedWeatherSummaryProps> = ({
   return (
     <Animated.View style={containerStyle}>
       {isRendered && label && (
-        <Card className="py-1.5 px-3 mt-2" elevated>
-          <Text className="text-xs text-center leading-snug" pop passive>
+        <Card className="py-1.5 px-3" elevated>
+          <Text className="text-xs text-center leading-snug" pop>
             {label}
           </Text>
         </Card>

@@ -38,7 +38,7 @@ export function Details({ current }: { current: CurrentWeather | undefined }) {
 
   return (
     <Card
-      className="flex-row justify-around items-center mt-5 p-4 w-full"
+      className="flex-row justify-around items-center p-4 w-full h-16"
       elevated
     >
       <WeatherDetailItem
