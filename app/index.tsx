@@ -1,5 +1,5 @@
 import { useColorScheme } from "nativewind";
-import React from "react";
+import React, { useRef } from "react";
 import { RefreshControl, ScrollView } from "react-native";
 
 import HourlyConditions from "@/src/components/HourlyConditions";
@@ -17,6 +17,19 @@ export default function Home() {
   const { loading: locationLoading } = useLocationContext();
   const { refreshing, onRefresh } = useHomeRefresh();
   const isLoading = locationLoading || weatherLoading;
+  const scrollViewRef = useRef<ScrollView>(null);
+  const hasScrolledAfterLoad = useRef(false);
+
+  if (isLoading) {
+    hasScrolledAfterLoad.current = false;
+  }
+
+  const handleContentSizeChange = () => {
+    if (!isLoading && !hasScrolledAfterLoad.current) {
+      scrollViewRef.current?.scrollTo({ y: 0, animated: false });
+      hasScrolledAfterLoad.current = true;
+    }
+  };
 
   const refreshControlColors =
     colorScheme === "dark" ? ["#83c5be"] : ["#006d77"];
@@ -25,10 +38,12 @@ export default function Home() {
 
   return (
     <ScrollView
+      ref={scrollViewRef}
       className="flex-1 bg-light-background dark:bg-dark-background"
       contentContainerClassName="pt-10 px-4 pb-4 gap-5"
       showsVerticalScrollIndicator={false}
-      contentInsetAdjustmentBehavior="automatic"
+      contentInsetAdjustmentBehavior="never"
+      onContentSizeChange={handleContentSizeChange}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
