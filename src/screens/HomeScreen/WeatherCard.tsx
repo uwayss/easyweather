@@ -14,7 +14,6 @@ export default function WeatherCard() {
     useWeather();
   const { settings } = useSettings();
   const currentWeather = weather?.current;
-
   const weatherSummaryLabel = React.useMemo(() => {
     return generateWeatherSummaryLabel(
       todaySummary,
@@ -29,13 +28,13 @@ export default function WeatherCard() {
     settings.useImperialUnits,
   ]);
 
-  if (loading && !weather) {
+  if (loading || !weather) {
     return <WeatherCardSkeleton />;
   }
 
   return (
     <Card
-      className="flex-1 p-4 justify-around"
+      className="p-4 justify-around gap-5 h-90"
       elevated
       background={
         currentWeather
@@ -46,10 +45,10 @@ export default function WeatherCard() {
       }
     >
       <MainInfo current={currentWeather} />
-      <Details current={currentWeather} />
-      {weatherSummaryLabel && (
+      <Card className="gap-2" borderType="hidden">
+        <Details current={currentWeather} />
         <AnimatedWeatherSummary label={weatherSummaryLabel} />
-      )}
+      </Card>
     </Card>
   );
 }

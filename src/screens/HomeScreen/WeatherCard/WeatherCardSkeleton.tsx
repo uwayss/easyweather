@@ -3,37 +3,61 @@ import Skeleton from "@/src/components/Skeleton";
 import React from "react";
 import { View } from "react-native";
 
+function MainInfoSkeleton() {
+  return (
+    <Card
+      className="items-center justify-evenly flex-1 gap-3 p-4 h-48"
+      elevated
+    >
+      <Skeleton height={15} width="60%" className="rounded-lg" />
+      <Skeleton height={30} width="50%" className="rounded-lg" />
+      <Skeleton height={15} width="50%" className="rounded-lg" />
+      <Skeleton height={15} width="40%" className="rounded-lg" />
+    </Card>
+  );
+}
+
+function DetailsSkeleton() {
+  return (
+    <Card
+      elevated
+      className="flex-row justify-around items-center p-4 w-full h-16"
+    >
+      <View className="flex-1 items-center gap-1">
+        <Skeleton height={16} width="80%" className="rounded-md" />
+        <Skeleton height={20} width="50%" className="rounded-md" />
+      </View>
+      <View className="w-px h-full bg-neutral-400/30 mx-2" />
+      <View className="flex-1 items-center gap-1">
+        <Skeleton height={16} width="80%" className="rounded-md" />
+        <Skeleton height={20} width="60%" className="rounded-md" />
+      </View>
+      <View className="w-px h-full bg-neutral-400/30 mx-2" />
+      <View className="flex-1 items-center gap-1">
+        <Skeleton height={16} width="80%" className="rounded-md" />
+        <Skeleton height={20} width="70%" className="rounded-md" />
+      </View>
+    </Card>
+  );
+}
+
+function AnimatedWeatherSummarySkeleton() {
+  return (
+    <Card elevated className="w-full h-7 items-center justify-center">
+      <Skeleton height={12} width="60%" className="rounded-md items-center" />
+    </Card>
+  );
+}
+
 const WeatherCardSkeleton = () => {
   return (
-    <View className="gap-5">
-      <Card elevated className="flex-1 p-4 justify-around min-h-[268px]">
-        <View className="items-center justify-center flex-1 gap-2">
-          <Skeleton height={20} width="60%" className="rounded-lg" />
-          <Skeleton height={60} width="45%" className="rounded-lg my-1" />
-          <Skeleton height={20} width="70%" className="rounded-lg" />
-          <Skeleton height={20} width="50%" className="rounded-lg mt-1" />
-        </View>
-        <Card
-          elevated
-          className="flex-row justify-around items-center mt-5 p-4 w-full"
-        >
-          <View className="flex-1 items-center gap-1">
-            <Skeleton height={16} width="80%" className="rounded-md" />
-            <Skeleton height={20} width="50%" className="rounded-md" />
-          </View>
-          <View className="w-px h-full bg-neutral-400/30 mx-2" />
-          <View className="flex-1 items-center gap-1">
-            <Skeleton height={16} width="80%" className="rounded-md" />
-            <Skeleton height={20} width="60%" className="rounded-md" />
-          </View>
-          <View className="w-px h-full bg-neutral-400/30 mx-2" />
-          <View className="flex-1 items-center gap-1">
-            <Skeleton height={16} width="80%" className="rounded-md" />
-            <Skeleton height={20} width="70%" className="rounded-md" />
-          </View>
-        </Card>
-      </Card>
-    </View>
+    <Card elevated className="p-4 justify-around h-90 gap-5">
+      <MainInfoSkeleton />
+      <View className="gap-2">
+        <DetailsSkeleton />
+        <AnimatedWeatherSummarySkeleton />
+      </View>
+    </Card>
   );
 };
 
