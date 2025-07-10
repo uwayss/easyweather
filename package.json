@@ -16,7 +16,8 @@
     "checks": "npm run types && npm run lint",
     "apk": "expo run:android --variant=release",
     "prebuild": "expo prebuild",
-    "deps": "expo install --fix"
+    "deps": "expo install --fix",
+    "commit": "npm run checks && ups diff"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
