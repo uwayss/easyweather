@@ -1,18 +1,12 @@
 import { useColorScheme } from "nativewind";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import {
-  ActivityIndicator,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-
-import Icon from "../../components/Icon";
+import { View } from "react-native";
 import { THEME_COLORS_DARK, THEME_COLORS_LIGHT } from "../../constants/colors";
 import { useLocationContext } from "../../context/LocationContext";
 import { useLocationSearch } from "../../hooks/useLocationSearch";
 import LocationSearchResults from "./LocationSearchResults";
+import { SearchInput } from "./SearchInput";
 
 export const LocationSearch = () => {
   const { colorScheme } = useColorScheme();
@@ -48,38 +42,21 @@ export const LocationSearch = () => {
 
   return (
     <View className="z-40 flex-1">
-      <View className="flex-row items-center h-14 px-1 rounded-xl bg-light-elevation-level3 dark:bg-dark-elevation-level3">
-        <TouchableOpacity onPress={handleGeolocationPress} className="p-2">
-          <Icon name="crosshairs-gps" size={22} />
-        </TouchableOpacity>
-        <TextInput
-          placeholder={t("search.placeholder")}
-          placeholderTextColor={placeholderTextColor}
-          onChangeText={handleSearchChange}
-          value={searchQuery}
-          className="flex-1 h-full px-3"
-          style={{ color: textInputColor }}
-          returnKeyType="search"
-          onFocus={() => searchQuery && setShowResults(true)}
-          onBlur={() => setTimeout(() => setShowResults(false), 150)}
-        />
-        {isLoading ? (
-          <ActivityIndicator
-            size="small"
-            color={indicatorColor}
-            className="px-3"
-          />
-        ) : (
-          searchQuery.length > 0 && (
-            <TouchableOpacity
-              onPress={() => handleSearchChange("")}
-              className="p-2"
-            >
-              <Icon name="x" size={22} type="feather" />
-            </TouchableOpacity>
-          )
-        )}
-      </View>
+      <SearchInput
+        placeholder={t("search.placeholder")}
+        placeholderTextColor={placeholderTextColor}
+        onChangeText={handleSearchChange}
+        value={searchQuery}
+        style={{ color: textInputColor }}
+        returnKeyType="search"
+        onFocus={() => searchQuery && setShowResults(true)}
+        onBlur={() => setTimeout(() => setShowResults(false), 150)}
+        isLoading={isLoading}
+        onGeolocationPress={handleGeolocationPress}
+        onClearPress={() => handleSearchChange("")}
+        indicatorColor={indicatorColor}
+        searchQuery={searchQuery}
+      />
       <View className="absolute top-14 z-50 left-0 right-0">
         <LocationSearchResults
           results={results}
