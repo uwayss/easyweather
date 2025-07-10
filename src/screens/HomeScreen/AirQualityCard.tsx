@@ -1,10 +1,7 @@
 import Card from "@/src/components/Common/Card";
 import Text from "@/src/components/Common/Text";
 import Icon from "@/src/components/Icon";
-import { THEME_COLORS_DARK, THEME_COLORS_LIGHT } from "@/src/constants/colors";
-import { useWeather } from "@/src/context/WeatherContext";
-import { formatOzone, formatPm25, getUsAqiInfo } from "@/src/utils/aqiUtils";
-import { useColorScheme } from "nativewind";
+import { useAirQualityCard } from "@/src/hooks/useAirQualityCard";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
@@ -12,14 +9,15 @@ import AirQualityCardSkeleton from "./AirQualityCardSkeleton";
 import AqiGauge from "./AqiGauge";
 
 const AirQualityCard: React.FC = () => {
-  const { currentAirQuality, loading: weatherLoading } = useWeather();
   const { t } = useTranslation();
-  const { colorScheme } = useColorScheme();
-
-  const iconColor =
-    colorScheme === "dark"
-      ? THEME_COLORS_DARK.onSurfaceVariant
-      : THEME_COLORS_LIGHT.onSurfaceVariant;
+  const {
+    weatherLoading,
+    currentAirQuality,
+    iconColor,
+    aqiInfo,
+    formattedPm25Value,
+    formattedOzoneValue,
+  } = useAirQualityCard();
 
   if (weatherLoading && !currentAirQuality) {
     return <AirQualityCardSkeleton />;
@@ -35,8 +33,6 @@ const AirQualityCard: React.FC = () => {
       </Card>
     );
   }
-
-  const aqiInfo = getUsAqiInfo(currentAirQuality.usAqi);
 
   const DetailItem: React.FC<{
     labelKey: string;
@@ -79,7 +75,7 @@ const AirQualityCard: React.FC = () => {
             {currentAirQuality.pm2_5 !== undefined && (
               <DetailItem
                 labelKey="aqi.pm2_5"
-                value={formatPm25(currentAirQuality.pm2_5)}
+                value={formattedPm25Value}
                 iconName="dots-hexagon"
               />
             )}
@@ -90,7 +86,7 @@ const AirQualityCard: React.FC = () => {
             {currentAirQuality.ozone !== undefined && (
               <DetailItem
                 labelKey="aqi.ozone"
-                value={formatOzone(currentAirQuality.ozone)}
+                value={formattedOzoneValue}
                 iconName="molecule"
               />
             )}

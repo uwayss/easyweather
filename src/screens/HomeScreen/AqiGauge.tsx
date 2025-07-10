@@ -1,4 +1,5 @@
 import Text from "@/src/components/Common/Text";
+import { useAqiGauge } from "@/src/hooks/useAqiGauge";
 import { AqiLevelInfo } from "@/src/utils/aqiUtils";
 import { t } from "i18next";
 import React from "react";
@@ -10,33 +11,9 @@ interface AqiGaugeProps {
   maxAqi?: number;
 }
 
-const AQI_LEVELS_ORDERED = [
-  { max: 50, color: "#00E400", key: "good" },
-  { max: 100, color: "#FFFF00", key: "moderate" },
-  { max: 150, color: "#FF7E00", key: "unhealthy_sensitive" },
-  { max: 200, color: "#FF0000", key: "unhealthy" },
-  { max: 300, color: "#8F3F97", key: "very_unhealthy" },
-  { max: 500, color: "#7E0023", key: "hazardous" },
-];
-
-const AqiGauge: React.FC<AqiGaugeProps> = ({
-  aqiValue,
-  aqiInfo,
-  maxAqi = 301,
-}) => {
-  const validAqiValue =
-    aqiValue !== undefined && aqiValue !== null && !isNaN(aqiValue)
-      ? aqiValue
-      : -1;
-
-  const clampedAqiForDisplay = Math.min(
-    validAqiValue,
-    AQI_LEVELS_ORDERED[AQI_LEVELS_ORDERED.length - 1].max
-  );
-  const displayMax = AQI_LEVELS_ORDERED[AQI_LEVELS_ORDERED.length - 1].max;
-
-  const percentage =
-    validAqiValue >= 0 ? (clampedAqiForDisplay / displayMax) * 100 : 0;
+const AqiGauge: React.FC<AqiGaugeProps> = ({ aqiValue, aqiInfo }) => {
+  const { validAqiValue, displayMax, percentage, AQI_LEVELS_ORDERED } =
+    useAqiGauge(aqiValue);
 
   return (
     <View className="items-center w-full mb-2">

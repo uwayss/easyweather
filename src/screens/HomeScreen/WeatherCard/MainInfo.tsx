@@ -1,64 +1,24 @@
-import { useColorScheme } from "nativewind";
 import React from "react";
-import { useTranslation } from "react-i18next";
 import { TouchableOpacity, View } from "react-native";
 
 import Card from "../../../components/Common/Card";
 import Text from "../../../components/Common/Text";
 import Icon from "../../../components/Icon";
-import {
-  THEME_COLORS_DARK,
-  THEME_COLORS_LIGHT,
-} from "../../../constants/colors";
-import { useLocationContext } from "../../../context/LocationContext";
-import { useSettings } from "../../../context/SettingsContext";
+import { useMainInfo } from "../../../hooks/useMainInfo";
 import { CurrentWeather } from "../../../types/weather";
-import {
-  convertTemperature,
-  formatTemperature,
-} from "../../../utils/unitConversion";
 
 export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
-  const { settings, translatedWeatherDescriptions } = useSettings();
-  const { t } = useTranslation();
   const {
-    location,
-    loading: locationLoading,
-    addSavedLocation,
-    removeSavedLocation,
-    isLocationSaved,
-  } = useLocationContext();
-  const { colorScheme } = useColorScheme();
-  const timeOfDay = current?.isDay ? "day" : "night";
-
-  const name = location
-    ? location.displayName
-    : locationLoading
-    ? t("weather.loading_location")
-    : t("weather.unknown_location");
-
-  const description = current
-    ? translatedWeatherDescriptions[current.weatherCode]?.[timeOfDay]
-        .description
-    : null;
-
-  const isCurrentLocSaved = isLocationSaved(location);
-  const canBeSaved =
-    location &&
-    location.displayName !== t("weather.current_location") &&
-    location.displayName !== t("weather.loading_location") &&
-    location.displayName !== t("weather.unknown_location");
-
-  const handleToggleSaveLocation = () => {
-    if (!location || !canBeSaved) return;
-
-    if (isCurrentLocSaved) {
-      const locationId = `${location.latitude}_${location.longitude}`;
-      removeSavedLocation(locationId);
-    } else {
-      addSavedLocation(location);
-    }
-  };
+    t,
+    name,
+    description,
+    isCurrentLocSaved,
+    canBeSaved,
+    handleToggleSaveLocation,
+    formattedTemperatureDisplay,
+    formattedFeltTempDisplay,
+    starIconColor,
+  } = useMainInfo(current);
 
   return (
     <Card elevated className="flex-1 h-48">
@@ -80,24 +40,13 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
               <Icon
                 name={isCurrentLocSaved ? "star" : "star-outline"}
                 size={20}
-                color={
-                  isCurrentLocSaved
-                    ? colorScheme === "dark"
-                      ? THEME_COLORS_DARK.primary
-                      : THEME_COLORS_LIGHT.primary
-                    : colorScheme === "dark"
-                    ? THEME_COLORS_DARK.onSurface
-                    : THEME_COLORS_LIGHT.onSurface
-                }
+                color={starIconColor}
               />
             </TouchableOpacity>
           )}
         </View>
         <Text className="font-bold text-5xl" pop>
-          {formatTemperature(
-            convertTemperature(current?.temperature, settings.useImperialUnits),
-            settings.useImperialUnits
-          )}
+          {formattedTemperatureDisplay}
         </Text>
         <Text
           className="w-full flex-wrap uppercase mt-1 tracking-widest text-center text-base font-semibold leading-relaxed"
@@ -111,10 +60,7 @@ export function MainInfo({ current }: { current: CurrentWeather | undefined }) {
         >
           {t("weather.feltTemperature")}
           {": "}
-          {formatTemperature(
-            convertTemperature(current?.feltTemp, settings.useImperialUnits),
-            settings.useImperialUnits
-          ).replace(/°[CF]$/, "")}
+          {formattedFeltTempDisplay}
         </Text>
       </View>
     </Card>
