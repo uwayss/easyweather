@@ -8,6 +8,8 @@ import Icon from "@/src/components/Icon";
 import ScreenHeader from "@/src/components/ScreenHeader";
 import { SavedLocation } from "@/src/context/LocationContext";
 import { useLocationsScreen } from "@/src/hooks/useLocationsScreen";
+import { AddLocationButton } from "@/src/screens/LocationsScreen/AddLocationButton";
+import { NoLocationsPlaceholder } from "@/src/screens/LocationsScreen/NoLocationsPlaceholder";
 
 const LocationItem = ({
   item,
@@ -61,25 +63,7 @@ export default function LocationsScreen() {
       <ScreenHeader title={t("location.saved_locations")} />
 
       {isCurrentActiveLocationSavable && (
-        <View className="px-4 pt-4">
-          <TouchableOpacity
-            onPress={handleAddCurrentLocation}
-            className="p-3 bg-light-surface dark:bg-dark-surface border border-light-outline dark:border-dark-outline rounded-lg items-center justify-center flex-row shadow-sm active:opacity-80"
-          >
-            <Icon
-              name="plus-circle-outline"
-              size={20}
-              className="text-light-primary dark:text-dark-primary mr-2"
-            />
-            <Text
-              className="text-light-primary dark:text-dark-primary font-semibold text-center text-sm"
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
-              {t("location.add_current")}
-            </Text>
-          </TouchableOpacity>
-        </View>
+        <AddLocationButton onPress={handleAddCurrentLocation} />
       )}
 
       {savedLocations.length > 0 ? (
@@ -100,16 +84,7 @@ export default function LocationsScreen() {
           className="flex-1"
         />
       ) : (
-        <View className="flex-1 py-10 px-4 items-center justify-center">
-          <Icon
-            name="bookmark-multiple-outline"
-            size={48}
-            className="opacity-40 mb-3"
-          />
-          <Text className="text-lg opacity-60 text-center">
-            {t("location.no_saved_locations")}
-          </Text>
-        </View>
+        <NoLocationsPlaceholder />
       )}
     </View>
   );
