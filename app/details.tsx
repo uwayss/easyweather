@@ -1,3 +1,4 @@
+// FILE: app/details.tsx
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -34,7 +35,7 @@ export default function DayDetailsScreen() {
   return (
     <ScrollView
       className="flex-1 bg-light-background dark:bg-dark-background"
-      contentContainerClassName="pt-10 px-4 gap-5"
+      contentContainerClassName="pt-10 px-4 pb-10 gap-5"
     >
       <ScreenHeader title={formattedTitle || t("weather.hourly_forecast")} />
       <DailySummaryCard dayData={dayData} />

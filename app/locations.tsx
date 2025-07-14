@@ -1,7 +1,8 @@
+// FILE: app/locations.tsx
 import { useColorScheme } from "nativewind";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { FlatList, Platform, TouchableOpacity, View } from "react-native";
+import { FlatList, TouchableOpacity, View } from "react-native";
 
 import Text from "@/src/components/Common/Text";
 import Icon from "@/src/components/Icon";
@@ -79,7 +80,7 @@ export default function LocationsScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={{
             paddingTop: isCurrentActiveLocationSavable ? 16 : 4,
-            paddingBottom: Platform.OS === "ios" ? 20 : 10,
+            paddingBottom: 20,
           }}
           className="flex-1"
         />
