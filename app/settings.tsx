@@ -16,7 +16,7 @@ const SettingsScreen = () => {
   return (
     <ScrollView
       className="flex-1 bg-light-background dark:bg-dark-background"
-      contentContainerClassName="pt-10"
+      contentContainerClassName="pt-10 pb-10"
     >
       <ScreenHeader title={t("settings.title")} />
       <AppearanceSection />
