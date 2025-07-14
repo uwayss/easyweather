@@ -1,3 +1,4 @@
+// FILE: src/screens/HomeScreen/WeatherCard.tsx
 import React from "react";
 import Card from "../../components/Common/Card";
 import { useWeatherCard } from "../../hooks/useWeatherCard";
@@ -15,11 +16,7 @@ export default function WeatherCard() {
   }
 
   return (
-    <Card
-      className="p-4 justify-around gap-5 h-90"
-      elevated
-      background={background}
-    >
+    <Card className="p-4 justify-around gap-5" elevated background={background}>
       <MainInfo current={currentWeather} />
       <Card className="gap-2" borderType="hidden">
         <Details current={currentWeather} />

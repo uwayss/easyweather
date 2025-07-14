@@ -1,6 +1,6 @@
 // FILE: src/components/Graph/MetricButton.tsx
 import React from "react";
-import { Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import Icon from "../Icon";
 
 interface MetricButtonProps {
@@ -30,7 +30,7 @@ const MetricButton: React.FC<MetricButtonProps> = ({
     <TouchableOpacity
       activeOpacity={0.7}
       className={`
-        py-1.5 px-3 mr-2 rounded-lg border flex-row items-center 
+        px-3 mr-2 rounded-lg border flex-row items-center justify-center min-h-[44px]
         ${isActive ? activeBg : ""}
         ${isActive ? activeBorder : inactiveBorder}
       `}
@@ -44,7 +44,11 @@ const MetricButton: React.FC<MetricButtonProps> = ({
           className={`mr-1.5 ${textStyle}`}
         />
       )}
-      <Text className={`text-sm font-medium ${textStyle}`}>{label}</Text>
+      <View style={{ flexShrink: 1 }}>
+        <Text className={`text-sm font-medium text-center ${textStyle}`}>
+          {label}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 };

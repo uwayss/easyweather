@@ -1,3 +1,4 @@
+// FILE: src/screens/DateScreen/DetailItem.tsx
 import React from "react";
 import { View } from "react-native";
 import Text from "@/src/components/Common/Text";
@@ -26,7 +27,7 @@ export const DetailItem: React.FC<DetailItemProps> = ({
         color={color}
         type={icon === "shield-sun-outline" ? "material" : "feather"}
       />
-      <View className="items-start">
+      <View className="items-start flex-1">
         <Text className="font-semibold text-sm">
           {value}
           {unit && (
@@ -37,7 +38,7 @@ export const DetailItem: React.FC<DetailItemProps> = ({
         </Text>
         <Text
           className="text-xs mt-px text-light-onSurfaceVariant dark:text-dark-onSurfaceVariant"
-          numberOfLines={1}
+          numberOfLines={2}
         >
           {label}
         </Text>

@@ -15,4 +15,5 @@ export const SUPPORTED_LANGUAGES = [
   { value: "en", label: "English" },
   { value: "ar", label: "العربية" },
   { value: "tr", label: "Türkçe" },
+  { value: "de", label: "Deutsch" },
 ];

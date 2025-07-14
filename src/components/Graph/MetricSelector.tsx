@@ -1,3 +1,4 @@
+// FILE: src/components/Graph/MetricSelector.tsx
 import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
@@ -55,6 +56,7 @@ export default function MetricSelector({
       contentContainerStyle={{
         flexDirection: "row",
         paddingVertical: 4,
+        alignItems: "center",
       }}
     >
       {metrics.map((button) => (

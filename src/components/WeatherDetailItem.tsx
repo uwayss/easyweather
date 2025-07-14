@@ -1,3 +1,4 @@
+// FILE: src/components/WeatherDetailItem.tsx
 import React from "react";
 import { View } from "react-native";
 
@@ -9,7 +10,7 @@ interface WeatherDetailItemProps {
   icon: string;
   iconColor?: string;
   iconType?: "feather" | "material";
-  label: string;
+  label?: string;
   pop?: boolean;
 }
 
@@ -22,16 +23,15 @@ const WeatherDetailItem: React.FC<WeatherDetailItemProps> = ({
   pop,
 }) => {
   return (
-    <View className="flex-1 items-center">
-      <View className="flex-row items-center mb-1">
-        <Icon
-          name={icon}
-          type={iconType}
-          size={16}
-          color={iconColor}
-          className="mr-1"
-        />
-        <Text pop={pop} passive className="text-center">
+    <View className="flex-1 items-center justify-between">
+      <View className="flex-1 items-center py-1">
+        <Icon name={icon} type={iconType} size={24} color={iconColor} />
+        <Text
+          pop={pop}
+          passive
+          className="flex-shrink text-center text-xs"
+          numberOfLines={2}
+        >
           {label}
         </Text>
       </View>
