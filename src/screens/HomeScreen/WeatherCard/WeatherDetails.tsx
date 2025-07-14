@@ -1,3 +1,4 @@
+// FILE: src/screens/HomeScreen/WeatherCard/WeatherDetails.tsx
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
@@ -14,12 +15,9 @@ export function Details({ current }: { current: CurrentWeather | undefined }) {
     useWeatherDetails(current);
 
   return (
-    <Card
-      className="flex-row justify-around items-center p-4 w-full h-16"
-      elevated
-    >
+    <Card className="flex-row justify-around items-start p-4 w-full" elevated>
       <WeatherDetailItem
-        icon="water-percent"
+        icon="water"
         label={t("weather.humidity")}
         iconColor={iconColor}
         pop
@@ -28,7 +26,7 @@ export function Details({ current }: { current: CurrentWeather | undefined }) {
           {humidityString}
         </Text>
       </WeatherDetailItem>
-      <View className="w-px h-full bg-neutral-400 opacity-30 mx-2" />
+      <View className="w-px self-stretch bg-neutral-400 opacity-30 mx-2" />
       <WeatherDetailItem
         icon="weather-windy"
         label={t("weather.wind_speed")}
@@ -39,7 +37,7 @@ export function Details({ current }: { current: CurrentWeather | undefined }) {
           {windSpeedString}
         </Text>
       </WeatherDetailItem>
-      <View className="w-px h-full bg-neutral-400 opacity-30 mx-2" />
+      <View className="w-px self-stretch bg-neutral-400 opacity-30 mx-2" />
       <WeatherDetailItem
         icon="shield-sun-outline"
         label={t("weather.uv_index")}

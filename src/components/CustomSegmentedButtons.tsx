@@ -72,7 +72,7 @@ const CustomSegmentedButtons: React.FC<CustomSegmentedButtonsProps> = ({
             )}
             <Text
               className={`
-                text-sm font-medium
+                text-xs font-medium
                 ${isActive ? activeText : inactiveText}
                 ${button.disabled ? "opacity-50" : ""}
               `}

@@ -1,3 +1,4 @@
+// FILE: src/hooks/useForecastItem.ts
 import { useRouter } from "expo-router";
 import { useMemo, useCallback } from "react";
 import { useTranslation } from "react-i18next";
@@ -23,13 +24,10 @@ export const useForecastItem = (item: DayWeather, index: number) => {
       } else if (index === 1) {
         dayNameStr = t("forecast.tomorrow");
       } else {
-        const locale =
-          i18n.language === "ar"
-            ? "ar-SA"
-            : i18n.language === "tr"
-            ? "tr-TR"
-            : "en-UK";
-        dayNameStr = date.toLocaleDateString(locale, { weekday: "long" });
+        // This is the fix: Directly use the app's language for date formatting.
+        dayNameStr = date.toLocaleDateString(i18n.language, {
+          weekday: "long",
+        });
       }
 
       const desc = translatedWeatherDescriptions[item.weatherCode]?.day;

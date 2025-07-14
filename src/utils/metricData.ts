@@ -36,6 +36,17 @@ export interface GraphDataPoint {
   label: string;
 }
 
+/**
+ * Formats a date string into a 24-hour "HH:00" label.
+ * @param time - The ISO date string for the hour.
+ * @returns A formatted string, e.g., "09:00" or "15:00".
+ */
+const formatHourLabel = (time: string): string => {
+  const hour = new Date(time).getHours();
+  const paddedHour = String(hour).padStart(2, "0");
+  return `${paddedHour}:00`;
+};
+
 // --- Refactored Metric Calculation Functions ---
 
 // Actual Temperature specific calculations for a single hour
@@ -62,22 +73,12 @@ const getTemperatureDataForHour = (
     maxTempColor
   );
 
-  const hourTime = new Date(item.time).getHours();
-  const formattedHour =
-    hourTime === 0
-      ? "12 AM"
-      : hourTime === 12
-      ? "12 PM"
-      : hourTime > 12
-      ? `${hourTime - 12} PM`
-      : `${hourTime} AM`;
-
   return {
     progress: tempProgress,
     color,
     value: formatTemperature(temp, useImperialUnits),
     time: item.time,
-    label: formattedHour,
+    label: formatHourLabel(item.time),
   };
 };
 
@@ -105,22 +106,12 @@ const getApparentTemperatureDataForHour = (
     maxTempColor
   );
 
-  const hourTime = new Date(item.time).getHours();
-  const formattedHour =
-    hourTime === 0
-      ? "12 AM"
-      : hourTime === 12
-      ? "12 PM"
-      : hourTime > 12
-      ? `${hourTime - 12} PM`
-      : `${hourTime} AM`;
-
   return {
     progress: tempProgress,
     color,
     value: formatTemperature(temp, useImperialUnits),
     time: item.time,
-    label: formattedHour,
+    label: formatHourLabel(item.time),
   };
 };
 
@@ -131,22 +122,12 @@ const getPrecipitationDataForHour = (item: HourWeather): GraphDataPoint => {
   if (rainProb > 30) color = PRECIPITATION_COLOR_MEDIUM;
   if (rainProb > 60) color = PRECIPITATION_COLOR_HIGH;
 
-  const hourTime = new Date(item.time).getHours();
-  const formattedHour =
-    hourTime === 0
-      ? "12 AM"
-      : hourTime === 12
-      ? "12 PM"
-      : hourTime > 12
-      ? `${hourTime - 12} PM`
-      : `${hourTime} AM`;
-
   return {
     progress: rainProb / 100,
     color,
     value: Math.round(rainProb) + "%",
     time: item.time,
-    label: formattedHour,
+    label: formatHourLabel(item.time),
   };
 };
 
@@ -157,22 +138,12 @@ const getHumidityDataForHour = (item: HourWeather): GraphDataPoint => {
   if (humidity > 30) color = HUMIDITY_COLOR_MEDIUM;
   if (humidity > 60) color = HUMIDITY_COLOR_HIGH;
 
-  const hourTime = new Date(item.time).getHours();
-  const formattedHour =
-    hourTime === 0
-      ? "12 AM"
-      : hourTime === 12
-      ? "12 PM"
-      : hourTime > 12
-      ? `${hourTime - 12} PM`
-      : `${hourTime} AM`;
-
   return {
     progress: humidity / 100,
     color,
     value: Math.round(humidity) + "%",
     time: item.time,
-    label: formattedHour,
+    label: formatHourLabel(item.time),
   };
 };
 
@@ -203,22 +174,12 @@ const getWindSpeedDataForHour = (
     : MAX_WIND_SPEED_KMH;
   const progress = Math.min(1, Math.max(0, convertedWindSpeed / maxWindSpeed));
 
-  const hourTime = new Date(item.time).getHours();
-  const formattedHour =
-    hourTime === 0
-      ? "12 AM"
-      : hourTime === 12
-      ? "12 PM"
-      : hourTime > 12
-      ? `${hourTime - 12} PM`
-      : `${hourTime} AM`;
-
   return {
     progress,
     color,
     value: formatWindSpeed(convertedWindSpeed, useImperialUnits),
     time: item.time,
-    label: formattedHour,
+    label: formatHourLabel(item.time),
   };
 };
 

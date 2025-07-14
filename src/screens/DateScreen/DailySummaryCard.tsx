@@ -1,3 +1,4 @@
+// FILE: src/screens/DateScreen/DailySummaryCard.tsx
 import { Image as ExpoImage } from "expo-image";
 import React from "react";
 import { View } from "react-native";
@@ -33,7 +34,7 @@ const SummaryHeader = ({
           {tempUnit}
         </Text>
       </View>
-      <Text className="font-medium mt-0.5" numberOfLines={1}>
+      <Text className="font-medium mt-0.5" numberOfLines={2}>
         {weatherInfo?.description || ""}
       </Text>
     </View>
