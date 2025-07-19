@@ -12,7 +12,12 @@
     "checks": "npm run types && npm run lint",
     "apk": "expo run:android --variant=release",
     "bundle:android": "cd android && .\\gradlew.bat bundleRelease && cd ..",
-    "release": "expo prebuild -p android && cd android && .\\gradlew.bat assembleRelease && adb install -f .\\app\\build\\outputs\\apk\\release\\app-release.apk",
+    "release:prebuild": "expo prebuild -p android",
+    "release:assemble": "cd android && .\\gradlew.bat assembleRelease && cd ..",
+    "release:clear-data": "adb shell pm clear com.uwayss.easyweather",
+    "release:install": "adb install -f android\\app\\build\\outputs\\apk\\release\\app-release.apk",
+    "release:start-app": "adb shell am start -n com.uwayss.easyweather/com.uwayss.easyweather.MainActivity",
+    "release": "npm run release:prebuild && npm run release:assemble && npm run release:clear-data && npm run release:install && npm run release:start-app",
     "prebuild": "expo prebuild",
     "deps": "expo install --fix",
     "commit": "npm run checks && ups diff"
