@@ -1,3 +1,4 @@
+// FILE: src/screens/HomeScreen/AirQualityCard.tsx
 import Card from "@/src/components/Common/Card";
 import Text from "@/src/components/Common/Text";
 import Icon from "@/src/components/Icon";
@@ -45,11 +46,7 @@ const AirQualityCard: React.FC = () => {
       <Text className="text-lg font-semibold mb-2 text-center">
         {t("aqi.title")}
       </Text>
-      <AqiGauge
-        aqiValue={currentAirQuality.usAqi}
-        aqiInfo={aqiInfo}
-        maxAqi={301}
-      />
+      <AqiGauge aqiValue={currentAirQuality.usAqi} aqiInfo={aqiInfo} />
       {(currentAirQuality.pm2_5 !== undefined ||
         currentAirQuality.ozone !== undefined) && (
         <>
