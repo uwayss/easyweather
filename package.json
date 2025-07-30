@@ -18,7 +18,7 @@
     "release:install": "adb install -f android\\app\\build\\outputs\\apk\\release\\app-release.apk",
     "release:start-app": "adb shell am start -n com.uwayss.easyweather/com.uwayss.easyweather.MainActivity",
     "release": "npm run release:prebuild && npm run release:assemble && npm run release:clear-data && npm run release:install && npm run release:start-app",
-    "prebuild": "expo prebuild",
+    "prebuild": "expo prebuild -p android",
     "deps": "expo install --fix",
     "commit": "npm run checks && ups diff"
   },
