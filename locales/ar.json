@@ -1,5 +1,6 @@
 {
   "common.go_back": "العودة",
+  "common.home": "الرئيسية",
   "search.placeholder": "ابحث عن موقع",
   "settings.title": "الإعدادات",
   "settings.language": "اللغة",
@@ -111,6 +112,7 @@
   "uv_index.very_high": "مرتفع جدًا",
   "uv_index.extreme": "شديد للغاية",
   "location.saved_locations": "المواقع المحفوظة",
+  "location.saved_locations_short": "المواقع",
   "location.save": "حفظ",
   "location.saved": "محفوظ",
   "location.delete": "حذف",

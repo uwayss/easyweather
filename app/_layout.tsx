@@ -1,6 +1,6 @@
+// FILE: app/_layout.tsx
 import { Stack } from "expo-router";
 import React from "react";
-import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import "../global.css";
@@ -12,7 +12,7 @@ import { WeatherProvider } from "../src/context/WeatherContext";
 import { useAppTheme } from "../src/hooks/useAppTheme";
 import { useGlobalErrors } from "../src/hooks/useGlobalErrors";
 
-const ThemedAppWithProviders = () => {
+const RootLayoutNav = () => {
   const { settings, isLoading: isSettingsLoading } = useSettings();
 
   useAppTheme(settings);
@@ -23,28 +23,14 @@ const ThemedAppWithProviders = () => {
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="index" />
-        <Stack.Screen name="settings" />
-        <Stack.Screen name="details" />
-        <Stack.Screen name="locations" />
-      </Stack>
-    </View>
-  );
-};
-
-const AppWithProviders = () => {
-  return (
-    <LocationProvider>
-      <WeatherProvider>
-        <ThemedAppWithProviders />
-      </WeatherProvider>
-    </LocationProvider>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="details" />
+    </Stack>
   );
 };
 
@@ -54,7 +40,11 @@ export default function AppRoot() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SettingsProvider>
           <ToastProvider>
-            <AppWithProviders />
+            <LocationProvider>
+              <WeatherProvider>
+                <RootLayoutNav />
+              </WeatherProvider>
+            </LocationProvider>
           </ToastProvider>
         </SettingsProvider>
       </GestureHandlerRootView>
