@@ -1,5 +1,6 @@
 {
   "common.go_back": "Geri dön",
+  "common.home": "Anasayfa",
   "search.placeholder": "Konum Arayın",
   "settings.title": "Ayarlar",
   "settings.language": "Dil",
@@ -111,6 +112,7 @@
   "uv_index.very_high": "Çok Yüksek",
   "uv_index.extreme": "Aşırı",
   "location.saved_locations": "Kaydedilmiş Konumlar",
+  "location.saved_locations_short": "Konumlar",
   "location.save": "Kaydet",
   "location.saved": "Kaydedildi",
   "location.delete": "Sil",

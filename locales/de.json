@@ -1,5 +1,6 @@
 {
   "common.go_back": "Zurück",
+  "common.home": "Start",
   "search.placeholder": "Nach einem Ort suchen",
   "settings.title": "Einstellungen",
   "settings.language": "Sprache",
@@ -112,6 +113,7 @@
   "uv_index.very_high": "Sehr hoch",
   "uv_index.extreme": "Extrem",
   "location.saved_locations": "Gespeicherte Orte",
+  "location.saved_locations_short": "Orte",
   "location.save": "Speichern",
   "location.saved": "Gespeichert",
   "location.delete": "Löschen",

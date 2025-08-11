@@ -1,4 +1,4 @@
-// FILE: app/locations.tsx
+// FILE: app/(tabs)/locations.tsx
 import { useColorScheme } from "nativewind";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -61,7 +61,10 @@ export default function LocationsScreen() {
 
   return (
     <View className="flex-1 bg-light-background dark:bg-dark-background pt-10">
-      <ScreenHeader title={t("location.saved_locations")} />
+      <ScreenHeader
+        title={t("location.saved_locations")}
+        showBackButton={false}
+      />
 
       {isCurrentActiveLocationSavable && (
         <AddLocationButton onPress={handleAddCurrentLocation} />
@@ -80,7 +83,7 @@ export default function LocationsScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={{
             paddingTop: isCurrentActiveLocationSavable ? 16 : 4,
-            paddingBottom: 20,
+            paddingBottom: 4,
           }}
           className="flex-1"
         />
