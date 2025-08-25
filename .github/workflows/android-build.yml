@@ -53,13 +53,12 @@ jobs:
           mkdir -p android/app
           echo "${{ secrets.KEYSTORE_BASE64 }}" | tr -d '\r\n' | base64 --decode > android/app/my-release-key.jks
 
-      - name: Set up gradle.properties
+      - name: Append keystore info cleanly
         run: |
-          echo "MYAPP_UPLOAD_STORE_FILE=my-release-key.jks" >> android/gradle.properties
-          echo "MYAPP_UPLOAD_KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> android/gradle.properties
-          echo "MYAPP_UPLOAD_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> android/gradle.properties
-          echo "MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> android/gradle.properties
-
+          echo "MYAPP_UPLOAD_STORE_FILE=my-release-key.jks" | sed 's/[^[:print:]]//g' >> android/gradle.properties
+          echo "MYAPP_UPLOAD_KEY_ALIAS=${{ secrets.KEY_ALIAS }}" | sed 's/[^[:print:]]//g' >> android/gradle.properties
+          echo "MYAPP_UPLOAD_STORE_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" | sed 's/[^[:print:]]//g' >> android/gradle.properties
+          echo "MYAPP_UPLOAD_KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" | sed 's/[^[:print:]]//g' >> android/gradle.properties
       - name: Build APK + AAB
         working-directory: android
         run: |
