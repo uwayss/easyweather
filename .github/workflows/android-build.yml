@@ -67,8 +67,8 @@ jobs:
       - name: Build APK + AAB
         working-directory: android
         run: |
-          ./gradlew assembleRelease --retry
-          ./gradlew bundleRelease --retry
+          ./gradlew assembleRelease
+          ./gradlew bundleRelease
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
