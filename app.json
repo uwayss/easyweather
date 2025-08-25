@@ -27,7 +27,7 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.uwayss.easyweather",
-      "versionCode": 40
+      "versionCode": 41
     },
     "web": {
       "bundler": "metro",
