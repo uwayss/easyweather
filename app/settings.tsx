@@ -1,4 +1,4 @@
-// FILE: app/(tabs)/settings.tsx
+// FILE: app/settings.tsx
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView } from "react-native";
@@ -16,9 +16,9 @@ const SettingsScreen = () => {
   return (
     <ScrollView
       className="flex-1 bg-light-background dark:bg-dark-background"
-      contentContainerClassName="pt-10 pb-4"
+      contentContainerClassName="py-10"
     >
-      <ScreenHeader title={t("settings.title")} showBackButton={false} />
+      <ScreenHeader title={t("settings.title")} />
       <AppearanceSection />
       <LanguageSection />
       <UnitsSection />
