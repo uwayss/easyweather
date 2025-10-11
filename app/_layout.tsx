@@ -11,8 +11,9 @@ import { ToastProvider } from "../src/context/ToastContext";
 import { WeatherProvider } from "../src/context/WeatherContext";
 import { useAppTheme } from "../src/hooks/useAppTheme";
 import { useGlobalErrors } from "../src/hooks/useGlobalErrors";
+import { View } from "react-native";
 
-const RootLayoutNav = () => {
+const ThemedAppWithProviders = () => {
   const { settings, isLoading: isSettingsLoading } = useSettings();
 
   useAppTheme(settings);
@@ -23,28 +24,36 @@ const RootLayoutNav = () => {
   }
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="(tabs)" />
-      <Stack.Screen name="details" />
-    </Stack>
+    <View style={{ flex: 1 }}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="index" />
+        <Stack.Screen name="settings" />
+        <Stack.Screen name="details" />
+        <Stack.Screen name="locations" />
+      </Stack>
+    </View>
   );
 };
-
+const AppWithProviders = () => {
+  return (
+    <LocationProvider>
+      <WeatherProvider>
+        <ThemedAppWithProviders />
+      </WeatherProvider>
+    </LocationProvider>
+  );
+};
 export default function AppRoot() {
   return (
     <SafeAreaProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SettingsProvider>
           <ToastProvider>
-            <LocationProvider>
-              <WeatherProvider>
-                <RootLayoutNav />
-              </WeatherProvider>
-            </LocationProvider>
+            <AppWithProviders />
           </ToastProvider>
         </SettingsProvider>
       </GestureHandlerRootView>
