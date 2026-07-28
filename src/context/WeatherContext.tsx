@@ -100,6 +100,11 @@ export const WeatherProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (location) {
+      // Fetch-on-change: fetchWeatherDataAndAQI sets loading/error state
+      // synchronously before awaiting the request, which is the point - the UI
+      // must show a spinner for the duration. The extra render this costs is
+      // intended, not a cascading-render bug.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchWeatherDataAndAQI(location.latitude, location.longitude);
     }
   }, [location, fetchWeatherDataAndAQI]);

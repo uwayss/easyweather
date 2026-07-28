@@ -64,18 +64,20 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      opacity: opacity.value,
-      transform: [{ translateY: translateY.value }],
+      opacity: opacity.get(),
+      transform: [{ translateY: translateY.get() }],
     };
   });
 
   const hideToast = useCallback(() => {
-    translateY.value = withTiming(100, { duration: 250 });
-    opacity.value = withTiming(0, { duration: 250 }, (isFinished) => {
-      if (isFinished) {
-        runOnJS(setToastConfig)(null);
-      }
-    });
+    translateY.set(withTiming(100, { duration: 250 }));
+    opacity.set(
+      withTiming(0, { duration: 250 }, (isFinished) => {
+        if (isFinished) {
+          runOnJS(setToastConfig)(null);
+        }
+      })
+    );
   }, [opacity, translateY]);
 
   const showToast = useCallback(
@@ -84,8 +86,8 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({
         clearTimeout(timeoutRef.current);
       }
       setToastConfig({ message, type });
-      translateY.value = withSpring(0, { damping: 15, stiffness: 120 });
-      opacity.value = withTiming(1, { duration: 200 });
+      translateY.set(withSpring(0, { damping: 15, stiffness: 120 }));
+      opacity.set(withTiming(1, { duration: 200 }));
 
       timeoutRef.current = setTimeout(hideToast, 4000);
     },

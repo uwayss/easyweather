@@ -23,20 +23,26 @@ export const useWeatherDetails = (current: CurrentWeather | undefined) => {
     [current?.uvIndex]
   );
 
+  // Read through locals so each memo's body touches exactly what its
+  // dependency list names; mixing `current?.x` deps with `current.x` reads
+  // is what react-hooks/preserve-manual-memoization flags.
+  const windSpeed = current?.windSpeed;
+  const humidity = current?.humidity;
+
   const windSpeedString = useMemo(
     () =>
-      current?.windSpeed !== undefined
+      windSpeed !== undefined
         ? formatWindSpeed(
-            convertWindSpeed(current.windSpeed, settings.useImperialUnits),
+            convertWindSpeed(windSpeed, settings.useImperialUnits),
             settings.useImperialUnits
           )
         : "--",
-    [current?.windSpeed, settings.useImperialUnits]
+    [windSpeed, settings.useImperialUnits]
   );
 
   const humidityString = useMemo(
-    () => (current?.humidity !== undefined ? `${current.humidity}%` : "--"),
-    [current?.humidity]
+    () => (humidity !== undefined ? `${humidity}%` : "--"),
+    [humidity]
   );
 
   return {

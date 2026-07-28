@@ -1,6 +1,6 @@
 import { useColorScheme } from "nativewind";
 import React from "react";
-import { Linking, TouchableOpacity, View, ViewStyle } from "react-native";
+import { Linking, TouchableOpacity, View } from "react-native";
 
 import Text from "../../components/Common/Text";
 import Icon from "../../components/Icon";
@@ -47,30 +47,11 @@ export function Item({
       ? "text-dark-onSurfaceVariant"
       : "text-light-onSurfaceVariant";
 
-  const Wrapper = ({
-    children,
-    style,
-  }: {
-    children: React.ReactNode;
-    style?: ViewStyle;
-  }) => {
-    return onPress ? (
-      <TouchableOpacity
-        className="flex-row gap-4 justify-between items-center px-4 min-h-[48px] py-2"
-        style={[style]}
-        onPress={onPress}
-        activeOpacity={0.5}
-      >
-        {children}
-      </TouchableOpacity>
-    ) : (
-      <View className="flex-row gap-4 justify-between items-center px-4 min-h-[48px] py-2">
-        {children}
-      </View>
-    );
-  };
-  return (
-    <Wrapper>
+  // Rendered inline rather than via a component declared during render:
+  // a fresh component type each render remounts the whole subtree, which is
+  // what react-hooks/static-components flags.
+  const content = (
+    <>
       {left && <Icon name={left} size={24} />}
       <View style={{ flex: 1, justifyContent: "center" }}>
         <Text>{title}</Text>
@@ -79,6 +60,20 @@ export function Item({
         )}
       </View>
       {right && <Icon name={right} size={24} />}
-    </Wrapper>
+    </>
+  );
+
+  return onPress ? (
+    <TouchableOpacity
+      className="flex-row gap-4 justify-between items-center px-4 min-h-[48px] py-2"
+      onPress={onPress}
+      activeOpacity={0.5}
+    >
+      {content}
+    </TouchableOpacity>
+  ) : (
+    <View className="flex-row gap-4 justify-between items-center px-4 min-h-[48px] py-2">
+      {content}
+    </View>
   );
 }

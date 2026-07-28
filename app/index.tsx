@@ -1,6 +1,6 @@
 // FILE: app/index.tsx
 import { useColorScheme } from "nativewind";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { RefreshControl, ScrollView } from "react-native";
 
 import HourlyConditions from "@/src/components/HourlyConditions";
@@ -21,9 +21,14 @@ export default function Home() {
   const scrollViewRef = useRef<ScrollView>(null);
   const hasScrolledAfterLoad = useRef(false);
 
-  if (isLoading) {
-    hasScrolledAfterLoad.current = false;
-  }
+  // Reset from an effect rather than during render (react-hooks/refs).
+  // Safe because handleContentSizeChange is already gated on !isLoading, so
+  // the flag only matters once loading has finished and the effect has run.
+  useEffect(() => {
+    if (isLoading) {
+      hasScrolledAfterLoad.current = false;
+    }
+  }, [isLoading]);
 
   const handleContentSizeChange = () => {
     if (!isLoading && !hasScrolledAfterLoad.current) {

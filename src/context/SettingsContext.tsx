@@ -75,10 +75,11 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({
     loadSettings();
   }, []);
 
-  const [translatedWeatherDescriptions, setTranslatedWeatherDescriptions] =
-    useState<WeatherDescriptionsType>(baseWeatherDescriptions);
-
-  useEffect(() => {
+  // Derived from the active language, so computed during render rather than
+  // written back via an effect (react-hooks/set-state-in-effect). This also
+  // means the very first render already has translated descriptions instead
+  // of briefly showing the untranslated base values.
+  const translatedWeatherDescriptions = useMemo<WeatherDescriptionsType>(() => {
     const newDescriptions: WeatherDescriptionsType = {};
     for (const codeStr in baseWeatherDescriptions) {
       const code = Number(codeStr);
@@ -87,16 +88,20 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({
         newDescriptions[code] = {
           day: {
             ...baseDesc.day,
-            description: i18next.t(baseDesc.day.translationKey),
+            description: i18next.t(baseDesc.day.translationKey, {
+              lng: settings.language,
+            }),
           },
           night: {
             ...baseDesc.night,
-            description: i18next.t(baseDesc.night.translationKey),
+            description: i18next.t(baseDesc.night.translationKey, {
+              lng: settings.language,
+            }),
           },
         };
       }
     }
-    setTranslatedWeatherDescriptions(newDescriptions);
+    return newDescriptions;
   }, [settings.language]);
 
   const updateSetting = useCallback(

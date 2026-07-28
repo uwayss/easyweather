@@ -32,20 +32,18 @@ const Icon: React.FC<IconProps> = ({
     colorScheme === "dark"
       ? THEME_COLORS_DARK.onSurface
       : THEME_COLORS_LIGHT.onSurface;
-  try {
-    return (
-      <IconComponent
-        name={name as never}
-        size={size}
-        color={color || iconColor}
-        style={style}
-        className={`${className || ""}`}
-      />
-    );
-  } catch (error) {
-    console.error("An error occurred when rendering an Icon", error);
-    return null;
-  }
+  // No try/catch here: creating the element does not render it, so a render
+  // error surfaces later and could never reach a catch at this point. Wrap
+  // this in an error boundary if icon failures need handling.
+  return (
+    <IconComponent
+      name={name as never}
+      size={size}
+      color={color || iconColor}
+      style={style}
+      className={`${className || ""}`}
+    />
+  );
 };
 
 export default Icon;

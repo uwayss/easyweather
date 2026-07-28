@@ -1,5 +1,5 @@
 // FILE: src/screens/HomeScreen/WeatherCard/AnimatedWeatherSummary.tsx
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Animated } from "react-native";
 import Card from "../../../components/Common/Card";
 import Text from "../../../components/Common/Text";
@@ -11,11 +11,19 @@ interface AnimatedWeatherSummaryProps {
 const AnimatedWeatherSummary: React.FC<AnimatedWeatherSummaryProps> = ({
   label,
 }) => {
-  const animatedValue = useRef(new Animated.Value(0)).current;
+  // Lazy state initialiser rather than useRef(...).current: reading a ref
+  // during render is what react-hooks/refs flags, and this also avoids
+  // constructing a throwaway Animated.Value on every render.
+  const [animatedValue] = useState(() => new Animated.Value(0));
   const [isRendered, setIsRendered] = useState(false);
 
   useEffect(() => {
     if (label) {
+      // The card has to be mounted before it can animate in, and it stays
+      // mounted through the exit animation (unmounted from the completion
+      // callback below). Deriving this during render instead would drop the
+      // element immediately and lose the fade-out.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsRendered(true);
       Animated.sequence([
         Animated.spring(animatedValue, {
