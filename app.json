@@ -7,7 +7,6 @@
     "icon": "./assets/icon.png",
     "scheme": "easyweather",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.uwayss.easyweather"
@@ -25,7 +24,6 @@
         "foregroundImage": "./assets/adaptive-icon/foreground.png",
         "backgroundImage": "./assets/adaptive-icon/background.png"
       },
-      "edgeToEdgeEnabled": true,
       "package": "com.uwayss.easyweather",
       "versionCode": 41
     },
@@ -49,13 +47,12 @@
         "expo-build-properties",
         {
           "android": {
-            "usesCleartextTraffic": true,
-            "compileSdkVersion": 35,
-            "targetSdkVersion": 35
+            "usesCleartextTraffic": true
           }
         }
       ],
-      "expo-font"
+      "expo-font",
+      "expo-image"
     ],
     "experiments": {
       "typedRoutes": true

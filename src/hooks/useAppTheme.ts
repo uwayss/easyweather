@@ -12,7 +12,9 @@ export const useAppTheme = (settings: AppSettings) => {
 
   const themeToApply = useMemo(() => {
     return settings.theme === "system"
-      ? systemColorScheme ?? "light"
+      ? systemColorScheme === "dark"
+        ? "dark"
+        : "light"
       : settings.theme;
   }, [settings.theme, systemColorScheme]);
 

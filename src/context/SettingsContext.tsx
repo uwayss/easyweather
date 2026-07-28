@@ -120,7 +120,11 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({
 
   const activeTheme = useMemo((): "light" | "dark" => {
     const { theme } = settings;
-    return theme === "system" ? systemColorScheme ?? "light" : theme;
+    return theme === "system"
+      ? systemColorScheme === "dark"
+        ? "dark"
+        : "light"
+      : theme;
   }, [systemColorScheme, settings]);
 
   const value: SettingsContextProps = {
